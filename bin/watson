@@ -1,0 +1,37 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+
+require 'watson'
+
+### Tests
+## fs.rb 
+print ">>fs.rb testing\n"
+
+# checkFile
+print "--checkFile\n"
+Watson::FS.checkFile('fs.rb')
+Watson::FS.checkFile('test.rb')
+Watson::FS.checkFile('command.rb')
+print "\n\n"
+
+
+# checkDir
+print "--checkDir\n"
+Watson::FS.checkDir('../watson')
+Watson::FS.checkDir('chickens')
+Watson::FS.checkDir('../../../../watson-ruby')
+print "\n\n"
+
+
+## config.rb
+print ">>config.rb\n"
+
+# initialize
+print "--initialize\n"
+config = Watson::Config.new()
+
+print "--checkConf\n"
+config.checkConf()
+
+Watson::Command.execute(*ARGV)
