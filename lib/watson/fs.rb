@@ -1,49 +1,61 @@
-# [todo] - Not sure whether to make check* methods return FP
-#		   Makes it nice to get it returned and use it but
-#		   not sure how to deal with closing the FP after
-#		   Currently just close inside
-
 module Watson
 	class FS 
+		# Class Constants
+		DEBUG = true 		# Debug printing for this class
+	
 		class << self
+		# [todo] - Not sure whether to make check* methods return FP
+		#		   Makes it nice to get it returned and use it but
+		#		   not sure how to deal with closing the FP after
+		#		   Currently just close inside
+
+		# Include for debug_print
+		include Watson
 		
-			# [todo] - Find a better name than this maybe	
-			def checkFile(file)
-				@file = file;
+
+			def check_file(file)
+				# Identify method entry
+				debug_print "#{self} : #{__method__}\n"
+			
+				# [review] - Not sure what to name input argument local var	
+				_file = file;
 
 				# Error check for input
-				if (@file.length == 0)
-					print "No file specified.\n" 
+				if (_file.length == 0)
+					debug_print "No file specified\n" 
 					return false
 				end
 
 				# Check if file can be opened
-				if (File.readable?(@file))
-					print "#{@file} exists and opened successfully.\n"
+				if (File.readable?(_file))
+					debug_print "#{_file} exists and opened successfully\n"
 					return true
 				else
-					print "Could not open #{@file}, skipping.\n"
+					debug_print "Could not open #{_file}, skipping\n"
 					return false
 				end					
 				
 			end
 
-			# [todo] - Find a better name than this maybe
-			def checkDir(dir)
-				@dir = dir;
-		
+			def check_dir(dir)
+				# Identify method entry
+				debug_print "#{self} : #{__method__}\n"
+	
+				# [review] - Not sure what to name input argument local var	
+				_dir = dir;
+	
 				# Error check for input
-				if (@dir.length == 0)
-					print "No directory specified\n"
+				if (_dir.length == 0)
+					debug_print "No directory specified\n"
 					return false
 				end
 
 				# Check if directory exists 
-				if (Dir.exists?(@dir))
-					print "#{@dir} exists and opened succesfully.\n"
+				if (Dir.exists?(_dir))
+					debug_print "#{_dir} exists and opened succesfully\n"
 					return true
 				else
-					print "Could not open #{@dir}, skipping.\n"
+					debug_print "Could not open #{@dir}, skipping\n"
 					return false
 				end 
 
