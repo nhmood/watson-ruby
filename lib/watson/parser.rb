@@ -7,6 +7,10 @@ module Watson
 		DEBUG = true 		# Debug printing for this class
 	
 
+		###########################################################
+		# initialize 
+		###########################################################
+	
 		# [review] - Not sure if passing config here is best way to access it
 		def initialize(config)
 			# Identify method entry
@@ -18,6 +22,10 @@ module Watson
 		end	
 
 	
+		###########################################################
+		# parse_dir 
+		###########################################################
+		
 		def parse_dir(dir)
 			# Identify method entry
 			debug_print "#{self} : #{__method__}\n"
@@ -108,6 +116,10 @@ module Watson
 		end
 
 
+		###########################################################
+		# parse_file 
+		###########################################################
+	
 		# [review] - Rename method input param to filename (more verbose?)
 		def parse_file(file)
 			# Identify method entry
@@ -132,6 +144,10 @@ module Watson
 		end
 
 
+		###########################################################
+		# get_comment_type 
+		###########################################################
+		
 		def get_comment_type(file)
 			# Identify method entry
 			debug_print "#{self} : #{__method__}\n"

@@ -20,6 +20,11 @@ module Watson
 	# Gets included into every class individually
 	module_function
 
+
+	###########################################################
+	# debug_print 
+	###########################################################
+
 	def debug_print(msg)
 		# Print only if DEBUG flag of calling class is true OR 
 		# GLOBAL_DEBUG_ON of Watson module (defined above) is true

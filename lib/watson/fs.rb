@@ -12,7 +12,10 @@ module Watson
 		# Include for debug_print
 		include Watson
 		
-
+			###########################################################
+			# check_file 
+			###########################################################
+		
 			def check_file(file)
 				# Identify method entry
 				debug_print "#{self} : #{__method__}\n"
@@ -36,6 +39,11 @@ module Watson
 				end					
 				
 			end
+
+
+			###########################################################
+			# check_dir 
+			###########################################################
 
 			def check_dir(dir)
 				# Identify method entry
@@ -61,8 +69,8 @@ module Watson
 
 			end
 
-		end
 
+		end
 	end
 end
 

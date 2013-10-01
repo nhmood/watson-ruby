@@ -2,10 +2,14 @@ module Watson
 	class Command
 		class << self
 	
+			###########################################################
+			# initialize 
+			###########################################################
+		
 			def execute(*args)
 				# If we get the version or help flag, ignore all other flags
 				# Just display these and exit
-				return help				if args.include?('-h') || args.include?('--help')
+				return help   			if args.include?('-h')  || args.include?('--help')
 				return version			if args.include?('-v')  || args.include?('--version')
 
 				# If not one of the above then we are performing actual watson stuff
@@ -21,6 +25,10 @@ module Watson
 			end
 
 
+			###########################################################
+			# help 
+			###########################################################
+		
 			# [todo] - Add bold and colored printing
 			def help
 				# print BOLD;
@@ -55,6 +63,10 @@ module Watson
 			end
 
 
+			###########################################################
+			# version 
+			###########################################################
+			
 			def version
 				print "watson v1.0\n"
 				print "Copyright (c) 2012-2013 goosecode labs\n"

@@ -13,6 +13,10 @@ module Watson
 
 		attr_reader :max_depth
 
+		###########################################################
+		# initialize 
+		###########################################################
+	
 		def initialize
 		# Initialize class parameters/state/vars 
 
@@ -41,6 +45,10 @@ module Watson
 		end
 
 
+		###########################################################
+		# check_conf 
+		###########################################################
+		
 		def check_conf
 		# Check for config file in directory of execution
 		# Should have individual .rc for each dir that watson is used in
@@ -65,6 +73,10 @@ module Watson
 		end
 
 
+		###########################################################
+		# create_conf 
+		###########################################################
+		
 		def create_conf
 		# Copy default config from /assets/defaultConf to the current directory
 		# [review] - Not sure if I should use the open/read/write or Fileutils.cp
@@ -98,6 +110,10 @@ module Watson
 		end
 
 
+		###########################################################
+		# read_conf 
+		###########################################################
+		
 		def read_conf
 		# Config file reader that populates Config class parameters
 
