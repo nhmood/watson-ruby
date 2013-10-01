@@ -34,8 +34,8 @@ print "\n\n"
 parser = Watson::Parser.new(config)
 print "\n\n"
 
-parser.get_comment('lib/watson.rb')
-parser.get_comment('lib/wat')
+parser.get_comment_type('lib/watson.rb')
+parser.get_comment_type('lib/wat')
 print "\n\n"
 
 parser.parse_file('lib/watson.rb')
