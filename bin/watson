@@ -32,6 +32,6 @@ config.check_conf()
 # read_conf
 config.read_conf()
 
-
-
+parser = Watson::Parser.new(config)
+parser.parse_dir('lib/watson')
 Watson::Command.execute(*ARGV)

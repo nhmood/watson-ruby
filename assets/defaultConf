@@ -18,4 +18,4 @@ todo
 # Ignores
 [ignore]
 .git
-.swp
+*.swp

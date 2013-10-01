@@ -3,6 +3,7 @@ $:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
 require 'watson/command'
 require 'watson/config'
 require 'watson/fs'
+require 'watson/parser'
 
 module Watson
 	# Global flags for forcing debug prints to be ON or OFF

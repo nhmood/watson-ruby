@@ -4,8 +4,14 @@ module Watson
 		include Watson
 		
 		# Class Constants
-		DEBUG = true 		# Debug printing for this class
+		DEBUG = false 		# Debug printing for this class
 		
+		# Need to read ignore list in Parser
+		# Need to write when adding already parsed dirs in Parser
+		attr_reader :ignore_list
+		attr_writer :ignore_list
+
+		attr_reader :max_depth
 
 		def initialize
 		# Initialize class parameters/state/vars 
@@ -20,6 +26,8 @@ module Watson
 			# Program config
 			@rc_file = ".watsonrc"
 			@tmp_file = ".watsonresults"
+
+			@max_depth = 0
 
 			# State flags
 			@rc_dir_ignore  = false
