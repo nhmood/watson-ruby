@@ -8,14 +8,12 @@ require 'watson'
 
 ### Tests
 ## fs.rb
-# check_file
 Watson::FS.check_file('lib/watson/fs.rb')
 Watson::FS.check_file('lib/watson/test.rb')
 Watson::FS.check_file('lib/watson/command.rb')
 print "\n\n"
 
 
-# check_dir
 Watson::FS.check_dir('lib/watson')
 Watson::FS.check_dir('lib/chickens')
 Watson::FS.check_dir('../watson-ruby')
@@ -23,15 +21,31 @@ print "\n\n"
 
 
 ## config.rb
-# initialize
 config = Watson::Config.new()
+print "\n\n"
 
-# check_conf
 config.check_conf()
+print "\n\n"
 
-# read_conf
 config.read_conf()
+print "\n\n"
 
+## parser.rb
 parser = Watson::Parser.new(config)
+print "\n\n"
+
+parser.get_comment('lib/watson.rb')
+parser.get_comment('lib/wat')
+print "\n\n"
+
+parser.parse_file('lib/watson.rb')
+parser.parse_file('lib/watson/config.rb')
+parser.parse_file('lib/watson/nonexistant')
+print "\n\n"
+
 parser.parse_dir('lib/watson')
+print "\n\n"
+
+
+
 Watson::Command.execute(*ARGV)
