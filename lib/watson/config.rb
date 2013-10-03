@@ -12,6 +12,7 @@ module Watson
 		attr_writer :ignore_list
 
 		attr_reader :max_depth
+		attr_reader :tag_list
 
 		###########################################################
 		# initialize 
