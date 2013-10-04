@@ -386,20 +386,11 @@ module Watson
 					return false
 				end
 
-				# [todo] - Add wget support or just use some Ruby gem to do this
-				# We can only do this if cURL is on the system
-				if (@config.curl_valid == false)
-					debug_print "It looks like you don't have cURL\n"
-					debug_print "We currently only support remote issues if you have cURL\n"
-					debug_print "Make sure cURL is installed and in your PATH\n"
-
-					return false
-				end
 			
 				if (_args.length == 1)	
 					if (_args[0].downcase == "github")        
 						debug_print "GitHub setup called from CL\n"
-						#Watson::Remote::GitHub.setup(@config) 
+						Watson::Remote::GitHub.setup(@config) 
 
 					elsif (_args[0].downcase =="bitbucket") 
 						debug_print "Bitbucket setup called from CL\n"

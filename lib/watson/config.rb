@@ -4,7 +4,7 @@ module Watson
 		include Watson
 		
 		# Class Constants
-		DEBUG = false 		# Debug printing for this class
+		DEBUG = true 		# Debug printing for this class
 		
 		# [review] - Combine into single statement (for performance or something?)
 
@@ -23,7 +23,6 @@ module Watson
 		attr_accessor :bitbucket_api	# Command r,  Remote::Bitbucket rw
 		attr_accessor :bitbucket_repo	# Command r,  Remote::Bitbucket rw
 		
-		attr_reader :curl_valid			# Command r
 
 		###########################################################
 		# initialize 
@@ -44,9 +43,6 @@ module Watson
 			@tmp_file = ".watsonresults"
 			@max_depth = 0
 			
-			# [fix] - Set to true for debugging, SET TO FALSE LATER
-			@curl_valid = true
-
 			@github_api = ""
 			@github_repo = ""
 			@bitbucket_api = ""
@@ -294,6 +290,8 @@ module Watson
 
 			end
 		end
+
+
 
 
 
