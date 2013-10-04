@@ -6,13 +6,24 @@ module Watson
 		# Class Constants
 		DEBUG = false 		# Debug printing for this class
 		
-		# Need to read ignore list in Parser
-		# Need to write when adding already parsed dirs in Parser
-		attr_reader :ignore_list
-		attr_writer :ignore_list
+		# [review] - Combine into single statement (for performance or something?)
 
-		attr_reader :max_depth
-		attr_reader :tag_list
+		attr_accessor :ignore_list		# Parser rw, Command rw
+		attr_accessor :dir_list			# Parser r,  Command rw
+		attr_accessor :file_list		# Parser r,  Command rw
+		attr_accessor :ignore_list		# Parser r,  Command rw
+		attr_accessor :max_depth		# Parser r,  Command rw
+		attr_accessor :tag_list			# Parser r,  Command rw
+
+		attr_accessor :cl_dir_set		# Command rw
+		attr_accessor :cl_file_set		# Command rw
+
+		attr_accessor :github_api		# Command r,  Remote::GitHub rw
+		attr_accessor :github_repo		# Command r,  Remote::GitHub rw
+		attr_accessor :bitbucket_api	# Command r,  Remote::Bitbucket rw
+		attr_accessor :bitbucket_repo	# Command r,  Remote::Bitbucket rw
+		
+		attr_reader :curl_valid			# Command r
 
 		###########################################################
 		# initialize 
@@ -31,16 +42,24 @@ module Watson
 			# Program config
 			@rc_file = ".watsonrc"
 			@tmp_file = ".watsonresults"
-
 			@max_depth = 0
+			
+			# [fix] - Set to true for debugging, SET TO FALSE LATER
+			@curl_valid = true
+
+			@github_api = ""
+			@github_repo = ""
+			@bitbucket_api = ""
+			@bitbucket_repo = ""
 
 			# State flags
-			@rc_dir_ignore  = false
-			@rc_file_ignore = false
+			@cl_dir_set  = false
+			@cl_file_set = false
 
 			# Data containers
 			@ignore_list = Array.new()
 			@dir_list = Array.new()
+			@file_list = Array.new()
 			@tag_list = Array.new()
 			 
 		end
