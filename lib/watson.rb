@@ -5,6 +5,7 @@ require 'watson/config'
 require 'watson/fs'
 require 'watson/parser'
 require 'watson/github'
+require 'watson/remote'
 
 
 # [todo] - Replace all regex parentheses() with brackets[] if not matching

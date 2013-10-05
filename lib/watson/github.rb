@@ -1,15 +1,18 @@
 module Watson
 	class Remote
-	require 'net/https'
-	require 'uri'
-	require 'json'
-
 		class GitHub
-		DEBUG = true
+		# Class constants
+		DEBUG = true		# Debug printing for this class
 
 	
 		class << self
+		# Include for debug_print
 		include Watson
+		
+		###########################################################
+		# setup 
+		###########################################################
+
 			def setup(config)
 				@config = config
 
@@ -54,37 +57,24 @@ module Watson
 					print "\n"
 				end
 
-				# HTTP Request to get OAuth Token, returns JSON
-				# [review] - Not sure if this is the best/proper way to do things but it works...
-				# [todo] - Similar HTTP calls used multiple times, abstract into Watson::Remote
-
+				# HTTP Request to get OAuth Token
 				# GitHub API v3 - http://developer.github.com/v3/
 
-				# Set up the HTTP connection
-				_uri = URI("https://api.github.com/authorizations")
-				_http = Net::HTTP.new(_uri.host, _uri.port)
-				_http.use_ssl = true
+				# Create options hash to pass to Remote::http_call 
+				# Auth URL for GitHub + SSL
+				# Repo scope + notes for watson
+				# Basic auth with user input
+				opts = {:url        => "https://api.github.com/authorizations",
+						:ssl        => true,
+						:method     => "POST",
+						:basic_auth => [_username, _password],
+						:data       => {"scopes" => ["repo"], 
+				 				        "note" => "watson", 
+								        "note_url" => "http://watson.goosecode.com/" }, 
+						:verbose    => false
+					   }
 
-				# Print out verbose HTTP request 
-				# For hardcore debugging when shit really doesn't work uncomment below
-				#_http.set_debug_output $stderr 
-			
-				# Set up the POST request with Basic Auth + Authorization Info for GitHub
-				_req = Net::HTTP::Post.new(_uri.request_uri)
-				_req.basic_auth(_username, _password)
-				_req.body = {"scopes" => ["repo"], 
-							 "note" => "watson", 
-							 "note_url" => "http://watson.goosecode.com/" }.to_json
-
-				# Make request
-				_resp = _http.request(_req)
-
-				# Debug prints for status and message
-				debug_print "HTTP Response Code: #{_resp.code}\n"
-				debug_print "HTTP Response Msg:  #{_resp.message}\n"
-
-				_json = JSON.parse(_resp.body)
-				debug_print "JSON: \n #{_json}\n"
+				_json, _resp  = Watson::Remote.http_call(opts)
 
 				# Check response to validate authorization
 				if (_resp.code == "201")
@@ -98,7 +88,6 @@ module Watson
 				# Store API key obtained from POST to @config.github_api
 				@config.github_api = _json["token"]
 				debug_print "Config GitHub API Key updated to: #{@config.github_api}\n"
-
 
 
 
@@ -126,34 +115,22 @@ module Watson
 				# Make call to GitHub API to create new label for Issues
 				# If status returns not 404, then we have access to repo (+ it exists)
 				# If 422, then (most likely) the label already exists
-				
-				# Set up the HTTP connection
-				_uri = URI("https://api.github.com/repos/#{_owner}/#{_repo}/labels")
-				_http = Net::HTTP.new(_uri.host, _uri.port)
-				_http.use_ssl = true
-				
-				# Print out verbose HTTP request 
-				# For hardcore debugging when shit really doesn't work uncomment below
-				#_http.set_debug_output $stderr 
-
-				
-				# Set up the POST request with Auth token + label info 
-				_req = Net::HTTP::Post.new(_uri.request_uri)
-				_req["Authorization"] = "token #{@config.github_api}"
-				_req.body = {"name" => "watson", 
-							 "color" => "00AEEF"}.to_json
 			
-				# Make request
-				_resp = _http.request(_req)
+				# Create options hash to pass to Remote::http_call 
+				# Label URL for GitHub + SSL
+				#  
+				# Basic auth with user input
+				opts = {:url        => "https://api.github.com/repos/#{_owner}/#{_repo}/labels",
+						:ssl        => true,
+						:method     => "POST",
+						:auth		=> @config.github_api, 
+						:data       => {"name" => "watson", 
+								        "color" => "00AEEF" }, 
+						:verbose    => false
+					   }
 
-				# Debug prints for status and message
-				debug_print "HTTP Response Code: #{_resp.code}\n"
-				debug_print "HTTP Response Msg:  #{_resp.message}\n"
-
-				_json = JSON.parse(_resp.body)
-				debug_print "JSON: \n #{_json}\n"
-				
-		
+				_json, _resp  = Watson::Remote.http_call(opts)
+			
 				# [review] - This is pretty messy, maybe clean it up later	
 				# Check response to validate repo access
 				if (_resp.code == "404")
