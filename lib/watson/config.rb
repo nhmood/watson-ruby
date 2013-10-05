@@ -261,27 +261,27 @@ module Watson
 					end
 
 				
-				when "github"
+				when "github_api"
 					# No need for regex on API key, GitHub setup should do this properly
 					# Chomp to get rid of any nonsense
-					@github_api = line.chomp!
+					@github_api = _line.chomp!
 					debug_print "GitHub API: #{@github_api}\n"
 
 				
-				when "githubrepo"
+				when "github_repo"
 					# Same as above
-					@github_repo = line.chomp!
+					@github_repo = _line.chomp!
 					debug_print "GitHub Repo: #{@github_repo}\n"
 
 
-				when "bitbucket"
+				when "bitbucket_api"
 					# Same as GitHub parse above
-					@bitbucket_api = line.chomp!
+					@bitbucket_api = _line.chomp!
 					debug_print "Bitbucket API: #{@bitbucket_api}\n"	
 		
-				when "bitbucketrepo"
+				when "bitbucket_repo"
 					# Same as GitHub repo parse above
-					@bitbucket_repo = line.chomp!
+					@bitbucket_repo = _line.chomp!
 					debug_print "Bitbucket Repo: #{@bitbucket_repo}\n"
 
 				else	
@@ -395,12 +395,6 @@ module Watson
 
 
 		end
-
-
-
-
-
-
 
 	end
 end
