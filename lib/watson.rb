@@ -4,6 +4,21 @@ require 'watson/command'
 require 'watson/config'
 require 'watson/fs'
 require 'watson/parser'
+require 'watson/github'
+
+
+# [todo] - Replace all regex parentheses() with brackets[] if not matching
+# 		   Was using () to group things together for syntax instead of []
+# 		   Replace so we can get cleaner matches and don't need to keep track of matches
+
+# [todo] - Change debug_print to provide its own \n
+
+# [todo] - Add ability to pass "IDENTIFY" to debug_print to auto print method entry info 
+
+# [todo] - Make sure all methods have proper return at end
+
+# [review] - Method input arg always renamed from arg to _arg inside method, change this?
+#		     Not sure if I should just make input arg _arg or if explicit _ is useful 
 
 module Watson
 	# Global flags for forcing debug prints to be ON or OFF

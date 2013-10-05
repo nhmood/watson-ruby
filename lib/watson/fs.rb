@@ -63,7 +63,7 @@ module Watson
 					debug_print "#{_dir} exists and opened succesfully\n"
 					return true
 				else
-					debug_print "Could not open #{@dir}, skipping\n"
+					debug_print "Could not open #{_dir}, skipping\n"
 					return false
 				end 
 
