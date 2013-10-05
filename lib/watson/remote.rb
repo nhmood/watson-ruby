@@ -12,6 +12,20 @@ module Watson
 		require 'net/https'
 		require 'uri'
 		require 'json'
+	
+	
+		# Default options hash for http_call
+		# Will get merged with input argument hash to maintain defaults	
+		HTTP_opts = {
+	  	  :url 		  => nil,			#--> URL of endpoint [String]
+	   	  :ssl		  => false,			#--> Use SSL in connection (HTTPS) (True/False]
+	 	  :method 	  => nil,			#--> GET or POST for respective HTTP method [String]
+	  	  :basic_auth => Array.new(0),	#--> Array of username and pw to use for basic authentication
+                                		#    If empty, assume no user authentication [Array]
+		  :auth 	  => nil,			#--> Authentication token [String]
+		  :data 	  => nil,			#--> Hash of data to be POST'd in HTTP request [Hash]
+		  :verbose    => false			#--> Turn on verbose debug for this call [True/False]
+		}
 			
 		###########################################################
 		# http_call 
@@ -19,32 +33,32 @@ module Watson
 		
 		# [review] - Don't use DEBUG inside Remote class but pull from calling method's class?
 		# [review] - Not sure if this is the best/proper way to do things but it works...
-		#
-		# Options Hash Format
-		# :url 		  => string					 --> URL of endpoint
-		# :ssl 		  => true/false 		 	 --> Use SSL in connection (HTTPS)
-		# :method     => string					 --> GET or POST for respective HTTP method
-		# :basic_auth => [username, password] 	 --> Array of username and pw to use for basic authentication
-		#											 If empty, assume no user authentication
-		# :auth 	  => string					 --> Authentication token 
-		# :data 	  => hash					 --> Hash of data to be POST'd in HTTP request
-		# :verbose    => true/false				 --> Turn on verbose debug for this call 
 
 			def http_call( opts )
+				# Merge default options with those passed in by user to form complete opt list
+				opts = HTTP_opts.merge(opts)
+
+
 				# Check URL in hash and get URI from it, then set up HTTP connection
-				_uri = URI(opts.fetch(:url))  if (opts.fetch(:url, nil) =~ /^#{URI::regexp}$/)
+				if (opts[:url] =~ /^#{URI::regexp}$/) 
+					_uri = URI(opts[:url])  
+				else
+					debug_print "No URL specified in input opts, exiting HTTP call\n"
+					return false
+				end
+				
 				_http = Net::HTTP.new(_uri.host, _uri.port)
 				
 				# Print out verbose HTTP request if :verbose is set
 				# For hardcore debugging when shit really doesn't work
-				_http.set_debug_output $stderr if (opts.fetch(:verbose, nil))
+				_http.set_debug_output $stderr if (opts[:verbose])
 				
 				# If SSL is set in hash, set HTTP connection to use SSL 
-				_http.use_ssl = true if (opts.fetch(:ssl, nil) == true)
+				_http.use_ssl = true if (opts[:ssl] == true)
 
 				# Create request based on HTTP method
 				# [review] - Not sure if to fail with no method or default to GET?
-				case opts.fetch(:method, nil).upcase
+				case opts[:method].upcase
 				when "GET"
 					_req = Net::HTTP::Get.new(_uri.request_uri)
 			
@@ -57,19 +71,19 @@ module Watson
 				end
 
 				# Check for basic authentication key in hash
-				if ( opts.fetch(:basic_auth, nil) && opts.fetch(:basic_auth).size == 2 )
-					_req.basic_auth(opts.fetch(:basic_auth)[0], opts.fetch(:basic_auth)[1])
+				if ( opts[:basic_auth].size == 2 )
+					_req.basic_auth(opts[:basic_auth][0], opts[:basic_auth][1])
 				end
 
 				# Check for Authentication token key in hash to be used in header
 				# I think this is pretty universal, but specifically works for GitHub
-				if ( opts.fetch(:auth, nil) )
-					_req["Authorization"] = "token #{opts.fetch(:auth)}"
+				if ( opts[:auth] )
+					_req["Authorization"] = "token #{opts[:auth]}"
 				end
 
 				# If a POST method, :data is present, and is a Hash, fill request body with data
-				if ( opts.fetch(:method).upcase == "POST" && opts.fetch(:data, nil) && opts.fetch(:data).is_a?(Hash) )
-					_req.body = opts.fetch(:data).to_json
+				if ( opts[:method].upcase == "POST" && opts[:data] && opts[:data].is_a?(Hash) )
+					_req.body = opts[:data].to_json
 				end
 
 				# Make HTTP request
