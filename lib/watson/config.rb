@@ -292,6 +292,113 @@ module Watson
 		end
 
 
+		###########################################################
+		# update_conf 
+		###########################################################
+		
+		def update_conf(*params)
+			# Identify method entry
+			debug_print "#{self.class} : #{__method__}\n"
+
+
+			_params = params
+
+			# Check if RC exists, if not create one
+			if (Watson::FS.check_file(@rc_file) == false)
+				print "Unable to open #{@rc_file}, exiting\n"
+				create_conf
+			else
+				debug_print "Opened #{@rc_file} for reading\n"
+			end
+
+			# Go through all given params and make sure they are actually config vars
+			_params.each_with_index do | _param, _i |
+				if ((self.instance_variable_defined?("@#{_param}")) == false)
+					debug_print "#{_param} does not exist in Config\n"
+					debug_print "Check your input(s) to update_conf\n"
+					_params.slice!(_i)
+				end
+			end	
+
+			
+			# Read in currently saved RC and go through it line by line
+			# Only update params that were passed to update_conf
+			# This allows us to clean up the config file at the same time
+
+			
+			# Open and read rc
+			# [review] - Not sure if explicit file close is required here
+			_rc = File.open(@rc_file, 'r').read
+			_update = File.open(@rc_file, 'w')
+			
+			
+			# Keep index to print what line we are on
+			# Could fool around with Enumerable + each_with_index but oh well
+			_i = 0;
+
+			# Keep track of newlines for prettying up the conf
+			_nlc = 0
+			_section = ""
+
+			# Fix line endings so we can support Windows/Linux edited rc files
+			_rc.gsub!(/\r\n?/, "\n")
+			_rc.each_line do | _line |
+				# Print line for debug purposes
+				debug_print "#{_i}: #{ _line}"
+				_i = _i + 1
+
+				
+				# Look for sections and set sectino var				
+				if (_mtch = _line.match(/^\[(\w+)\]/))
+					debug_print "Found section #{_mtch[1]}\n"
+					_section = _mtch[1]
+				end
+
+				# Check for newlines
+				# If we already have 2 newlines before any actual content, skip
+				# This is just to make the RC file output nicer looking
+				if (_line == "\n")
+					debug_print "Newline found\n"
+					_nlc = _nlc + 1
+					if (_nlc < 3)
+						debug_print "Less than 3 newlines so far, let it print\n"
+						_update.write(_line)
+					end
+				# If the section we are in doesn't match the params passed to update_conf
+				# It is safe to write the line over to the new config
+				elsif (!_params.include?(_section))
+					debug_print "Current section NOT a param to update\n"
+					debug_print "Writing to new rc\n"
+					_update.write(_line)
+					
+					# Reset newline
+					_nlc = 0
+				end
+
+				debug_print "line: #{_line}\n"
+				debug_print "nlc: #{_nlc}\n"
+			end
+
+			# Make sure there is at least 3 newlines between last section before writing new params
+			(2 - _nlc).times do
+				_update.write("\n")
+			end
+
+			# Now that we have skipped all the things that need to be updated, write them in
+			_params.each do | _param |
+				_update.write("[#{_param}]\n")
+				_update.write("#{self.instance_variable_get("@#{_param}")}")
+				_update.write("\n\n\n")
+			end	
+			
+			_update.close
+
+
+		end
+
+
+
+
 
 
 

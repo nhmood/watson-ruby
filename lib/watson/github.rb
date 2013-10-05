@@ -164,7 +164,7 @@ module Watson
 				# All setup has been completed, need to update RC
 				# Call config updater/writer from @config to write config	
 				debug_print "Updating config with new GitHub info\n"
-				#@config.update_conf("github_api", "github_repo")
+				@config.update_conf("github_api", "github_repo")
 
 				# Give user some info
 				print "GitHub successfully setup\n"
