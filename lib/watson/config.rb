@@ -15,8 +15,7 @@ module Watson
 		attr_accessor :max_depth		# Parser r,  Command rw
 		attr_accessor :tag_list			# Parser r,  Command rw
 
-		attr_accessor :cl_dir_set		# Command rw
-		attr_accessor :cl_file_set		# Command rw
+		attr_accessor :cl_set			# Command rw
 
 		attr_accessor :github_api		# Command r,  Remote::GitHub rw
 		attr_accessor :github_repo		# Command r,  Remote::GitHub rw
@@ -49,8 +48,7 @@ module Watson
 			@bitbucket_repo = ""
 
 			# State flags
-			@cl_dir_set  = false
-			@cl_file_set = false
+			@cl_set  = false
 
 			# Data containers
 			@ignore_list = Array.new()
@@ -58,6 +56,16 @@ module Watson
 			@file_list = Array.new()
 			@tag_list = Array.new()
 			 
+		end
+
+
+		###########################################################
+		# run 
+		###########################################################
+	
+		def run 
+			check_conf
+			read_conf	
 		end
 
 

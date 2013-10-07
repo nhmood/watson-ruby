@@ -44,6 +44,7 @@ module Watson
 				# all actions associated with command line args
 
 				@config = Watson::Config.new
+				@config.run
 				@parser = Watson::Parser.new(@config)
 	
 				# Parse command line options
@@ -200,8 +201,16 @@ module Watson
 				end
 
 				# If set from CL, we overwrite the RC parameters
-				@config.dir_list.clear
-
+				# Only do this once so we can do both CL file + dirs, use flag
+				if (@config.cl_set == false)
+					@config.dir_list.clear
+					@config.file_list.clear
+			
+					# Set config flag for CL dirs read in config
+					@config.cl_set = true	
+					debug_print "Updated cl_set flag: #{@config.cl_set}\n"
+				end
+				
 				# [review] - Should we clean the dir before adding here?
 				# For each argument passed, make sure valid, then add to @config.dir_list
 				args.each do | _dir |
@@ -222,10 +231,6 @@ module Watson
 				end
 
 				debug_print "Updated dirs: #{@config.dir_list}\n"
-
-				# Set config flag for CL dirs read in config
-				@config.cl_dir_set = true
-				debug_print "Updated cl_dir_set flag: #{@config.cl_dir_set}\n"
 				return true
 			end
 
@@ -247,7 +252,15 @@ module Watson
 				end
 
 				# If set from CL, we overwrite the RC parameters
-				@config.file_list.clear
+				# Only do this once so we can do both CL file + dirs, use flag
+				if (@config.cl_set == false)
+					@config.dir_list.clear
+					@config.file_list.clear
+			
+					# Set config flag for CL dirs read in config
+					@config.cl_set = true	
+					debug_print "Updated cl_set flag: #{@config.cl_set}\n"
+				end
 
 				# For each argument passed, make sure valid, then add to @config.file_list
 				args.each do | _file |
@@ -264,10 +277,6 @@ module Watson
 				end
 
 				debug_print "Updated files: #{@config.file_list}\n"
-				
-				# Set config flag for CL files read in config
-				@config.cl_file_set = true
-				debug_print "Updated cl_file_set flag: #{@config.cl_file_set}\n"
 				return true
 			end
 
