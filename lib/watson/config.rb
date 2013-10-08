@@ -15,7 +15,9 @@ module Watson
 		attr_accessor :max_depth		# Parser r,  Command rw
 		attr_accessor :tag_list			# Parser r,  Command rw
 
-		attr_accessor :cl_set			# Command rw
+		attr_accessor :cl_entry_set		# Command rw
+		attr_accessor :cl_ignore_set	# Command rw
+		attr_accessor :cl_tag_set		# Command rw
 
 		attr_accessor :github_api		# Command r,  Remote::GitHub rw
 		attr_accessor :github_repo		# Command r,  Remote::GitHub rw
@@ -48,7 +50,9 @@ module Watson
 			@bitbucket_repo = ""
 
 			# State flags
-			@cl_set  = false
+			@cl_entry_set  = false
+			@cl_tag_set = false
+			@cl_ignore_set = false
 
 			# Data containers
 			@ignore_list = Array.new()
@@ -153,7 +157,10 @@ module Watson
 			end
 
 
-			# Add all the standard dirs to ignorelist	
+			# Add all the standard things to ignorelist	
+			# This gets added regardless of ignore list specified
+			# [review] - Keep *.swp in there?
+			# [todo] - Add conditional to @rc_file such that if passed by -f we accept it
 			@ignore_list.push(".")
 			@ignore_list.push("..")
 			@ignore_list.push("*.swp")
@@ -210,7 +217,7 @@ module Watson
 					# If @dir_list or @file_list wasn't populated by CL args
 					# then populate from rc
 					# [review] - Populate @dirs/files_list first, then check size instead
-					if (@rc_dirs_ignore == true || @rc_files_ignore == true)
+					if (@cl_entry_set == true)
 						debug_print "Directories or files set from command line," \
 									"ignoring rc [dirs]\n"
 						next 
@@ -230,7 +237,7 @@ module Watson
 				when "tags"
 					# Same as previous for tags	
 					# [review] - Populate @tag_list, then check size instead
-					if (@rc_tags_ignore == true)
+					if (@cl_tag_set == true)
 						debug_print "Tags set from command line, ignoring rc [tags]\n"
 						next 
 					else
@@ -252,7 +259,7 @@ module Watson
 					# [review] - Populate @tag_list, then check size instead
 					
 					# Great var name, I know
-					if (@rc_ignore_ignore == true)
+					if (@cl_ignore_set == true)
 						debug_print "Ignores set from command line, ignoring rc [ignores]\n"
 						next 
 					else

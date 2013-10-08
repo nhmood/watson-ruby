@@ -43,8 +43,11 @@ module Watson
 				# Create all the necessary watson components so we can perform
 				# all actions associated with command line args
 
+
+				# Only create Config, don't call run method
+				# Populate Config parameters from CL THEN call run to fill in gaps from RC
+				# Saves some messy checking and sorting/organizing of parameters
 				@config = Watson::Config.new
-				@config.run
 				@parser = Watson::Parser.new(@config)
 	
 				# Parse command line options
@@ -121,6 +124,7 @@ module Watson
 				end
 
 				debug_print "Args length 0, running watson...\n"
+				@config.run
 			end
 
 
@@ -200,16 +204,9 @@ module Watson
 					return false
 				end
 
-				# If set from CL, we overwrite the RC parameters
-				# Only do this once so we can do both CL file + dirs, use flag
-				if (@config.cl_set == false)
-					@config.dir_list.clear
-					@config.file_list.clear
-			
-					# Set config flag for CL dirs read in config
-					@config.cl_set = true	
-					debug_print "Updated cl_set flag: #{@config.cl_set}\n"
-				end
+				# Set config flag for CL entryset  in config
+				@config.cl_entry_set = true	
+				debug_print "Updated cl_entry_set flag: #{@config.cl_entry_set}\n"
 				
 				# [review] - Should we clean the dir before adding here?
 				# For each argument passed, make sure valid, then add to @config.dir_list
@@ -251,16 +248,9 @@ module Watson
 					return false
 				end
 
-				# If set from CL, we overwrite the RC parameters
-				# Only do this once so we can do both CL file + dirs, use flag
-				if (@config.cl_set == false)
-					@config.dir_list.clear
-					@config.file_list.clear
-			
-					# Set config flag for CL dirs read in config
-					@config.cl_set = true	
-					debug_print "Updated cl_set flag: #{@config.cl_set}\n"
-				end
+				# Set config flag for CL entryset  in config
+				@config.cl_entry_set = true	
+				debug_print "Updated cl_entry_set flag: #{@config.cl_entry_set}\n"
 
 				# For each argument passed, make sure valid, then add to @config.file_list
 				args.each do | _file |
@@ -296,6 +286,11 @@ module Watson
 					debug_print "No args passed, exiting\n"
 					return false
 				end
+
+				# Set config flag for CL ignore set in config
+				@config.cl_ignore_set = true	
+				debug_print "Updated cl_ignore_set flag: #{@config.cl_ignore_set}\n"
+
 
 				# For ignores we do NOT overwrite RC, just append	
 				# For each argument passed, add to @config.ignore_list
@@ -360,6 +355,10 @@ module Watson
 					debug_print "No args passed, exiting\n"
 					return false
 				end
+				
+				# Set config flag for CL tag set in config
+				@config.cl_tag_set = true	
+				debug_print "Updated cl_tag_set flag: #{@config.cl_tag_set}\n"
 
 				# If set from CL, we overwrite the RC parameters
 				# For each argument passed, add to @config.tag_list
