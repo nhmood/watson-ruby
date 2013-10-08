@@ -125,6 +125,7 @@ module Watson
 
 				debug_print "Args length 0, running watson...\n"
 				@config.run
+				@parser.run	
 			end
 
 
