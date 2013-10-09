@@ -4,8 +4,9 @@ require 'watson/command'
 require 'watson/config'
 require 'watson/fs'
 require 'watson/parser'
-require 'watson/github'
+require 'watson/printer'
 require 'watson/remote'
+require 'watson/github'
 
 
 # [todo] - Replace all regex parentheses() with brackets[] if not matching
@@ -20,6 +21,10 @@ require 'watson/remote'
 
 # [review] - Method input arg always renamed from arg to _arg inside method, change this?
 #		     Not sure if I should just make input arg _arg or if explicit _ is useful 
+
+# [todo] - Add option to save output to specified file
+# [todo] - Replace Identify line in each method with method_added call
+#		   http://ruby-doc.org/core-2.0.0/Module.html#method-i-method_added
 
 module Watson
 	# Global flags for forcing debug prints to be ON or OFF
@@ -41,6 +46,8 @@ module Watson
 	# debug_print 
 	###########################################################
 
+	# [todo] - If input msg is a Hash, use pp to dump it
+
 	def debug_print(msg)
 		# Print only if DEBUG flag of calling class is true OR 
 		# GLOBAL_DEBUG_ON of Watson module (defined above) is true
@@ -53,5 +60,12 @@ module Watson
 
 		print "=> #{msg}" if ( (_DEBUG == true || GLOBAL_DEBUG_ON == true) && (GLOBAL_DEBUG_OFF == false))
 	end	
+
+
+	def check_less
+		# Check if system has less (so we can print out to it to allow scrolling)
+		# [todo] - Implement this scrolling thing inside watson with ncurses
+		return system("which less > /dev/null 2>&1")	
+	end
 
 end

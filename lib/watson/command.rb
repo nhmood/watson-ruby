@@ -49,6 +49,7 @@ module Watson
 				# Saves some messy checking and sorting/organizing of parameters
 				@config = Watson::Config.new
 				@parser = Watson::Parser.new(@config)
+				@printer = Watson::Printer.new(@config)
 	
 				# Parse command line options
 				# Begin by slicing off until we reach a valid flag
@@ -125,7 +126,8 @@ module Watson
 
 				debug_print "Args length 0, running watson...\n"
 				@config.run
-				@parser.run	
+				structure = @parser.run	
+				@printer.run(structure)
 			end
 
 

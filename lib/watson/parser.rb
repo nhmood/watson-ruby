@@ -41,8 +41,8 @@ module Watson
 			# Go through all files added from CL (sort them first)
 			# If empty, sort and each will do nothing, no errors
 			_completed_dirs = Array.new()
+			_completed_files = Array.new()
 			if (@config.cl_entry_set == true)
-				_completed_files = Array.new()
 				@config.file_list.sort.each	do | _file |
 					_completed_files.push(parse_file(_file))
 				end
@@ -209,6 +209,7 @@ module Watson
 			_issue_list = Hash.new()
 			_issue_list[:relative_path] = filename 
 			_issue_list[:absolute_path] = _path
+			_issue_list[:has_issues] = false
 			@config.tag_list.each do |_tag|
 				debug_print "Creating array named #{_tag}\n"
 				_issue_list[_tag] = Array.new
@@ -231,6 +232,10 @@ module Watson
 						next
 					end
 
+					# Found a valid match (with recognized tag)
+					# Set flag for this issue_list (for file) to indicate that
+					_issue_list[:has_issues] = true
+
 					_comment = _mtch[2]
 					debug_print "Issue found\n"
 					debug_print "Tag: #{_tag}\n"
@@ -245,6 +250,7 @@ module Watson
 					_issue[:md5] = ::Digest::MD5.hexdigest("#{_tag}, #{_path}, #{_comment}")
 					debug_print "#{_issue}\n"
 
+					# [review] - Use _tag string as symbol reference in hash or keep as string?
 					_issue_list[_tag].push( _issue )
 
 					

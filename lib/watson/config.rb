@@ -19,6 +19,9 @@ module Watson
 		attr_accessor :cl_ignore_set	# Command rw
 		attr_accessor :cl_tag_set		# Command rw
 
+		attr_reader	  :use_less			# Printer r
+		attr_reader	  :tmp_file			# Printer r
+
 		attr_accessor :github_api		# Command r,  Remote::GitHub rw
 		attr_accessor :github_repo		# Command r,  Remote::GitHub rw
 		attr_accessor :bitbucket_api	# Command r,  Remote::Bitbucket rw
@@ -53,6 +56,9 @@ module Watson
 			@cl_entry_set  = false
 			@cl_tag_set = false
 			@cl_ignore_set = false
+
+			# System flags
+			@use_less = false
 
 			# Data containers
 			@ignore_list = Array.new()
@@ -157,10 +163,15 @@ module Watson
 			end
 
 
+			# Check if system has less for output
+			@use_less = check_less
+		
+
 			# Add all the standard things to ignorelist	
 			# This gets added regardless of ignore list specified
 			# [review] - Keep *.swp in there?
 			# [todo] - Add conditional to @rc_file such that if passed by -f we accept it
+			# [todo] - Add current file (watson) to avoid accidentally printing app tags 
 			@ignore_list.push(".")
 			@ignore_list.push("..")
 			@ignore_list.push("*.swp")
