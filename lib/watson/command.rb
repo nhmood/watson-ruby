@@ -15,6 +15,7 @@ module Watson
 			def execute(*args)
 				# Identify method entry
 				debug_print "#{self} : #{__method__}\n"
+		
 			
 				_args = args
 		
@@ -51,6 +52,15 @@ module Watson
 				@parser = Watson::Parser.new(@config)
 				@printer = Watson::Printer.new(@config)
 	
+				# Capture Ctrl+C interrupt for clean exit
+				# [review] - Not sure this is the correct place to put the Ctrl+C capture
+				trap("INT") do
+					if (File.exists?(@config.tmp_file))
+						File.delete(@config.tmp_file)
+					end
+					exit 2
+				end
+
 				# Parse command line options
 				# Begin by slicing off until we reach a valid flag
 				
@@ -112,7 +122,10 @@ module Watson
 
 					when "-r", "--remote"
 						debug_print "Found -r/--remote argument\n"
+						# [todo] - If already exists, warn user about overwriting
 						setup_remote(_flag_args, _arg_length)
+						# If setting up remote, exit afterwards
+						exit true
 					
 					when "-p", "--push"
 						debug_print "Found -p/--push argument\n"
@@ -120,7 +133,7 @@ module Watson
 
 
 					else
-						debug_print "No arg, this shouldn't happen..."
+						print "Unknown argument #{_flag}\n"
 					end
 				end
 
@@ -427,16 +440,16 @@ module Watson
 					end
 
 					if (@config.github_api.empty? == false)
-						debug_print "GitHub User : \n"
-						debug_print "GitHub Repo : \n"
+						debug_print "GitHub User : #{@config.github_api}\n"
+						debug_print "GitHub Repo : #{@config.github_repo}\n"
 					end
 
 					if (@config.bitbucket_api.empty? == false)
-						debug_print "Bitbucket User : \n"
-						debug_print "Bitbucket Repo : \n"
+						debug_print "Bitbucket User : #{@config.bitbucket_api}\n"
+						debug_print "Bitbucket Repo : #{@config.bitbucket_repo}\n"
 					end
 				end
-
+					
 			end
 
 
