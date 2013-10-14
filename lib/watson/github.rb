@@ -305,7 +305,8 @@ module Watson
 			_body = "__filename__ : #{issue[:path]}\n" +
 					"__line #__ : #{issue[:line_number]}\n" + 
 					"__tag__ : #{issue[:tag]}\n" +
-					"__md5__ : #{issue[:md5]}\n\n"
+					"__md5__ : #{issue[:md5]}\n\n" +
+					"#{issue[:context].join}\n"
 			
 			# Create option hash to pass to Remote::http_call
 			# Issues URL for GitHub + SSL

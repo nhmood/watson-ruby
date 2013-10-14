@@ -13,6 +13,7 @@ module Watson
 		attr_accessor :file_list		# Parser r,  Command rw
 		attr_accessor :ignore_list		# Parser r,  Command rw
 		attr_accessor :max_depth		# Parser r,  Command rw
+		attr_accessor :context_lines	# Parser r,  Command rw
 		attr_accessor :tag_list			# Parser r,  Command rw
 
 		attr_accessor :cl_entry_set		# Command rw
@@ -49,6 +50,7 @@ module Watson
 			@rc_file = ".watsonrc"
 			@tmp_file = ".watsonresults"
 			@max_depth = 0
+			@context_lines = 3
 
 			@github_valid = false
 			@github_api = ""

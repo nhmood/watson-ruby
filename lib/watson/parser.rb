@@ -246,7 +246,43 @@ module Watson
 					_issue[:line_number] = _i
 					_issue[:comment] = _comment
 
+					# Grab context of issue specified by Config param (+1 to include issue itself)
+					_context = _data[_i..(_i + @config.context_lines + 1)]
+					debug_print "#{pp(_context)}\n"
+	
+					# Go through each line of context and determine indentation
+					# Used to preserve indentation in post
+					_cut = Array.new 
+					_context.each do | _line |
+						_max = 0
+						# Until we reach a non indent OR the line is empty, keep slicin'
+						until (!_line.match(/^( |\t|\n)/) || _line.empty?)
+							_line = _line.slice(1..-1)
+							_max = _max + 1
 
+							debug_print "New line: #{_line}\n"
+							debug_print "Max indent: #{_max}\n"
+						end
+						
+						# Push max indent to the _cut array 
+						_cut.push(_max)	
+					end	
+	
+					# Print old _context
+					debug_print "\n\n Old Context \n"
+					debug_print "#{pp(_context)}\n"
+					debug_print "\n\n"
+
+					# Trim the context lines to be left aligned but maintain indentation
+					# Then add a single \t to the beginning so the Markdown is pretty on GitHub
+					_context.map! { | _line | "\t#{_line.slice(_cut.min .. -1)}" }
+				
+					print("\n\n New Context \n")
+					debug_print "#{pp(_context)}\n"
+					print("\n\n")
+
+					_issue[:context] = _context
+					
 					# These are accessible from _issue_list, but we pass individual issues
 					# to the poster, so we need this here to reference them
 					_issue[:tag] = _tag
