@@ -22,10 +22,13 @@ module Watson
 		attr_reader	  :use_less			# Printer r
 		attr_reader	  :tmp_file			# Printer r
 
+		attr_accessor :github_valid		# Config  r,  Parser r 
 		attr_accessor :github_api		# Command r,  Remote::GitHub rw
 		attr_accessor :github_repo		# Command r,  Remote::GitHub rw
+		attr_accessor :github_issues	# Printer r,  Remote::GitHub rw
 		attr_accessor :bitbucket_api	# Command r,  Remote::Bitbucket rw
 		attr_accessor :bitbucket_repo	# Command r,  Remote::Bitbucket rw
+		attr_accessor :bitbucket_issues	# Printer r,  Remote::Bitbucket rw
 		
 
 		###########################################################
@@ -46,11 +49,14 @@ module Watson
 			@rc_file = ".watsonrc"
 			@tmp_file = ".watsonresults"
 			@max_depth = 0
-			
+
+			@github_valid = false
 			@github_api = ""
 			@github_repo = ""
+			@github_issues = Hash.new()
 			@bitbucket_api = ""
 			@bitbucket_repo = ""
+			@bitbucket_issues = Hash.new()
 
 			# State flags
 			@cl_entry_set  = false
@@ -75,7 +81,11 @@ module Watson
 	
 		def run 
 			check_conf
-			read_conf	
+			read_conf
+			
+			if (!@github_api.empty? && !@github_repo.empty?)
+				Remote::GitHub.get_issues(self)
+			end
 		end
 
 

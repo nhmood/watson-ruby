@@ -58,7 +58,7 @@ module Watson
 			_structure[:subdirs]  = _completed_dirs
 
 			debug_print "_structure dump\n\n"
-			debug_print pp(_structure)
+			debug_print "#{pp(_structure)}"
 			debug_print "\n\n"
 			
 			return _structure
@@ -246,10 +246,28 @@ module Watson
 					_issue[:line_number] = _i
 					_issue[:comment] = _comment
 
+
+					# These are accessible from _issue_list, but we pass individual issues
+					# to the poster, so we need this here to reference them
+					_issue[:tag] = _tag
+					_issue[:path] = filename
+
 					# Generate md5 hash for each specific issue (for bookkeeping)
 					_issue[:md5] = ::Digest::MD5.hexdigest("#{_tag}, #{_path}, #{_comment}")
 					debug_print "#{_issue}\n"
+	
+					# If GitHub is valid, pass _issue to GitHub poster function
+					# [review] - Keep Remote as a static method and pass config every time?
+					#			 Or convert to a regular class and make an instance with @config
 
+					if (@config.github_valid) 
+						debug_print "GitHub is valid, posting issue\n"
+						Remote::GitHub.post_issue(_issue, @config)
+					else
+						debug_print "GitHub invalid, not posting issue\n"
+					end	
+
+	
 					# [review] - Use _tag string as symbol reference in hash or keep as string?
 					_issue_list[_tag].push( _issue )
 
