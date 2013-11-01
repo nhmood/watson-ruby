@@ -418,7 +418,7 @@ module Watson
 
 					elsif (_args[0].downcase =="bitbucket") 
 						debug_print "Bitbucket setup called from CL\n"
-						#Watson::Remote::Bitbucket.setup(@config) 
+						Watson::Remote::Bitbucket.setup(@config) 
 
 					else
 						debug_print "Incorrect arguments passed\n"

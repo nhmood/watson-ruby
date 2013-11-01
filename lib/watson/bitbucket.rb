@@ -1,6 +1,6 @@
 module Watson
 	class Remote
-		class GitHub
+		class Bitbucket
 		# Class constants
 		DEBUG = true		# Debug printing for this class
 
@@ -21,25 +21,33 @@ module Watson
 		
 			@config = config
 
-			print "Obtaining OAuth Token for GitHub...\n"
+			print "Obtaining OAuth Token for Bitbucket...\n"
 			
 			# Check config to make sure no previous API exists
-			if ( (@config.github_api.empty?  == false) || (@config.github_repo.empty? == false) )
+			if ( (@config.bitbucket_api.empty?  == false) || (@config.bitbucket_repo.empty? == false) )
 
-				print "Previous GitHub API + Repo is in RC, are you sure you want to overwrite?\n"
+				print "Previous Bitbucket API + Repo is in RC, are you sure you want to overwrite?\n"
 				print "(Y)es/(N)o: "
 
 				# Get user input
 				_overwrite = $stdin.gets.chomp
 				if (_overwrite.downcase == "no" || _overwrite.downcase == "n")
-					print "Not overwriting current GitHub API + repo info\n"
+					print "Not overwriting current Bitbucket API + repo info\n"
 					return false
 				end
 			end
 
 
-			print "Access to your GitHub account required to make/update issues\n"
+			print "Access to your Bitbucket account required to make/update issues\n"
 			print "See help or README for more details on GitHub/Bitbucket access\n\n"
+
+
+			# [todo] - Bitbucket OAuth not implemented yet so warn user about HTTP Auth
+			# Bitbucket doesn't have nonOAuth flow that GitHub does :(
+			# Even if I use OAuth lib, still need to validate from webview which is lame
+			print "Bitbucket OAuth not implemented yet.\n"
+			print "Basic HTTP Auth in use, will request PW entry every time.\n\n"
+
 
 			# Poor mans username/password grabbing
 			print "Username: "
@@ -48,6 +56,8 @@ module Watson
 				print "Input blank. Please enter your username!\n"
 				return false
 			end
+
+
 
 			# [fix] - Crossplatform password block needed, not sure if current method is safe either
 			# Block output to tty to prevent PW showing, Linux/Unix only :(
@@ -61,39 +71,6 @@ module Watson
 			else
 				print "\n"
 			end
-
-			# HTTP Request to get OAuth Token
-			# GitHub API v3 - http://developer.github.com/v3/
-
-			# Create options hash to pass to Remote::http_call 
-			# Auth URL for GitHub + SSL
-			# Repo scope + notes for watson
-			# Basic auth with user input
-			opts = {:url        => "https://api.github.com/authorizations",
-					:ssl        => true,
-					:method     => "POST",
-					:basic_auth => [_username, _password],
-					:data       => {"scopes" => ["repo"], 
-			 				        "note" => "watson", 
-							        "note_url" => "http://watson.goosecode.com/" }, 
-					:verbose    => false
-				   }
-
-			_json, _resp  = Watson::Remote.http_call(opts)
-
-			# Check response to validate authorization
-			if (_resp.code == "201")
-				print "Obtained OAuth Token\n"
-			else
-				print "Unable to obtain OAuth Token\n"
-				print "#{_resp.code} - #{_resp.message}\n"
-				return false
-			end	
-	
-			# Store API key obtained from POST to @config.github_api
-			@config.github_api = _json["token"]
-			debug_print "Config GitHub API Key updated to: #{@config.github_api}\n"
-
 
 
 			# Get repo information, if blank give error
@@ -117,64 +94,48 @@ module Watson
 			end
 
 
-			# Make call to GitHub API to create new label for Issues
-			# If status returns not 404, then we have access to repo (+ it exists)
-			# If 422, then (most likely) the label already exists
-		
+			# HTTP Request to check if Repo exists and user has access 
+			# http://confluence.atlassian.com/display/BITBUCKET/Use+the+Bitbucket+REST+APIs 
+
 			# Create options hash to pass to Remote::http_call 
-			# Label URL for GitHub + SSL
-			#  
-			# Auth token
-			opts = {:url        => "https://api.github.com/repos/#{_owner}/#{_repo}/labels",
+			# Endpoint for accessing Repo as User with SSL 
+			# Basic auth with user input
+			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{_owner}/#{_repo}",
 					:ssl        => true,
-					:method     => "POST",
-					:auth		=> @config.github_api, 
-					:data       => {"name" => "watson", 
-							        "color" => "00AEEF" }, 
+					:method     => "GET",
+					:basic_auth => [_username, _password],
 					:verbose    => false
 				   }
 
 			_json, _resp  = Watson::Remote.http_call(opts)
-		
-			# [review] - This is pretty messy, maybe clean it up later	
-			# Check response to validate repo access
-			if (_resp.code == "404")
-				print "Unable to access /#{_owner}/#{_repo}\n"
+
+			# Check response to validate authorization
+			if (_resp.code == "200")
+				print "Successfully accessed remote repo with given credentials\n"
+			else
+				print "Unable to access remote repo with given credentials\n"
+				print "Check that credentials are correct and repository exists under user\n"
 				print "#{_resp.code} - #{_resp.message}\n"
 				return false
+			end	
 
-			else
-				# If it is anything but a 404, I THINK it means we have access...
-				# Will assume that until proven otherwise
-				print "Repo successfully accessed\n"
-				
-				# Store owner/repo obtained from POST to @config.github_repo
-				@config.github_repo = "#{_owner}/#{_repo}"
-				debug_print "Config GitHub API Key updated to: #{@config.github_repo}\n"
-
-				# We already created the label but let's just pretend like we didn't yet...
-				print "Creating label for watson on GitHub...\n"
-				if (_resp.code == "201")
-					print "Label successfully created\n"
-				elsif (_resp.code == "422" && _json["code"] = "already_exists")
-					print "Label already exists\n"
-					print "#{_resp.code} - #{_resp.message}\n"
-				else
-					print "Unable to create label for /#{_owner}/#{_repo}\n"
-					print "#{_resp.code} - #{_resp.message}\n"
-				end
-			end
 	
+			# No OAuth for Bitbucket yet so just store username in api for config
+			# This will let us just prompt for PW
+			@config.bitbucket_api = _owner
+			@config.bitbucket_pw = _password	# Never gets written to file
+			@config.bitbucket_repo = _repo
+			debug_print " \n"
 
 			# All setup has been completed, need to update RC
 			# Call config updater/writer from @config to write config	
-			debug_print "Updating config with new GitHub info\n"
-			@config.update_conf("github_api", "github_repo")
+			debug_print "Updating config with new Bitbucket info\n"
+			@config.update_conf("bitbucket_api", "bitbucket_repo")
 
 			# Give user some info
-			print "GitHub successfully setup\n"
-			print "Issues will now automatically be updated on GitHub by default\n"
-			print "Use -l, --local to not update against GitHub\n"
+			print "Bitbucket successfully setup\n"
+			print "Issues will now automatically be updated on Bitbucket by default\n"
+			print "Use -l, --local to not update against Bitbucket\n"
 			print "See help or README for more details on GitHub/Bitbucket access\n"
 
 			return true
@@ -191,20 +152,41 @@ module Watson
 			debug_print "#{self.class} : #{__method__}\n"
 
 			# Only attempt to get issues if API is specified 
-			if (config.github_api.empty?)
+			if (config.bitbucket_api.empty?)
 				debug_print "No API found, this shouldn't be called...\n"
 				return false
 			end
 
 
-			# Get all open tickets
+			# If we haven't obtained the pw from user yet, do it
+			if (config.bitbucket_pw.empty?)
+				# No OAuth for Bitbucket yet, gotta get user password in order to make calls :(
+				print "Bitbucket password required for remote checking/posting:\n "
+				
+				# Block output to tty to prevent PW showing, Linux/Unix only :(
+				print "Password: "
+				system "stty -echo"
+				_password = $stdin.gets.chomp
+				system "stty echo"
+				if (_password.empty?)
+					print "Input is blank. Please enter your password!\n"
+					return false
+				else
+					print "\n"
+				end
+
+				config.bitbucket_pw = _password
+			end
+
+
+			# Get all open tickets (anything but resolved)
 			# Create options hash to pass to Remote::http_call 
-			# Issues URL for GitHub + SSL
-			opts = {:url        => "https://api.github.com/repos/#{config.github_repo}/issues?labels=watson&state=open",
+			# Issues URL for Bitbucket + SSL
+			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{config.bitbucket_api}/#{config.bitbucket_repo}/issues?status=!resolved",
 					:ssl        => true,
 					:method     => "GET",
-					:auth		=> config.github_api, 
-					:verbose    => false 
+					:basic_auth => [config.bitbucket_api, config.bitbucket_pw],
+					:verbose    => false
 				   }
 
 			_json, _resp  = Watson::Remote.http_call(opts)
@@ -213,25 +195,28 @@ module Watson
 			# Check response to validate repo access
 			if (_resp.code != "200")
 				print " x ", RED
-				print " --> Unable to access remote #{config.github_repo}, GitHub API may be invalid\n"
-				print "     Consider running --remote (-r) option to regenerate key\n\n"
+				print " --> Unable to access remote #{config.bitbucket_repo}, Bitbucket settings may be invalid\n"
+				print "Make sure you have created an issue tracker for your repository on the Bitbucket website\n"
+				print "     Consider running --remote (-r) option to regenerate/validate settings \n\n"
 				print "#{_resp.code} - #{_resp.message}\n"
 
-				debug_print "GitHub invalid, setting config var\n"
-				config.github_valid = false
+				debug_print "Bitbucket invalid, setting config var\n"
+				config.bitbucket_valid = false
 				return false
 			end
 
-			config.github_issues[:open] = _json
-			config.github_valid = true
+			
+
+			config.bitbucket_issues[:open] = _json["issues"]
+			config.bitbucket_valid = true
 			
 			# Get all closed tickets
-			# Create option hash to pass to Remote::http_call
-			# Issues URL for GitHub + SSL
-			opts = {:url        => "https://api.github.com/repos/#{config.github_repo}/issues?labels=watson&state=closed",
+			# Create options hash to pass to Remote::http_call 
+			# Issues URL for Bitbucket + SSL
+			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{config.bitbucket_api}/#{config.bitbucket_repo}/issues?status=resolved",
 					:ssl        => true,
 					:method     => "GET",
-					:auth		=> config.github_api, 
+					:basic_auth => [config.bitbucket_api, config.bitbucket_pw],
 					:verbose    => false 
 				   }
 
@@ -244,13 +229,13 @@ module Watson
 				print " --> Unable to get closed issues. Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n" 
 				print "#{_resp.code} - #{_resp.message}\n"
 				
-				debug_print "GitHub invalid, setting config var\n"
-				config.github_valid = false
+				debug_print "Bitbucket invalid, setting config var\n"
+				config.bitbucket_valid = false
 				return false
 			end
 
-			config.github_issues[:closed]  = _json
-			config.github_valid = true
+			config.bitbucket_issues[:closed]  = _json["issues"] 
+			config.bitbucket_valid = true
 			return true
 		end ########## get_issues ##########	
 
@@ -268,7 +253,7 @@ module Watson
 	
 				
 			# Only attempt to get issues if API is specified 
-			if (config.github_api.empty?)
+			if (config.bitbucket_api.empty?)
 				debug_print "No API found, this shouldn't be called...\n"
 				return false
 			end
@@ -280,43 +265,67 @@ module Watson
 			#		   call exec and turn it into a real hash for parsing in watson
 			#		   Makes watson code cleaner but not as readable comment on GitHub...?
 			debug_print "Checking open issues to see if already posted\n"
-			config.github_issues[:open].each do | _open | 
-				debug_print "Did not find in #{_open[:comment]}\n"
-				if (_open["body"].include?(issue[:md5]))
-					debug_print "Found in #{_open[:comment]}, not posting\n"
+			config.bitbucket_issues[:open].each do | _open | 
+				debug_print "Did not find in #{_open["content"]}\n"
+				if (_open["content"].include?(issue[:md5]))
+					debug_print "Found in #{_open["content"]}, not posting\n"
 					return false
 				end
 			end	
 			
-			
 			debug_print "Checking closed issues to see if already posted\n"
-			config.github_issues[:closed].each do  | _closed | 
+			config.bitbucket_issues[:closed].each do  | _closed | 
 				debug_print "Did not find in #{_closed[:comment]}\n"
 				if (_open["body"].include?(issue[:md5]))
 					debug_print "Found in #{_closed[:comment]}, not posting\n"
 					return false
 				end
 			end
+
+
+
+			# If we haven't obtained the pw from user yet, do it
+			if (config.bitbucket_pw.empty?)
+				# No OAuth for Bitbucket yet, gotta get user password in order to make calls :(
+				print "Bitbucket password required for remote checking/posting: "
+				
+				# Block output to tty to prevent PW showing, Linux/Unix only :(
+				print "Password: "
+				system "stty -echo"
+				_password = $stdin.gets.chomp
+				system "stty echo"
+				if (_password.empty?)
+					print "Input is blank. Please enter your password!\n"
+					return false
+				else
+					print "\n"
+				end
+
+				config.bitbucket_pw = _password
+			end
+
+
+
 		
 			# We didn't find the md5 for this issue in the open or closed issues, so safe to post
 		
 			# Create the body text for the issue here, too long to fit nicely into opts hash
 			# [review] - Only give relative path for privacy when posted
-			_body = "__filename__ : #{issue[:path]}\n" +
-					"__line #__ : #{issue[:line_number]}\n" + 
-					"__tag__ : #{issue[:tag]}\n" +
-					"__md5__ : #{issue[:md5]}\n\n" +
-					"#{issue[:context].join}\n"
+			_body = "__filename__ : #{issue[:path]}  \n" +
+					"__line #__ : #{issue[:line_number]}  \n" + 
+					"__tag__ : #{issue[:tag]}  \n" +
+					"__md5__ : #{issue[:md5]}  \n\n" +
+					"#{issue[:context].join}"
 			
 			# Create option hash to pass to Remote::http_call
 			# Issues URL for GitHub + SSL
-			opts = {:url        => "https://api.github.com/repos/#{config.github_repo}/issues",
+			# No tag or label concept in Bitbucket unfortunately :(
+			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{config.bitbucket_api}/#{config.bitbucket_repo}/issues",
 					:ssl        => true,
 					:method     => "POST",
-					:auth		=> config.github_api, 
-					:data		=> { "title" => issue[:comment],
-									 "labels" => [issue[:tag], "watson"],
-									 "body" => _body },
+					:basic_auth => [config.bitbucket_api, config.bitbucket_pw],
+					:data		=> [{"title" => issue[:comment],
+									"content" => _body }],
 					:verbose    => true 
 				   }
 
@@ -325,7 +334,7 @@ module Watson
 				
 			# Check response to validate repo access
 			# Shouldn't be necessary if we passed the last check but just to be safe
-			if (_resp.code != "201")
+			if (_resp.code != "200")
 				print " x ", RED
 				print " --> Post unsuccessful. Since the open issues were obtained earlier, something is probably wrong and you should let someone know...\n" 
 				print "#{_resp.code} - #{_resp.message}\n"

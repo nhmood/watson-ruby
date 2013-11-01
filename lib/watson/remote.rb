@@ -86,6 +86,15 @@ module Watson
 					_req.body = opts[:data].to_json
 				end
 
+				# If a Post method, :data is present, and is an Array, use set_form_data
+				# [review] - Add :data_format to use set_form_data vs json body?
+				# For now, wrap hash in Array, this is to differentiate between 
+				# putting post data in body vs putting it in the form
+				if ( opts[:method].upcase == "POST" && opts[:data] && opts[:data].is_a?(Array) )
+					_req.set_form_data(opts[:data][0])
+				
+				end
+
 				# Make HTTP request
 				_resp = _http.request(_req)
 

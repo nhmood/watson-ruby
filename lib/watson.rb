@@ -7,6 +7,7 @@ require 'watson/parser'
 require 'watson/printer'
 require 'watson/remote'
 require 'watson/github'
+require 'watson/bitbucket'
 
 
 # [todo] - Replace all regex parentheses() with brackets[] if not matching

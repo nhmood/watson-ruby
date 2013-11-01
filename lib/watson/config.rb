@@ -27,7 +27,10 @@ module Watson
 		attr_accessor :github_api		# Command r,  Remote::GitHub rw
 		attr_accessor :github_repo		# Command r,  Remote::GitHub rw
 		attr_accessor :github_issues	# Printer r,  Remote::GitHub rw
+	
+		attr_accessor :bitbucket_valid
 		attr_accessor :bitbucket_api	# Command r,  Remote::Bitbucket rw
+		attr_accessor :bitbucket_pw		# 
 		attr_accessor :bitbucket_repo	# Command r,  Remote::Bitbucket rw
 		attr_accessor :bitbucket_issues	# Printer r,  Remote::Bitbucket rw
 		
@@ -56,7 +59,11 @@ module Watson
 			@github_api = ""
 			@github_repo = ""
 			@github_issues = Hash.new()
+
+			# Keep API param (and put username there) for OAuth update later
+			@bitbucket_valid = false
 			@bitbucket_api = ""
+			@bitbucket_pw = ""
 			@bitbucket_repo = ""
 			@bitbucket_issues = Hash.new()
 
@@ -87,6 +94,10 @@ module Watson
 			
 			if (!@github_api.empty? && !@github_repo.empty?)
 				Remote::GitHub.get_issues(self)
+			end
+
+			if (!@bitbucket_api.empty? && !@bitbucket_repo.empty?)
+				Remote::Bitbucket.get_issues(self)
 			end
 		end
 

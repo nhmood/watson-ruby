@@ -22,6 +22,7 @@ module Watson
 			debug_print "#{self} : #{__method__}\n"
 			
 			@config = config
+
 		
 		end	
 
@@ -303,8 +304,18 @@ module Watson
 						debug_print "GitHub invalid, not posting issue\n"
 					end	
 
+
+					if (@config.bitbucket_valid)
+						debug_print "Bitbucket is valid, posting issue\n"
+						Remote::Bitbucket.post_issue(_issue, @config)
+					else
+						debug_print "Bitbucket invalid, not posting issue\n"
+					end
+
+
 	
 					# [review] - Use _tag string as symbol reference in hash or keep as string?
+					# Look into to_sym to keep format of all _issue params the same
 					_issue_list[_tag].push( _issue )
 
 					
