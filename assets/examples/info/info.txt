@@ -1,9 +1,9 @@
-# [todome] - Need to learn Markdown for this info
+# [todo] - Need to learn Markdown for this info
 
-# [reviewme] - Include resources (website, book) used?
+# [review] - Include resources (website, book) used?
 watson
 nhmood @ [goosecode] labs
 May 17th, 2013
 
-# [fixme] - Add collaborators to list
+# [fix] - Add collaborators to list
 
