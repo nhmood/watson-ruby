@@ -129,7 +129,7 @@ module Watson
 					
 					when "-p", "--push"
 						debug_print "Found -p/--push argument\n"
-						#push_issues(_flag_args)
+						@config.remote_valid =  true
 
 
 					else
@@ -139,7 +139,7 @@ module Watson
 
 				debug_print "Args length 0, running watson...\n"
 				@config.run
-				structure = @parser.run	
+				structure = @parser.run
 				@printer.run(structure)
 			end
 

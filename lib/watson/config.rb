@@ -23,6 +23,8 @@ module Watson
 		attr_reader	  :use_less			# Printer r
 		attr_reader	  :tmp_file			# Printer r
 
+		attr_accessor :remote_valid		
+
 		attr_accessor :github_valid		# Config  r,  Parser r 
 		attr_accessor :github_api		# Command r,  Remote::GitHub rw
 		attr_accessor :github_repo		# Command r,  Remote::GitHub rw
@@ -55,6 +57,8 @@ module Watson
 			@max_depth = 0
 			@context_lines = 3
 
+			@remote_valid = false
+			
 			@github_valid = false
 			@github_api = ""
 			@github_repo = ""
@@ -91,7 +95,6 @@ module Watson
 		def run 
 			check_conf
 			read_conf
-			
 			if (!@github_api.empty? && !@github_repo.empty?)
 				Remote::GitHub.get_issues(self)
 			end

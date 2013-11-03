@@ -34,7 +34,7 @@ module Watson
 		def run
 			# Identify method entry
 			debug_print "#{self} : #{__method__}\n"
-			
+	
 			# We need to parse the FILES that are given from CL
 			# Then we can move on and parse all dirs (config + CL)
 			# together
@@ -297,22 +297,22 @@ module Watson
 					# [review] - Keep Remote as a static method and pass config every time?
 					#			 Or convert to a regular class and make an instance with @config
 
-					if (@config.github_valid) 
-						debug_print "GitHub is valid, posting issue\n"
-						Remote::GitHub.post_issue(_issue, @config)
-					else
-						debug_print "GitHub invalid, not posting issue\n"
-					end	
+					if (@config.remote_valid)
+						if (@config.github_valid) 
+							debug_print "GitHub is valid, posting issue\n"
+							Remote::GitHub.post_issue(_issue, @config)
+						else
+							debug_print "GitHub invalid, not posting issue\n"
+						end	
 
 
-					if (@config.bitbucket_valid)
-						debug_print "Bitbucket is valid, posting issue\n"
-						Remote::Bitbucket.post_issue(_issue, @config)
-					else
-						debug_print "Bitbucket invalid, not posting issue\n"
+						if (@config.bitbucket_valid)
+							debug_print "Bitbucket is valid, posting issue\n"
+							Remote::Bitbucket.post_issue(_issue, @config)
+						else
+							debug_print "Bitbucket invalid, not posting issue\n"
+						end
 					end
-
-
 	
 					# [review] - Use _tag string as symbol reference in hash or keep as string?
 					# Look into to_sym to keep format of all _issue params the same
