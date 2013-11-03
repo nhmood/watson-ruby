@@ -138,7 +138,8 @@ module Watson
 				debug_print "Entry: #{_entry} is a dir\n"	
 					
 				# If Config.max_depth is 0, no limit on subdirs
-				# Else, increment @depth, compare with Config.max_depth
+				# Else, increment @depth, compare with Config.max_depth + 1
+				# + 1 so it is inclusive of the current directory
 				# If less than depth, parse the dir, else ignore
 				# This gets reset in the loop that sends all config/CL dirs through parse_dir
 				_cur_depth = depth + 1
@@ -146,7 +147,7 @@ module Watson
 				if (@config.max_depth == 0)
 					debug_print "No max depth, parsing directory\n"
 					_completed_dirs.push(parse_dir("#{_entry}/", _cur_depth))
-				elsif (_cur_depth < @config.max_depth.to_i)
+				elsif (_cur_depth < @config.max_depth.to_i + 1)
 					debug_print "Depth less than max dept (from config), parsing directory\n"
 					_completed_dirs.push(parse_dir("#{_entry}/", _cur_depth))
 				else
@@ -244,7 +245,7 @@ module Watson
 
 					# Create hash for each issue found
 					_issue = Hash.new
-					_issue[:line_number] = _i
+					_issue[:line_number] = _i + 1
 					_issue[:comment] = _comment
 
 					# Grab context of issue specified by Config param (+1 to include issue itself)

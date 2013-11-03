@@ -97,7 +97,10 @@ module Watson
 					end
 						
 					# Slice off the args for the flag (inclusive) using index from above
-					_flag_args = _args.slice!(0.._i)
+					# [review] - This is a bit messy (to slice by _i - 1) when we have control
+					# over the _i index above but I don't want to
+					# think about the logic right now so look at later
+					_flag_args = _args.slice!(0..(_i-1))
 
 					case _flag 
 					when "-d", "--dirs"
