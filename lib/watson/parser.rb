@@ -59,7 +59,7 @@ module Watson
 			_structure[:subdirs]  = _completed_dirs
 
 			debug_print "_structure dump\n\n"
-			debug_print "#{pp(_structure)}"
+			debug_print PP.pp(_structure, "")
 			debug_print "\n\n"
 			
 			return _structure
@@ -190,9 +190,9 @@ module Watson
 
 
 			# Get filetype and set corresponding comment type
-			if ((_comment = get_comment_type(filename)) == false)
+			if ((_comment_type = get_comment_type(filename)) == false)
 				debug_print "Using default (#) comment type\n"
-				_comment = "#"
+				_comment_type = "#"
 			end
 
 
@@ -222,7 +222,7 @@ module Watson
 				# Find any comment line with [tag] - text (any comb of space and # acceptable)
 				# Using if match to stay consistent (with config.rb) see there for
 				# explanation of why I do this (not a good good one persay...)
-				if (_mtch = _line.match(/^[#+?\s+?]+\[(\w+)\]\s+-\s+(.+)/) )
+				if (_mtch = _line.match(/^[#{_comment_type}+?\s+?]+\[(\w+)\]\s+-\s+(.+)/) )
 					_tag = _mtch[1]
 
 					# Make sure that the tag that was found is something we accept
@@ -249,7 +249,6 @@ module Watson
 
 					# Grab context of issue specified by Config param (+1 to include issue itself)
 					_context = _data[_i..(_i + @config.context_lines + 1)]
-					debug_print "#{pp(_context)}\n"
 	
 					# Go through each line of context and determine indentation
 					# Used to preserve indentation in post
@@ -271,16 +270,16 @@ module Watson
 	
 					# Print old _context
 					debug_print "\n\n Old Context \n"
-					debug_print "#{pp(_context)}\n"
+					debug_print PP.pp(_context, "")
 					debug_print "\n\n"
 
 					# Trim the context lines to be left aligned but maintain indentation
 					# Then add a single \t to the beginning so the Markdown is pretty on GitHub
 					_context.map! { | _line | "\t#{_line.slice(_cut.min .. -1)}" }
 				
-					print("\n\n New Context \n")
-					debug_print "#{pp(_context)}\n"
-					print("\n\n")
+					debug_print("\n\n New Context \n")
+					debug_print PP.pp(_context, "")
+					debug_print("\n\n")
 
 					_issue[:context] = _context
 					
