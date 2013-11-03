@@ -95,8 +95,8 @@ module Watson
 			cprint BOLD + "watson" + RESET
 			cprint " - " + RESET
 			cprint BOLD + YELLOW + "inline issue manager\n\n" + RESET
-			cprint "Run in #{Dir.pwd}\n"
-			cprint "Run @ #{Time.new}\n"
+			cprint "Run in: #{Dir.pwd}\n"
+			cprint "Run @ #{Time.now.asctime}\n"
 			cprint BOLD + "------------------------------\n\n" + RESET
 
 			return true
@@ -197,7 +197,7 @@ module Watson
 					print_status "#{_tag}", BLUE
 					cprint "\n"
 					entry[_tag].each do | _issue |
-						cprint WHITE + "   line #{_issue[:line_number]} - " + RESET
+						cprint WHITE + "  line #{_issue[:line_number]} - " + RESET
 						cprint BOLD + "#{_issue[:comment]}\n" + RESET
 					end
 					cprint "\n"
