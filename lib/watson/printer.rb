@@ -20,7 +20,9 @@ module Watson
 
 
 	class Printer
-		# [review] - Not sure if this class should consist of all static methods
+		# [review] - Not sure if the way static methods are defined is correct
+		#			 Ok to have same name as instance methods?
+		#			 Only difference is where the output gets printed to
 		# [review] - No real setup in initialize method, combine it and run method?
 
 		# Include for debug_print
@@ -29,6 +31,64 @@ module Watson
 		# Class Constants
 		DEBUG = false 		# Debug printing for this class
 
+		class << self
+		include Watson
+
+		###########################################################
+		# cprint 
+		###########################################################
+		
+		def cprint (msg = "", color = "")
+			# Identify method entry
+			debug_print "#{self} : #{__method__}\n"
+		
+			# This little check will allow us to take a Constant defined color
+			# As well as a [0-256] value if specified
+			if (color.is_a?(String))	
+				debug_print "Custom color specified for cprint\n"
+				STDOUT.write(color)
+			elsif (color.between?(0, 256))
+				debug_print "No or Default color specified for cprint\n"
+				STDOUT.write("\e[38;5;#{color}m")
+			end
+		
+			STDOUT.write(msg)
+		
+		end
+
+
+		###########################################################
+		# print_header 
+		###########################################################
+
+		def print_header 
+			# Identify method entry
+			debug_print "#{self} : #{__method__}\n"
+
+			# Header
+			cprint BOLD + "------------------------------\n" + RESET
+			cprint BOLD + "watson" + RESET
+			cprint " - " + RESET
+			cprint BOLD + YELLOW + "inline issue manager\n" + RESET
+			cprint BOLD + "------------------------------\n\n" + RESET
+
+			return true
+		end
+
+
+	
+		###########################################################
+		# print_status 
+		###########################################################
+	
+		def print_status(msg, color) 
+			cprint RESET + BOLD
+			cprint WHITE + "[ "
+			cprint "#{msg} ", color
+			cprint WHITE + "] " + RESET
+		end
+
+		end
 
 		###########################################################
 		# initialize 

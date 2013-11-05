@@ -125,8 +125,13 @@ module Watson
 
 					when "-r", "--remote"
 						debug_print "Found -r/--remote argument\n"
-						# [todo] - If already exists, warn user about overwriting
+						# Run config to populate all the fields and such
+						# [review] - Not a fan of running these here but want to avoid getting all issues when running remote (which @config.run does)
+						@config.check_conf
+						@config.read_conf
+						
 						setup_remote(_flag_args, _arg_length)
+						
 						# If setting up remote, exit afterwards
 						exit true
 					

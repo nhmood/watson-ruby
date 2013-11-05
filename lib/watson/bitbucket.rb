@@ -8,6 +8,7 @@ module Watson
 		class << self
 
 		# [todo] - Allow closing of issues from watson? Don't like that idea but maybe
+		# [todo] - Wrap bitbucket password grabbing into separate method
 		# Include for debug_print
 		include Watson
 		
@@ -21,78 +22,92 @@ module Watson
 		
 			@config = config
 
-			print "Obtaining OAuth Token for Bitbucket...\n"
+			Printer.print_header
+
+			Printer.print_status "+", GREEN
+			print BOLD +  "Attempting to access Bitbucket...\n" + RESET
 			
 			# Check config to make sure no previous API exists
 			if ( (@config.bitbucket_api.empty?  == false) || (@config.bitbucket_repo.empty? == false) )
-
-				print "Previous Bitbucket API + Repo is in RC, are you sure you want to overwrite?\n"
-				print "(Y)es/(N)o: "
+				Printer.print_status "!", RED
+				print BOLD + "Previous Bitbucket API + Repo is in RC, are you sure you want to overwrite?\n" + RESET
+				print "      (Y)es/(N)o: "
 
 				# Get user input
 				_overwrite = $stdin.gets.chomp
 				if (_overwrite.downcase == "no" || _overwrite.downcase == "n")
-					print "Not overwriting current Bitbucket API + repo info\n"
+					print "\n"
+					Printer.print_status "x", RED
+					print BOLD + "Not overwriting current Bitbucket API + repo info\n" + RESET
 					return false
 				end
 			end
 
 
-			print "Access to your Bitbucket account required to make/update issues\n"
-			print "See help or README for more details on GitHub/Bitbucket access\n\n"
+			Printer.print_status "!", YELLOW
+			print BOLD + "Access to your Bitbucket account required to make/update issues\n" + RESET
+			print "      See help or README for more details on GitHub/Bitbucket access\n\n"
 
 
 			# [todo] - Bitbucket OAuth not implemented yet so warn user about HTTP Auth
 			# Bitbucket doesn't have nonOAuth flow that GitHub does :(
 			# Even if I use OAuth lib, still need to validate from webview which is lame
-			print "Bitbucket OAuth not implemented yet.\n"
-			print "Basic HTTP Auth in use, will request PW entry every time.\n\n"
+			Printer.print_status "!", RED 
+			print BOLD + "Bitbucket OAuth not implemented yet.\n" + RESET;
+			print "      Basic HTTP Auth in use, will request PW entry every time.\n\n"
 
 
+			# [todo] - Don't just check for blank password but invalid as well
 			# Poor mans username/password grabbing
-			print "Username: "
+			print BOLD + "Username: " + RESET
 			_username = $stdin.gets.chomp
 			if (_username.empty?)
-				print "Input blank. Please enter your username!\n"
+				Printer.print_status "x", RED
+				print BOLD + "Input blank. Please enter your username!\n\n" + RESET
 				return false
 			end
 
+			print "\n"
 
+			# Get repo information, if blank give error
+			Printer.print_status "!", YELLOW 
+			print BOLD + "Repo information required\n" + RESET
+			print "      Please provide owner that repo is under followed by repo name\n"
+			print "      e.g. owner: nhmood, repo: watson (case sensitive)\n"
+			print "      See help or README for more details on GitHub access\n\n"
+
+			print BOLD + "Owner: " + RESET
+			_owner = $stdin.gets.chomp
+			if (_owner.empty?)
+				print "\n"
+				Printer.print_status "x", RED
+				print BOLD + "Input blank. Please enter the owner the repo is under!\n\n" + RESET
+				return false
+			end
+
+			print BOLD + "Repo: " + RESET
+			_repo = $stdin.gets.chomp
+			if (_repo.empty?)
+				print "\n"
+				Printer.print_status "x", RED
+				print BOLD + "Input blank. Please enter the repo name!\n\n" + RESET
+				return false
+			end
+
+			print "\n"
 
 			# [fix] - Crossplatform password block needed, not sure if current method is safe either
 			# Block output to tty to prevent PW showing, Linux/Unix only :(
-			print "Password: "
+			print BOLD + "Password: " + RESET
 			system "stty -echo"
 			_password = $stdin.gets.chomp
 			system "stty echo"
+			print "\n"
 			if (_password.empty?)
-				print "Input is blank. Please enter your password!\n"
-				return false
-			else
-				print "\n"
-			end
-
-
-			# Get repo information, if blank give error
-			print "Repo information required\n"
-			print "Please provide owner that repo is under followed by repo\n"
-			print "e.g. owner: nhmood, repo: watson (case sensitive)\n"
-			print "See help or README for more details on GitHub access\n\n"
-
-			print "Owner: "
-			_owner = $stdin.gets.chomp
-			if (_owner.empty?)
-				print "Input blank. Please enter the owner the repo is under!\n"
+				Printer.print_status "x", RED
+				print BOLD + "Input is blank. Please enter your password!\n\n" + RESET
 				return false
 			end
-
-			print "Repo: "
-			_repo = $stdin.gets.chomp
-			if (_repo.empty?)
-				print "Input blank. Please enter the repo name!\n"
-				return false
-			end
-
 
 			# HTTP Request to check if Repo exists and user has access 
 			# http://confluence.atlassian.com/display/BITBUCKET/Use+the+Bitbucket+REST+APIs 
@@ -111,11 +126,16 @@ module Watson
 
 			# Check response to validate authorization
 			if (_resp.code == "200")
-				print "Successfully accessed remote repo with given credentials\n"
+				print "\n"
+				Printer.print_status "o", GREEN
+				print BOLD + "Successfully accessed remote repo with given credentials\n" + RESET
 			else
-				print "Unable to access remote repo with given credentials\n"
-				print "Check that credentials are correct and repository exists under user\n"
-				print "#{_resp.code} - #{_resp.message}\n"
+				print "\n"
+				Printer.print_status "x", RED
+				print BOLD + "Unable to access /#{_owner}/#{_repo}\n with given credentials" + RESET
+				
+				print "      Check that credentials are correct and repository exists under user\n"
+				print "      Status: #{_resp.code} - #{_resp.message}\n\n"
 				return false
 			end	
 
@@ -132,11 +152,12 @@ module Watson
 			debug_print "Updating config with new Bitbucket info\n"
 			@config.update_conf("bitbucket_api", "bitbucket_repo")
 
-			# Give user some info
-			print "Bitbucket successfully setup\n"
-			print "Issues will now automatically be updated on Bitbucket by default\n"
-			print "Use -l, --local to not update against Bitbucket\n"
-			print "See help or README for more details on GitHub/Bitbucket access\n"
+			print "\n"
+			Printer.print_status "o", GREEN
+			print BOLD + "Bitbucket successfully setup\n" + RESET
+			print "      Issues will now automatically be retrieved from Bitbucket by default\n"
+			print "      Use -p, --push to post issues to GitHub\n"
+			print "      See help or README for more details on GitHub/Bitbucket access\n\n"
 
 			return true
 
@@ -194,11 +215,11 @@ module Watson
 			
 			# Check response to validate repo access
 			if (_resp.code != "200")
-				print " x ", RED
-				print " --> Unable to access remote #{config.bitbucket_repo}, Bitbucket settings may be invalid\n"
-				print "Make sure you have created an issue tracker for your repository on the Bitbucket website\n"
-				print "     Consider running --remote (-r) option to regenerate/validate settings \n\n"
-				print "#{_resp.code} - #{_resp.message}\n"
+				Printer.print_status "x", RED
+				print BOLD + "Unable to access remote #{config.bitbucket_repo}, Bitbucket API may be invalid\n" + RESET
+				print "      Make sure you have created an issue tracker for your repository on the Bitbucket website\n"
+				print "      Consider running --remote (-r) option to regenerate/validate settings\n"
+				print "      Status: #{_resp.code} - #{_resp.message}\n\n"
 
 				debug_print "Bitbucket invalid, setting config var\n"
 				config.bitbucket_valid = false
@@ -225,9 +246,10 @@ module Watson
 			# Check response to validate repo access
 			# Shouldn't be necessary if we passed the last check but just to be safe
 			if (_resp.code != "200")
-				print " x ", RED
-				print " --> Unable to get closed issues. Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n" 
-				print "#{_resp.code} - #{_resp.message}\n"
+				Printer.print_status "x", RED
+				print BOLD + "Unable to get closed issues.\n" + RESET
+				print "      Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n" 
+				print "      Status: #{_resp.code} - #{_resp.message}\n"
 				
 				debug_print "Bitbucket invalid, setting config var\n"
 				config.bitbucket_valid = false
@@ -335,9 +357,10 @@ module Watson
 			# Check response to validate repo access
 			# Shouldn't be necessary if we passed the last check but just to be safe
 			if (_resp.code != "200")
-				print " x ", RED
-				print " --> Post unsuccessful. Since the open issues were obtained earlier, something is probably wrong and you should let someone know...\n" 
-				print "#{_resp.code} - #{_resp.message}\n"
+				Printer.print_status "x", RED
+				print BOLD + "Post unsuccessful. \n" + RESET
+				print "      Since the open issues were obtained earlier, something is probably wrong and you should let someone know...\n" 
+				print "      Status: #{_resp.code} - #{_resp.message}\n"
 				return false
 			end
 		

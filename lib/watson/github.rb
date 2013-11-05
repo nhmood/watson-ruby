@@ -8,6 +8,11 @@ module Watson
 		class << self
 
 		# [todo] - Allow closing of issues from watson? Don't like that idea but maybe
+		# [review] - Properly scope Printer class so we dont need the Printer. for 
+		#			 method calls?
+		# [todo] - Keep asking for user data until valid instead of leaving app
+
+
 		# Include for debug_print
 		include Watson
 		
@@ -21,45 +26,55 @@ module Watson
 		
 			@config = config
 
-			print "Obtaining OAuth Token for GitHub...\n"
+			Printer.print_header
+
+			Printer.print_status "+", GREEN
+			print BOLD + "Obtaining OAuth Token for GitHub...\n" + RESET
+		
 			
 			# Check config to make sure no previous API exists
 			if ( (@config.github_api.empty?  == false) || (@config.github_repo.empty? == false) )
-
-				print "Previous GitHub API + Repo is in RC, are you sure you want to overwrite?\n"
-				print "(Y)es/(N)o: "
+				Printer.print_status "!", RED
+				print BOLD + "Previous GitHub API + Repo is in RC, are you sure you want to overwrite?\n" + RESET
+				print "      (Y)es/(N)o: "
 
 				# Get user input
 				_overwrite = $stdin.gets.chomp
 				if (_overwrite.downcase == "no" || _overwrite.downcase == "n")
-					print "Not overwriting current GitHub API + repo info\n"
+					print "\n"
+					Printer.print_status "x", RED
+					print BOLD + "Not overwriting current GitHub API + repo info\n\n" + RESET
 					return false
 				end
 			end
 
 
-			print "Access to your GitHub account required to make/update issues\n"
-			print "See help or README for more details on GitHub/Bitbucket access\n\n"
+			Printer.print_status "!", YELLOW
+			print BOLD + "Access to your GitHub account required to make/update issues\n" + RESET
+			print "      See help or README for more details on GitHub/Bitbucket access\n\n"
 
+
+			# [todo] - Don't just check for blank password but invalid as well
 			# Poor mans username/password grabbing
-			print "Username: "
+			print BOLD + "Username: " + RESET
 			_username = $stdin.gets.chomp
 			if (_username.empty?)
-				print "Input blank. Please enter your username!\n"
+				Printer.print_status "x", RED
+				print BOLD + "Input blank. Please enter your username!\n\n" + RESET
 				return false
 			end
 
 			# [fix] - Crossplatform password block needed, not sure if current method is safe either
 			# Block output to tty to prevent PW showing, Linux/Unix only :(
-			print "Password: "
+			print BOLD + "Password: " + RESET
 			system "stty -echo"
 			_password = $stdin.gets.chomp
 			system "stty echo"
+			print "\n\n"
 			if (_password.empty?)
-				print "Input is blank. Please enter your password!\n"
+				Printer.print_status "x", RED
+				print BOLD + "Input is blank. Please enter your password!\n\n" + RESET
 				return false
-			else
-				print "\n"
 			end
 
 			# HTTP Request to get OAuth Token
@@ -83,10 +98,12 @@ module Watson
 
 			# Check response to validate authorization
 			if (_resp.code == "201")
-				print "Obtained OAuth Token\n"
+				Printer.print_status "o", GREEN
+				print BOLD + "Obtained OAuth Token\n\n" + RESET
 			else
-				print "Unable to obtain OAuth Token\n"
-				print "#{_resp.code} - #{_resp.message}\n"
+				Printer.print_status "x", RED
+				print BOLD + "Unable to obtain OAuth Token\n" + RESET
+				print "      Status: #{_resp.code} - #{_resp.message}\n\n"
 				return false
 			end	
 	
@@ -97,22 +114,27 @@ module Watson
 
 
 			# Get repo information, if blank give error
-			print "Repo information required\n"
-			print "Please provide owner that repo is under followed by repo\n"
-			print "e.g. owner: nhmood, repo: watson (case sensitive)\n"
-			print "See help or README for more details on GitHub access\n\n"
+			Printer.print_status "!", YELLOW
+			print BOLD + "Repo information required\n" + RESET
+			print "      Please provide owner that repo is under followed by repo name\n"
+			print "      e.g. owner: nhmood, repo: watson (case sensitive)\n"
+			print "      See help or README for more details on GitHub access\n\n"
 
-			print "Owner: "
+			print BOLD + "Owner: " + RESET
 			_owner = $stdin.gets.chomp
 			if (_owner.empty?)
-				print "Input blank. Please enter the owner the repo is under!\n"
+				print "\n"
+				Printer.print_status "x", RED
+				print BOLD + "Input blank. Please enter the owner the repo is under!\n\n" + RESET
 				return false
 			end
 
-			print "Repo: "
+			print BOLD + "Repo: " + RESET
 			_repo = $stdin.gets.chomp
 			if (_repo.empty?)
-				print "Input blank. Please enter the repo name!\n"
+				print "\n"
+				Printer.print_status "x", RED
+				print BOLD + "Input blank. Please enter the repo name!\n\n" + RESET
 				return false
 			end
 
@@ -139,32 +161,39 @@ module Watson
 			# [review] - This is pretty messy, maybe clean it up later	
 			# Check response to validate repo access
 			if (_resp.code == "404")
-				print "Unable to access /#{_owner}/#{_repo}\n"
-				print "#{_resp.code} - #{_resp.message}\n"
+				print "\n"
+				Printer.print_status "x", RED
+				print BOLD + "Unable to access /#{_owner}/#{_repo} with given credentials\n" + RESET
+				print "      Check that credentials are correct and repository exists under user\n"
+				print "      Status: #{_resp.code} - #{_resp.message}\n\n"
 				return false
 
 			else
 				# If it is anything but a 404, I THINK it means we have access...
 				# Will assume that until proven otherwise
-				print "Repo successfully accessed\n"
-				
-				# Store owner/repo obtained from POST to @config.github_repo
-				@config.github_repo = "#{_owner}/#{_repo}"
-				debug_print "Config GitHub API Key updated to: #{@config.github_repo}\n"
-
-				# We already created the label but let's just pretend like we didn't yet...
-				print "Creating label for watson on GitHub...\n"
-				if (_resp.code == "201")
-					print "Label successfully created\n"
-				elsif (_resp.code == "422" && _json["code"] = "already_exists")
-					print "Label already exists\n"
-					print "#{_resp.code} - #{_resp.message}\n"
-				else
-					print "Unable to create label for /#{_owner}/#{_repo}\n"
-					print "#{_resp.code} - #{_resp.message}\n"
-				end
+				print "\n"
+				Printer.print_status "o", GREEN
+				print BOLD + "Repo successfully accessed\n\n" + RESET
 			end
 	
+			# Store owner/repo obtained from POST to @config.github_repo
+			@config.github_repo = "#{_owner}/#{_repo}"
+			debug_print "Config GitHub API Key updated to: #{@config.github_repo}\n"
+
+			# Inform user of label creation status (created above) 
+			Printer.print_status "+", GREEN
+			print BOLD + "Creating label for watson on GitHub...\n" + RESET
+			if (_resp.code == "201")
+				Printer.print_status "+", GREEN
+				print BOLD + "Label successfully created\n" + RESET
+			elsif (_resp.code == "422" && _json["code"] = "already_exists")
+				Printer.print_status "!", YELLOW
+				print BOLD + "Label already exists\n" + RESET
+			else
+				Printer.print_status "x", RED
+				print BOLD + "Unable to create label for /#{_owner}/#{_repo}\n" + RESET
+				print "      Status: #{_resp.code} - #{_resp.message}\n"
+			end
 
 			# All setup has been completed, need to update RC
 			# Call config updater/writer from @config to write config	
@@ -172,10 +201,12 @@ module Watson
 			@config.update_conf("github_api", "github_repo")
 
 			# Give user some info
-			print "GitHub successfully setup\n"
-			print "Issues will now automatically be updated on GitHub by default\n"
-			print "Use -l, --local to not update against GitHub\n"
-			print "See help or README for more details on GitHub/Bitbucket access\n"
+			print "\n"
+			Printer.print_status "o", GREEN
+			print BOLD + "GitHub successfully setup\n" + RESET
+			print "      Issues will now automatically be retrieved from GitHub by default\n"
+			print "      Use -p, --push to post issues to GitHub\n"
+			print "      See help or README for more details on GitHub/Bitbucket access\n\n"
 
 			return true
 
@@ -212,10 +243,10 @@ module Watson
 			
 			# Check response to validate repo access
 			if (_resp.code != "200")
-				print " x ", RED
-				print " --> Unable to access remote #{config.github_repo}, GitHub API may be invalid\n"
-				print "     Consider running --remote (-r) option to regenerate key\n\n"
-				print "#{_resp.code} - #{_resp.message}\n"
+				Printer.print_status "x", RED
+				print BOLD + "Unable to access remote #{config.github_repo}, GitHub API may be invalid\n" + RESET
+				print "      Consider running --remote (-r) option to regenerate key\n\n"
+				print "      Status: #{_resp.code} - #{_resp.message}\n"
 
 				debug_print "GitHub invalid, setting config var\n"
 				config.github_valid = false
@@ -240,9 +271,10 @@ module Watson
 			# Check response to validate repo access
 			# Shouldn't be necessary if we passed the last check but just to be safe
 			if (_resp.code != "200")
-				print " x ", RED
-				print " --> Unable to get closed issues. Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n" 
-				print "#{_resp.code} - #{_resp.message}\n"
+				Printer.print_status "x", RED
+				print BOLD + "Unable to get closed issues.\n" + RESET
+				print "      Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n" 
+				print "      Status: #{_resp.code} - #{_resp.message}\n"
 				
 				debug_print "GitHub invalid, setting config var\n"
 				config.github_valid = false
@@ -326,9 +358,10 @@ module Watson
 			# Check response to validate repo access
 			# Shouldn't be necessary if we passed the last check but just to be safe
 			if (_resp.code != "201")
-				print " x ", RED
-				print " --> Post unsuccessful. Since the open issues were obtained earlier, something is probably wrong and you should let someone know...\n" 
-				print "#{_resp.code} - #{_resp.message}\n"
+				Printer.print_status "x", RED
+				print BOLD + "Post unsuccessful. \n" + RESET
+				print "      Since the open issues were obtained earlier, something is probably wrong and you should let someone know...\n" 
+				print "      Status: #{_resp.code} - #{_resp.message}\n"
 				return false
 			end
 		
