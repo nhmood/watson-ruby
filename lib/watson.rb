@@ -1,13 +1,11 @@
-$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
-
-require 'watson/command'
-require 'watson/config'
-require 'watson/fs'
-require 'watson/parser'
-require 'watson/printer'
-require 'watson/remote'
-require 'watson/github'
-require 'watson/bitbucket'
+require_relative 'watson/command'
+require_relative 'watson/config'
+require_relative 'watson/fs'
+require_relative 'watson/parser'
+require_relative 'watson/printer'
+require_relative 'watson/remote'
+require_relative 'watson/github'
+require_relative 'watson/bitbucket'
 
 
 # [todo] - Replace all regex parentheses() with brackets[] if not matching
@@ -33,7 +31,7 @@ module Watson
 	# individual classes have some control over their prints
 	 
 	GLOBAL_DEBUG_ON = false
-	GLOBAL_DEBUG_OFF = true 
+	GLOBAL_DEBUG_OFF = false 
 
 	# [review] - Not sure if module_function is proper way to scope
 	# I want to be able to call debug_print without having to use the scope

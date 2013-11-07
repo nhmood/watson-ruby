@@ -1,7 +1,7 @@
 module Watson
 	class Command
 		# Class Constants
-		DEBUG = true 		# Debug printing for this class
+		DEBUG = false 		# Debug printing for this class
 		
 		class << self
 		include Watson

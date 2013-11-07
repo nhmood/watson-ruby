@@ -9,7 +9,7 @@ module Watson
 		require 'pp'
 		
 		# Class Constants
-		DEBUG = true 		# Debug printing for this class
+		DEBUG = false 		# Debug printing for this class
 	
 
 		###########################################################
@@ -292,6 +292,10 @@ module Watson
 					# Generate md5 hash for each specific issue (for bookkeeping)
 					_issue[:md5] = ::Digest::MD5.hexdigest("#{_tag}, #{_path}, #{_comment}")
 					debug_print "#{_issue}\n"
+
+
+					# [todo] - Figure out a way to queue up posts so user has a progress bar?
+					# That way user can tell that wait is because of http calls not app
 	
 					# If GitHub is valid, pass _issue to GitHub poster function
 					# [review] - Keep Remote as a static method and pass config every time?

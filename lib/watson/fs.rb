@@ -1,7 +1,7 @@
 module Watson
 	class FS 
 		# Class Constants
-		DEBUG = true 		# Debug printing for this class
+		DEBUG = false 		# Debug printing for this class
 	
 		class << self
 		# [todo] - Not sure whether to make check* methods return FP

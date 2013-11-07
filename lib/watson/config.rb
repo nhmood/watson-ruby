@@ -83,6 +83,7 @@ module Watson
 			@cl_ignore_set = false
 
 			# System flags
+			# [todo] - Add option to save output to file also
 			@use_less = false
 
 			# Data containers
@@ -99,7 +100,7 @@ module Watson
 		###########################################################
 	
 		def run 
-			check_conf
+			exit if (check_conf == false) 
 			read_conf
 			if (!@github_api.empty? && !@github_repo.empty?)
 				Remote::GitHub.get_issues(self)
@@ -150,14 +151,20 @@ module Watson
 			# Identify method entry
 			debug_print "#{self.class} : #{__method__}\n"
 
+			
+			# Generate full path since File doesn't care about the LOAD_PATH
+			# [review] - gsub uses (.?)+ to grab anything after lib (optional), better regex? 
+			_full_path = __dir__.gsub(/\/lib(.?)+/, '') + "/" + "assets/defaultConf"
+			debug_print("Full path to defaultConf (in gem): #{_full_path}\n")
+			
 			# Check to make sure we can access the default file
-			if (Watson::FS.check_file('assets/defaultConf') == false)
-				print "Unable to open assets/defaultConf\n"
+			if (Watson::FS.check_file(_full_path) == false)
+				print "Unable to open #{_full_path}\n"
 				print "Cannot create default, exiting...\n"
 				return false	
 			else
 				# Open default config file in read mode
-				_input = File.open('assets/defaultConf', 'r')
+				_input = File.open(_full_path, 'r')
 				# Read data into temporary var
 				_default = _input.read()
 
