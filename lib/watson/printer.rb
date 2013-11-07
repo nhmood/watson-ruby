@@ -258,7 +258,33 @@ module Watson
 					cprint "\n"
 					entry[_tag].each do | _issue |
 						cprint WHITE + "  line #{_issue[:line_number]} - " + RESET
-						cprint BOLD + "#{_issue[:comment]}\n" + RESET
+						cprint BOLD + "#{_issue[:comment]}" + RESET
+
+
+						# Check to see if it has been resolved on GitHub/Bitbucket
+						debug_print "Checking if issue has been resolved\n"	
+						@config.github_issues[:closed].each do | _closed | 
+							if (_closed["body"].include?(_issue[:md5]))
+								debug_print "Found in #{_closed[:comment]}, not posting\n"
+								cprint BOLD + " [" + RESET
+								cprint GREEN + BOLD + "Resolved on GitHub" + RESET
+								cprint BOLD + "]" + RESET
+							end
+							debug_print "Did not find in #{_closed[:comment]}\n"
+						end	
+
+						debug_print "Checking if issue has been resolved\n"
+						@config.bitbucket_issues[:closed].each do  | _closed | 
+							if (_closed["content"].include?(_issue[:md5]))
+								debug_print "Found in #{_closed["content"]}, not posting\n"
+								cprint BOLD + " [" + RESET
+								cprint GREEN + BOLD + "Resolved on Bitbucket" + RESET
+								cprint BOLD + "]\n" + RESET
+							end
+							debug_print "Did not find in #{_closed["title"]}\n"
+						end
+						cprint "\n"
+
 					end
 					cprint "\n"
 				end

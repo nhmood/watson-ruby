@@ -1,7 +1,7 @@
 module Watson
 	class Remote
 		# Class Constants
-		DEBUG = true 		# Debug printing for this class
+		DEBUG = false 		# Debug printing for this class
 	
 	
 		class << self
@@ -102,7 +102,9 @@ module Watson
 				debug_print "HTTP Response Code: #{_resp.code}\n"
 				debug_print "HTTP Response  Msg: #{_resp.message}\n"
 
-				_json = JSON.parse(_resp.body)
+				# [fix] - Not sure if 401 is the only code that gives nonparseable body? 
+				# Figure out what other response codes are bad news for JSON.parse
+				_json = _resp.code == "401" ? Hash.new :  JSON.parse(_resp.body)
 				debug_print "JSON: \n #{_json}\n"
 
 				# [review] - Returning hash of json + response the right thing to do?

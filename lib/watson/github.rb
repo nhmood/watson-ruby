@@ -2,7 +2,7 @@ module Watson
 	class Remote
 		class GitHub
 		# Class constants
-		DEBUG = true		# Debug printing for this class
+		DEBUG = false		# Debug printing for this class
 
 	
 		class << self
@@ -253,7 +253,7 @@ module Watson
 				return false
 			end
 
-			config.github_issues[:open] = _json
+			config.github_issues[:open] = _json.empty? ? Hash.new : _json
 			config.github_valid = true
 			
 			# Get all closed tickets
@@ -281,7 +281,7 @@ module Watson
 				return false
 			end
 
-			config.github_issues[:closed]  = _json
+			config.github_issues[:closed] = _json.empty? ? Hash.new : _json
 			config.github_valid = true
 			return true
 		end ########## get_issues ##########	
@@ -313,21 +313,21 @@ module Watson
 			#		   Makes watson code cleaner but not as readable comment on GitHub...?
 			debug_print "Checking open issues to see if already posted\n"
 			config.github_issues[:open].each do | _open | 
-				debug_print "Did not find in #{_open[:comment]}\n"
 				if (_open["body"].include?(issue[:md5]))
-					debug_print "Found in #{_open[:comment]}, not posting\n"
+					debug_print "Found in #{_open["title"]}, not posting\n"
 					return false
 				end
+				debug_print "Did not find in #{_open["title"]}\n"
 			end	
 			
 			
 			debug_print "Checking closed issues to see if already posted\n"
 			config.github_issues[:closed].each do  | _closed | 
-				debug_print "Did not find in #{_closed[:comment]}\n"
-				if (_open["body"].include?(issue[:md5]))
-					debug_print "Found in #{_closed[:comment]}, not posting\n"
+				if (_closed["body"].include?(issue[:md5]))
+					debug_print "Found in #{_closed["title"]}, not posting\n"
 					return false
 				end
+				debug_print "Did not find in #{_closed["title"]}\n"
 			end
 		
 			# We didn't find the md5 for this issue in the open or closed issues, so safe to post

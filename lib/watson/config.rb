@@ -4,7 +4,7 @@ module Watson
 		include Watson
 		
 		# Class Constants
-		DEBUG = true 		# Debug printing for this class
+		DEBUG = false 		# Debug printing for this class
 		
 		# [review] - Combine into single statement (for performance or something?)
 
@@ -62,14 +62,20 @@ module Watson
 			@github_valid = false
 			@github_api = ""
 			@github_repo = ""
-			@github_issues = Hash.new()
+			@github_issues = {:open   => Hash.new(),
+							  :closed => Hash.new()
+							 }
+
+
 
 			# Keep API param (and put username there) for OAuth update later
 			@bitbucket_valid = false
 			@bitbucket_api = ""
 			@bitbucket_pw = ""
 			@bitbucket_repo = ""
-			@bitbucket_issues = Hash.new()
+			@bitbucket_issues = {:open   => Hash.new(),
+								 :closed => Hash.new()
+								}
 
 			# State flags
 			@cl_entry_set  = false
