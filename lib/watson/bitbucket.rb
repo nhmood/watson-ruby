@@ -346,9 +346,9 @@ module Watson
 					:ssl        => true,
 					:method     => "POST",
 					:basic_auth => [config.bitbucket_api, config.bitbucket_pw],
-					:data		=> [{"title" => issue[:comment],
+					:data		=> [{"title" => issue[:comment] + "[#{issue[:path]}]",
 									"content" => _body }],
-					:verbose    => true 
+					:verbose    => false 
 				   }
 
 			_json, _resp  = Watson::Remote.http_call(opts)

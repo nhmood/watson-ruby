@@ -346,10 +346,10 @@ module Watson
 					:ssl        => true,
 					:method     => "POST",
 					:auth		=> config.github_api, 
-					:data		=> { "title" => issue[:comment],
+					:data		=> { "title" => issue[:comment] + " [#{issue[:path]}]",
 									 "labels" => [issue[:tag], "watson"],
 									 "body" => _body },
-					:verbose    => true 
+					:verbose    => false 
 				   }
 
 			_json, _resp  = Watson::Remote.http_call(opts)
