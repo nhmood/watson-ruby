@@ -4,11 +4,11 @@ module Watson
 		# Class constants
 		DEBUG = false		# Debug printing for this class
 
-	
 		class << self
 
 		# [todo] - Allow closing of issues from watson? Don't like that idea but maybe
 		# [todo] - Wrap bitbucket password grabbing into separate method
+	
 		# Include for debug_print
 		include Watson
 		
@@ -346,7 +346,7 @@ module Watson
 					:ssl        => true,
 					:method     => "POST",
 					:basic_auth => [config.bitbucket_api, config.bitbucket_pw],
-					:data		=> [{"title" => issue[:comment] + "[#{issue[:path]}]",
+					:data		=> [{"title" => issue[:comment] + " [#{issue[:path]}]",
 									"content" => _body }],
 					:verbose    => false 
 				   }
