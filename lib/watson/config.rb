@@ -7,6 +7,7 @@ module Watson
 		DEBUG = false 		# Debug printing for this class
 		
 		# [review] - Combine into single statement (for performance or something?)
+		# [todo] - Add config options (rc file) for default max depth and context lines
 
 		attr_accessor :ignore_list		# Parser rw, Command rw
 		attr_accessor :dir_list			# Parser r,  Command rw
@@ -55,7 +56,7 @@ module Watson
 			@rc_file = ".watsonrc"
 			@tmp_file = ".watsonresults"
 			@max_depth = 0
-			@context_lines = 3
+			@context_lines = 15
 
 			@remote_valid = false
 			
@@ -263,6 +264,11 @@ module Watson
 
 
 				case _section
+				when "context"
+					# No need for regex on context value, command should read this in only as a # 
+					# Chomp to get rid of any nonsense
+					@context_lines = _line.chomp!
+
 				when "dirs"
 					# If @dir_list or @file_list wasn't populated by CL args
 					# then populate from rc

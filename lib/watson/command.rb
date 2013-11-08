@@ -20,7 +20,8 @@ module Watson
 				_args = args
 		
 				# List of possible flags, used later in parsing and for user reference
-				_flag_list = ["-d", "--dirs",
+				_flag_list = ["-c", "--context-lines",
+							  "-d", "--dirs",
 						 	  "-f", "--files",
 							  "-h", "--help",
 						 	  "-i", "--ignore",
@@ -103,6 +104,10 @@ module Watson
 					_flag_args = _args.slice!(0..(_i-1))
 
 					case _flag 
+					when "-c", "--context-lines"
+						debug_print "Found -d/--context-lines argument\n"
+						set_context(_flag_args)
+
 					when "-d", "--dirs"
 						debug_print "Found -d/--dirs argument\n"
 						set_dirs(_flag_args)
@@ -161,13 +166,14 @@ module Watson
 				# Identify method entry
 				debug_print "#{self} : #{__method__}\n"
 				
-				# print BOLD;
+				print BOLD;
 				print "Usage: watson [OPTION]...\n"
     			print "Running watson with no arguments will parse with settings in RC file\n"
     			print "If no RC file exists, default RC file will be created\n"
 
     			print "\n"
     			print "   -d, --dirs            list of directories to search in\n"
+				print "   -c, --context-lines   change number of extra lines to put into context on issue posting\n"
     			print "   -f, --files           list of files to search in\n"
     			print "   -h, --help            print help\n"
     			print "   -i, --ignore          list of files, directories, or types to ignore\n"
@@ -186,7 +192,7 @@ module Watson
     			print "Report bugs to: watson\@goosecode.com\n"
     			print "watson home page: <http://goosecode.com/projects/watson>\n"
     			print "[goosecode] labs | 2012-2013\n"
-    			#print RESET;
+    			print RESET;
 			
 			    return true
 
@@ -207,6 +213,44 @@ module Watson
 				print "\n"
 
 				print "Written by nhmood, see <http://goosecode.com/projects/watson>\n"		
+				return true
+			end
+
+
+			###########################################################
+			# set_context  
+			###########################################################
+			
+			def set_context(args) 
+				# Identify method entry
+				debug_print "#{self} : #{__method__}\n"
+				
+				_args = args
+
+				# Need at least one dir in args
+				if (_args.length <= 0)
+					# [review] - Make this a non-debug print to user?
+					debug_print "No args passed, exiting\n"
+					return false
+				end
+
+			
+				# For context_lines we do NOT append to RC, ALWAYS overwrite
+				# For each argument passed, make sure valid, then set @config.max_depth 
+				args.each do | _context_lines |
+					if (_context_lines.match(/^(\d+)/))
+						debug_print "Setting #{_context_lines} to config context_lines\n"	
+						@config.context_lines = _context_lines.to_i
+					else
+						debug_print "#{_context_lines} invalid depth, ignoring\n"
+					end
+				end
+
+				# Doesn't make much sense to set context_lines for each individual post
+				# When you use this command line arg, it writes the config parameter	
+				@config.update_conf("context_lines")
+
+				debug_print "Updated context_lines: #{@config.context_lines}\n"
 				return true
 			end
 
