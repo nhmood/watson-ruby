@@ -137,17 +137,17 @@ module Watson
 			Dir.glob("#{_glob_dir}{*, .*}").select { | _fn | File.directory?(_fn) }.sort.each do | _entry |
 				debug_print "Entry: #{_entry} is a dir\n"	
 					
-				# If Config.max_depth is 0, no limit on subdirs
-				# Else, increment @depth, compare with Config.max_depth + 1
+				# If Config.parse_depth is 0, no limit on subdirs
+				# Else, increment @depth, compare with Config.parse_depth + 1
 				# + 1 so it is inclusive of the current directory
 				# If less than depth, parse the dir, else ignore
 				# This gets reset in the loop that sends all config/CL dirs through parse_dir
 				_cur_depth = depth + 1
 				debug_print "Current Folder depth: #{_cur_depth}\n"
-				if (@config.max_depth == 0)
+				if (@config.parse_depth == 0)
 					debug_print "No max depth, parsing directory\n"
 					_completed_dirs.push(parse_dir("#{_entry}/", _cur_depth))
-				elsif (_cur_depth < @config.max_depth.to_i + 1)
+				elsif (_cur_depth < @config.parse_depth.to_i + 1)
 					debug_print "Depth less than max dept (from config), parsing directory\n"
 					_completed_dirs.push(parse_dir("#{_entry}/", _cur_depth))
 				else
@@ -249,7 +249,7 @@ module Watson
 					_issue[:comment] = _comment
 
 					# Grab context of issue specified by Config param (+1 to include issue itself)
-					_context = _data[_i..(_i + @config.context_lines + 1)]
+					_context = _data[_i..(_i + @config.context_depth + 1)]
 	
 					# Go through each line of context and determine indentation
 					# Used to preserve indentation in post

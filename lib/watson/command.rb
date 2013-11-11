@@ -20,15 +20,15 @@ module Watson
 				_args = args
 		
 				# List of possible flags, used later in parsing and for user reference
-				_flag_list = ["-c", "--context-lines",
+				_flag_list = ["-c", "--context-depth",
 							  "-d", "--dirs",
 						 	  "-f", "--files",
 							  "-h", "--help",
 						 	  "-i", "--ignore",
-						 	  "-m", "--max-depth",
-						 	  "-p", "--push",
+						 	  "-p", "--parse-depth",
 						 	  "-r", "--remote",
 						 	  "-t", "--tags",
+						 	  "-u", "--update",
 							  "-v", "--version"
 							 ]
 
@@ -104,8 +104,8 @@ module Watson
 					_flag_args = _args.slice!(0..(_i-1))
 
 					case _flag 
-					when "-c", "--context-lines"
-						debug_print "Found -d/--context-lines argument\n"
+					when "-c", "--context-depth"
+						debug_print "Found -c/--context-depth argument\n"
 						set_context(_flag_args)
 
 					when "-d", "--dirs"
@@ -120,9 +120,9 @@ module Watson
 						debug_print "Found -i/--ignore argument\n"
 						set_ignores(_flag_args)
 
-					when "-m", "--max-depth"
-						debug_print "Found -m/--max-depth argument\n"
-						set_max_depth(_flag_args)
+					when "-p", "--parse-depth"
+						debug_print "Found -r/--parse-depth argument\n"
+						set_parse_depth(_flag_args)
 					
 					when "-t", "--tags"
 						debug_print "Found -t/--tags argument\n"
@@ -140,8 +140,8 @@ module Watson
 						# If setting up remote, exit afterwards
 						exit true
 					
-					when "-p", "--push"
-						debug_print "Found -p/--push argument\n"
+					when "-u", "--update"
+						debug_print "Found -u/--update argument\n"
 						@config.remote_valid =  true
 
 
@@ -173,14 +173,14 @@ module Watson
 
     			print "\n"
     			print "   -d, --dirs            list of directories to search in\n"
-				print "   -c, --context-lines   change number of extra lines to put into context on issue posting\n"
+				print "   -c, --context-depth   number of lines of context to provide with posted issue\n"
     			print "   -f, --files           list of files to search in\n"
     			print "   -h, --help            print help\n"
     			print "   -i, --ignore          list of files, directories, or types to ignore\n"
-    			print "   -m, --max-depth       max depth for recursive directory parsing\n"
-    			print "   -p, --push            push/pull issues from remotes\n"
-    			print "   -r, --remote          list / create tokens for bitbucket/github\n"
+    			print "   -p, --parse-depth     depth to recursively parse directories\n"
+    			print "   -r, --remote          list / create tokens for Bitbucket/GitHub\n"
     			print "   -t, --tags            list of tags to search for\n"
+    			print "   -u, --update          update remote repos with current issues\n"
     			print "   -v, --version    	 print watson version and info\n"
     			print "\n"
 
@@ -235,22 +235,22 @@ module Watson
 				end
 
 			
-				# For context_lines we do NOT append to RC, ALWAYS overwrite
-				# For each argument passed, make sure valid, then set @config.max_depth 
-				args.each do | _context_lines |
-					if (_context_lines.match(/^(\d+)/))
-						debug_print "Setting #{_context_lines} to config context_lines\n"	
-						@config.context_lines = _context_lines.to_i
+				# For context_depth we do NOT append to RC, ALWAYS overwrite
+				# For each argument passed, make sure valid, then set @config.parse_depth 
+				args.each do | _context_depth |
+					if (_context_depth.match(/^(\d+)/))
+						debug_print "Setting #{_context_depth} to config context_depth\n"	
+						@config.context_depth = _context_depth.to_i
 					else
-						debug_print "#{_context_lines} invalid depth, ignoring\n"
+						debug_print "#{_context_depth} invalid depth, ignoring\n"
 					end
 				end
 
-				# Doesn't make much sense to set context_lines for each individual post
+				# Doesn't make much sense to set context_depth for each individual post
 				# When you use this command line arg, it writes the config parameter	
-				@config.update_conf("context_lines")
+				@config.update_conf("context_depth")
 
-				debug_print "Updated context_lines: #{@config.context_lines}\n"
+				debug_print "Updated context_depth: #{@config.context_depth}\n"
 				return true
 			end
 
@@ -375,10 +375,10 @@ module Watson
 
 
 			###########################################################
-			# set_max_depth 
+			# set_parse_depth 
 			###########################################################
 			
-			def set_max_depth(args)
+			def set_parse_depth(args)
 				# Identify method entry
 				debug_print "#{self} : #{__method__}\n"
 				
@@ -392,18 +392,18 @@ module Watson
 				end
 
 				# For max_dpeth we do NOT append to RC, ALWAYS overwrite	
-				# For each argument passed, make sure valid, then set @config.max_depth 
-				args.each do | _max_depth |
+				# For each argument passed, make sure valid, then set @config.parse_depth 
+				args.each do | _parse_depth |
 			
-					if (_max_depth.match(/^(\d+)/))
-						debug_print "Setting #{_max_depth} to config max_depth\n"	
-						@config.max_depth = _max_depth
+					if (_parse_depth.match(/^(\d+)/))
+						debug_print "Setting #{_parse_depth} to config parse_depth\n"	
+						@config.parse_depth = _parse_depth
 					else
-						debug_print "#{_max_depth} invalid depth, ignoring\n"
+						debug_print "#{_parse_depth} invalid depth, ignoring\n"
 					end
 				end
 
-				debug_print "Updated max_depth: #{@config.max_depth}\n"
+				debug_print "Updated parse_depth: #{@config.parse_depth}\n"
 				return true
 			end
 
