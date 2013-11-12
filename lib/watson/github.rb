@@ -1,8 +1,8 @@
 module Watson
 	class Remote
-		# Bitbucket remote access class
+		# GitHub remote access class
 		# Contains all necessary methods to obtain access to, get issue list,
-		# and post issues to Bitbucket
+		# and post issues to GitHub 
 		class GitHub
 		
 		# Debug printing for this class

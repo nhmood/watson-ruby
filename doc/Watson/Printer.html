@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<!--
+
+  Fivefish RDoc Generator
+  $Id$
+
+  Authors:
+  - Michael Granger <ged@FaerieMUD.org>
+
+ -->
+<html lang="en">
+<head>
+	<title>RDoc Documentation</title>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+		<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+	<link rel="shortcut icon" href="images/favicon.ico">
+	<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+
+	<link href=".." rel="prefix" />
+
+	<link href="../css/fivefish.min.css" rel="stylesheet" />
+
+	<script src="../js/jquery-1.7.1.min.js" type="text/javascript"
+		defer="defer" charset="utf-8"></script>
+	<script src="../js/bootstrap.min.js" type="text/javascript"
+		defer="defer" charset="utf-8"></script>
+	<script src="../js/searchindex.js" type="text/javascript"
+		defer="defer" charset="utf-8"></script>
+	<script src="../js/fivefish.min.js" type="text/javascript"
+		defer="defer" charset="utf-8" onload="initFivefish()"></script>
+</head>
+
+<body class="class-page">
+
+	<nav class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+
+				<a class="brand"
+					href="../index.html">RDoc Documentation</a>
+
+				<div class="nav-collapse">
+					<ul class="nav">
+						<li>
+							<a href="#"
+								class="dropdown-toggle"
+								data-dropdown="#class-dropdown">
+								Classes
+								<b class="caret"></b>
+							</a>
+						</li>
+						<li>
+							<a href="#"
+								class="dropdown-toggle"
+								data-dropdown="#file-dropdown">
+								Files
+								<b class="caret"></b>
+							</a>
+						</li>
+					</ul>
+				</div><!--/.nav-collapse -->
+				<span class="pull-right">
+					<form class="navbar-search">
+						<input type="hidden" id="navbar-search-target" value="" />
+						<input type="text" class="search-query" value=""
+							placeholder="Method, Class, or Filename" />
+					</form>
+				</span>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container">
+		
+		<header class="hero-unit">
+			<hgroup>
+								  				<h2 class="namespace">Watson::</h2>
+				  												<h1 class="class"
+					rel="popover"
+					data-original-title="In files"
+					data-content="lib/watson/printer.rb"
+					>Printer</h1>
+				</p>
+							</hgroup>
+			<span class="label">class</span>
+		</header>
+
+		<section class="module-relations">
+			<dl>
+								<dt>Superclass</dt>
+								<dd class="superclass">Object</dd>
+								
+								<dt>Included Modules</dt>
+												<dd class="include"><a href="../Watson.html">Watson</a></dd>
+												
+							</dl>
+		</section>
+
+		<section class="description">
+			
+<p><a href="Printer.html">Printer</a> class that handles all formatting and
+printing of parsed dir/file structure</p>
+		</section>
+
+				<section id="5Buntitled-5D" class="documentation-section">
+			
+		    
+						<!-- Constants -->
+			<section class="constants-list">
+				<header>
+					<h3>Constants</h3>
+				</header>
+				<dl>
+									<dt id="DEBUG"><i class="icon-generic"></i>DEBUG</dt>
+										<dd class="description"><p>Debug printing for this class</p></dd>
+													</dl>
+			</section>
+			
+			
+			<!-- Methods -->
+						
+						<section class="public-methods class-methods methods">
+				<header>
+					<h3>Public Class Methods</h3>
+				</header>
+
+								<a name="method-c-cprint">anchor</a>
+				<div id="method-c-cprint-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">cprint</span><span 
+							class="method-args">(msg = "", color = "")</span>
+										</header>
+
+					<div class="method-description">
+											<p>Custom color print for static call (only writes to STDOUT)</p>					
+											<div class="method-source-code" id="cprint-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">cprint</span> (<span class="ruby-identifier">msg</span> = <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-identifier">color</span> = <span class="ruby-string">&quot;&quot;</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-comment"># This little check will allow us to take a Constant defined color</span>
+        <span class="ruby-comment"># As well as a [0-256] value if specified</span>
+        <span class="ruby-keyword">if</span> (<span class="ruby-identifier">color</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))     
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Custom color specified for cprint\n&quot;</span>
+                <span class="ruby-constant">STDOUT</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">color</span>)
+        <span class="ruby-keyword">elsif</span> (<span class="ruby-identifier">color</span>.<span class="ruby-identifier">between?</span>(<span class="ruby-value">0</span>, <span class="ruby-value">256</span>))
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No or Default color specified for cprint\n&quot;</span>
+                <span class="ruby-constant">STDOUT</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;\e[38;5;#{ color }m&quot;</span>)
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-constant">STDOUT</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">msg</span>)
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+								<a name="method-c-new">anchor</a>
+				<div id="method-c-new-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">new</span><span 
+							class="method-args">(config)</span>
+										</header>
+
+					<div class="method-description">
+											<p><a href="Printer.html">Printer</a> initialization method to setup necessary
+parameters, states, and vars</p>					
+											<div class="method-source-code" id="new-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 92</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">config</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+        
+        <span class="ruby-ivar">@config</span> = <span class="ruby-identifier">config</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+								<a name="method-c-print_header">anchor</a>
+				<div id="method-c-print_header-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">print_header</span><span 
+							class="method-args">()</span>
+										</header>
+
+					<div class="method-description">
+											<p>Standard header print for static call (uses static cprint)</p>					
+											<div class="method-source-code" id="print_header-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 62</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_header</span> 
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-comment"># Header</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;------------------------------\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;watson&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-string">&quot; - &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-constant">YELLOW</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;inline issue manager\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;------------------------------\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+								<a name="method-c-print_status">anchor</a>
+				<div id="method-c-print_status-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">print_status</span><span 
+							class="method-args">(msg, color)</span>
+										</header>
+
+					<div class="method-description">
+											<p>Status printer for static call (uses static cprint)  Print status block in
+standard format</p>					
+											<div class="method-source-code" id="print_status-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 81</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_status</span>(<span class="ruby-identifier">msg</span>, <span class="ruby-identifier">color</span>) 
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">RESET</span> <span class="ruby-operator">+</span> <span class="ruby-constant">BOLD</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">WHITE</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;[ &quot;</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-node">&quot;#{ msg } &quot;</span>, <span class="ruby-identifier">color</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">WHITE</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;] &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+				
+			</section>
+			
+			
+			
+			
+			
+									
+						<section class="public-methods instance-methods methods">
+				<header>
+					<h3>Public Instance Methods</h3>
+				</header>
+
+								<a name="method-i-cprint">anchor</a>
+				<div id="method-i-cprint-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">cprint</span><span 
+							class="method-args">(msg = "", color = "")</span>
+										</header>
+
+					<div class="method-description">
+											<p>Custom color print for member call Allows not only for custom color
+printing but writing to file vs STDOUT</p>					
+											<div class="method-source-code" id="cprint-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 144</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">cprint</span> (<span class="ruby-identifier">msg</span> = <span class="ruby-string">&quot;&quot;</span>, <span class="ruby-identifier">color</span> = <span class="ruby-string">&quot;&quot;</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-comment"># This little check will allow us to take a Constant defined color</span>
+        <span class="ruby-comment"># As well as a [0-256] value if specified</span>
+        <span class="ruby-keyword">if</span> (<span class="ruby-identifier">color</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>))     
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Custom color specified for cprint\n&quot;</span>
+                <span class="ruby-ivar">@output</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">color</span>)
+        <span class="ruby-keyword">elsif</span> (<span class="ruby-identifier">color</span>.<span class="ruby-identifier">between?</span>(<span class="ruby-value">0</span>, <span class="ruby-value">256</span>))
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No or Default color specified for cprint\n&quot;</span>
+                <span class="ruby-ivar">@output</span>.<span class="ruby-identifier">write</span>(<span class="ruby-node">&quot;\e[38;5;#{ color }m&quot;</span>)
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-ivar">@output</span>.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">msg</span>)
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+								<a name="method-i-print_entry">anchor</a>
+				<div id="method-i-print_entry-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">print_entry</span><span 
+							class="method-args">(entry)</span>
+										</header>
+
+					<div class="method-description">
+											<p>Individual entry printer Uses issue hash to format printed output</p>					
+											<div class="method-source-code" id="print_entry-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 220</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_entry</span>(<span class="ruby-identifier">entry</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-comment"># If no issues for this file, print that and break</span>
+        <span class="ruby-comment"># The filename print is repetative, but reduces another check later</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">entry</span>[<span class="ruby-value">:has_issues</span>] <span class="ruby-operator">==</span> <span class="ruby-keyword">false</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;No issues for #{ entry }\n&quot;</span>
+                <span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;o&quot;</span>, <span class="ruby-constant">GREEN</span>
+                <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-constant">UNDERLINE</span> <span class="ruby-operator">+</span> <span class="ruby-constant">GREEN</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{ entry[:relative_path] }&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+        <span class="ruby-keyword">else</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Issues found for #{ entry }\n&quot;</span>
+                <span class="ruby-identifier">cprint</span> <span class="ruby-string">&quot;\n&quot;</span>
+                <span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-constant">UNDERLINE</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RED</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{entry[:relative_path]}&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;\n&quot;</span>
+        <span class="ruby-keyword">end</span>  
+
+        
+        <span class="ruby-comment"># [review] - Should the tag structure be self contained in the hash</span>
+        <span class="ruby-comment">#                     Or is it ok to reference @config to figure out the tags</span>
+        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">tag_list</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_tag</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Checking for #{ _tag }\n&quot;</span>
+
+                <span class="ruby-comment"># [review] - Better way to ignore tags through structure (hash) data</span>
+                <span class="ruby-comment"># Maybe have individual has_issues for each one?</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">entry</span>[<span class="ruby-identifier">_tag</span>].<span class="ruby-identifier">size</span>.<span class="ruby-identifier">zero?</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ _tag } has no issues, skipping\n&quot;</span>
+                        <span class="ruby-identifier">cprint</span> <span class="ruby-string">&quot;\n&quot;</span>
+                        <span class="ruby-keyword">next</span>
+                <span class="ruby-keyword">end</span>
+                
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ _tag } has issues in it, print!\n&quot;</span>
+                <span class="ruby-identifier">print_status</span> <span class="ruby-node">&quot;#{ _tag }&quot;</span>, <span class="ruby-constant">BLUE</span>
+                <span class="ruby-identifier">cprint</span> <span class="ruby-string">&quot;\n&quot;</span>
+
+                <span class="ruby-comment"># Go through each issue in tag</span>
+                <span class="ruby-identifier">entry</span>[<span class="ruby-identifier">_tag</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_issue</span> <span class="ruby-operator">|</span>
+                        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">WHITE</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;  line #{ _issue[:line_number] } - &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{ _issue[:title] }&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+
+
+                        <span class="ruby-comment"># Check to see if it has been resolved on GitHub/Bitbucket</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Checking if issue has been resolved\n&quot;</span>        
+                        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">github_issues</span>[<span class="ruby-value">:closed</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_closed</span> <span class="ruby-operator">|</span> 
+                                <span class="ruby-keyword">if</span> <span class="ruby-identifier">_closed</span>[<span class="ruby-string">&quot;body&quot;</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">_issue</span>[<span class="ruby-value">:md5</span>])
+                                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Found in #{ _closed[:comment] }, not posting\n&quot;</span>
+                                        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot; [&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                                        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">GREEN</span> <span class="ruby-operator">+</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Resolved on GitHub&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                                        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;]&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                                <span class="ruby-keyword">end</span>
+                                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Did not find in #{ _closed[:comment] }\n&quot;</span>
+                        <span class="ruby-keyword">end</span>        
+
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Checking if issue has been resolved\n&quot;</span>
+                        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">bitbucket_issues</span>[<span class="ruby-value">:closed</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span>  <span class="ruby-operator">|</span> <span class="ruby-identifier">_closed</span> <span class="ruby-operator">|</span> 
+                                <span class="ruby-keyword">if</span> <span class="ruby-identifier">_closed</span>[<span class="ruby-string">&quot;content&quot;</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">_issue</span>[<span class="ruby-value">:md5</span>])
+                                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Found in #{ _closed[&quot;content&quot;] }, not posting\n&quot;</span>
+                                        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot; [&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                                        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">GREEN</span> <span class="ruby-operator">+</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Resolved on Bitbucket&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                                        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;]\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                                <span class="ruby-keyword">end</span>
+                                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Did not find in #{ _closed[&quot;title&quot;] }\n&quot;</span>
+                        <span class="ruby-keyword">end</span>
+                        <span class="ruby-identifier">cprint</span> <span class="ruby-string">&quot;\n&quot;</span>
+
+                <span class="ruby-keyword">end</span>
+                <span class="ruby-identifier">cprint</span> <span class="ruby-string">&quot;\n&quot;</span>
+        <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+								<a name="method-i-print_header">anchor</a>
+				<div id="method-i-print_header-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">print_header</span><span 
+							class="method-args">()</span>
+										</header>
+
+					<div class="method-description">
+											<p>Standard header print for class call (uses member cprint)</p>					
+											<div class="method-source-code" id="print_header-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 165</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_header</span> 
+        <span class="ruby-comment"># Identify method entry</span>
+
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-comment"># Header</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;------------------------------\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;watson&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-string">&quot; - &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-constant">YELLOW</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;inline issue manager\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-node">&quot;Run in: #{ Dir.pwd }\n&quot;</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-node">&quot;Run @ #{ Time.now.asctime }\n&quot;</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;------------------------------\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+								<a name="method-i-print_status">anchor</a>
+				<div id="method-i-print_status-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">print_status</span><span 
+							class="method-args">(msg, color)</span>
+										</header>
+
+					<div class="method-description">
+											<p>Status printer for member call (uses member cprint) Print status block in
+standard format</p>					
+											<div class="method-source-code" id="print_status-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 186</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_status</span>(<span class="ruby-identifier">msg</span>, <span class="ruby-identifier">color</span>) 
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">RESET</span> <span class="ruby-operator">+</span> <span class="ruby-constant">BOLD</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">WHITE</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;[ &quot;</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-node">&quot;#{ msg } &quot;</span>, <span class="ruby-identifier">color</span>
+        <span class="ruby-identifier">cprint</span> <span class="ruby-constant">WHITE</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;] &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+								<a name="method-i-print_structure">anchor</a>
+				<div id="method-i-print_structure-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">print_structure</span><span 
+							class="method-args">(structure)</span>
+										</header>
+
+					<div class="method-description">
+											<p>Go through all files and directories and call necessary printing methods
+Print all individual entries, call <a
+href="Printer.html#method-i-print_structure">#print_structure</a> on each
+subdir</p>					
+											<div class="method-source-code" id="print_structure-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 197</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">print_structure</span>(<span class="ruby-identifier">structure</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-comment"># First go through all the files in the current structure</span>
+        <span class="ruby-comment"># The current &quot;structure&quot; should reflect a dir/subdir</span>
+        <span class="ruby-identifier">structure</span>[<span class="ruby-value">:files</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_file</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Printing info for #{ _file }\n&quot;</span>
+                <span class="ruby-identifier">print_entry</span>(<span class="ruby-identifier">_file</span>)
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># Next go through all the subdirs and pass them to print_structure</span>
+        <span class="ruby-identifier">structure</span>[<span class="ruby-value">:subdirs</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_subdir</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Entering #{ _subdir } to print further\n&quot;</span>
+                <span class="ruby-identifier">print_structure</span>(<span class="ruby-identifier">_subdir</span>)
+        <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+								<a name="method-i-run">anchor</a>
+				<div id="method-i-run-doc" class="method">
+
+					<header>
+											<i class="icon-generic"></i>
+						<span class="method-name">run</span><span 
+							class="method-args">(structure)</span>
+										</header>
+
+					<div class="method-description">
+											<p>Take parsed structure and print out in specified formatting</p>					
+											<div class="method-source-code" id="run-source">
+							<pre class="prettyprint linenums"><code 
+								class="language-ruby"><span class="ruby-comment"># File lib/watson/printer.rb, line 104</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">run</span>(<span class="ruby-identifier">structure</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-comment"># Check Config to see if we have access to less for printing</span>
+        <span class="ruby-comment"># If so, open our temp file as the output to write to</span>
+        <span class="ruby-comment"># Else, just print out to STDOUT</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">use_less</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Unix less avaliable, setting output to #{ @config.tmp_file }\n&quot;</span>
+                <span class="ruby-ivar">@output</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-ivar">@config</span>.<span class="ruby-identifier">tmp_file</span>, <span class="ruby-string">&#39;w&#39;</span>)
+        <span class="ruby-keyword">elsif</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Unix less is unavaliable, setting output to STDOUT\n&quot;</span>
+                <span class="ruby-ivar">@output</span> = <span class="ruby-constant">STDOUT</span>
+        <span class="ruby-keyword">end</span>  
+        
+        <span class="ruby-comment"># Print header for output</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Printing Header\n&quot;</span>
+        <span class="ruby-identifier">print_header</span>
+
+        <span class="ruby-comment"># Print out structure that was passed to this Printer</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Starting structure printing\n&quot;</span>
+        <span class="ruby-identifier">print_structure</span>(<span class="ruby-identifier">structure</span>)
+
+        <span class="ruby-comment"># If we are using less, close the output file, display with less, then delete</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">use_less</span>
+                <span class="ruby-ivar">@output</span>.<span class="ruby-identifier">close</span>
+                <span class="ruby-comment"># [review] - Way of calling a native Ruby less?</span>
+                <span class="ruby-identifier">system</span>(<span class="ruby-node">&quot;less #{ @config.tmp_file }&quot;</span>)
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;File displayed with less, now deleting...\n&quot;</span>
+                <span class="ruby-constant">File</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-ivar">@config</span>.<span class="ruby-identifier">tmp_file</span>)
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></code></pre>
+						</div>
+										</div>
+
+					
+									</div>
+				
+			</section>
+			
+			
+			
+			
+			
+						
+		</section>
+		
+
+		<hr>
+
+		<footer>
+			<div class="container">
+				<span id="rdoc-version">Generated by RDoc 4.0.1</span> using the
+				<a id="generator-version"
+					href="http://deveiate.org/fivefish">Fivefish RDoc 0.1.0</a> generator.
+			</div>
+		</footer>
+	</div> <!-- /container -->
+
+	<!-- Class dropdown menu -->
+	<div id="class-dropdown" class="dropdown-menu has-scroll">
+	<ul>
+			<li><a href="../Watson.html">Watson</a></li>
+			<li><a href="../Watson/Command.html">Watson::Command</a></li>
+			<li><a href="../Watson/Config.html">Watson::Config</a></li>
+			<li><a href="../Watson/FS.html">Watson::FS</a></li>
+			<li><a href="../Watson/Parser.html">Watson::Parser</a></li>
+			<li><a href="../Watson/Printer.html">Watson::Printer</a></li>
+			<li><a href="../Watson/Remote.html">Watson::Remote</a></li>
+			<li><a href="../Watson/Remote/Bitbucket.html">Watson::Remote::Bitbucket</a></li>
+			<li><a href="../Watson/Remote/GitHub.html">Watson::Remote::GitHub</a></li>
+		</ul>
+	</div>
+
+	<!-- File dropdown menu -->
+	<div id="file-dropdown" class="dropdown-menu has-scroll">
+	<ul>
+		</ul>
+	</div>
+
+</body>
+</html>
