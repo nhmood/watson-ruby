@@ -1,10 +1,13 @@
 module Watson
 	class Remote
+		# Bitbucket remote access class
+		# Contains all necessary methods to obtain access to, get issue list,
+		# and post issues to Bitbucket
 		class GitHub
-		# Class constants
-		DEBUG = false		# Debug printing for this class
+		
+		# Debug printing for this class
+		DEBUG = false		
 
-	
 		class << self
 
 		# [todo] - Allow closing of issues from watson? Don't like that idea but maybe
@@ -16,34 +19,30 @@ module Watson
 		# Include for debug_print
 		include Watson
 		
-		###########################################################
-		# setup 
-		###########################################################
-
+		#############################################################################	
+		# Setup remote access to GitHub 
+		# Get Username, Repo, and PW and perform necessary HTTP calls to check validity
 		def setup(config)
+
 			# Identify method entry
-			debug_print "#{self.class} : #{__method__}\n"
+			debug_print "#{ self.class } : #{ __method__ }\n"
 		
-			@config = config
-
 			Printer.print_header
-
 			Printer.print_status "+", GREEN
 			print BOLD + "Obtaining OAuth Token for GitHub...\n" + RESET
-		
 			
 			# Check config to make sure no previous API exists
-			if ( (@config.github_api.empty?  == false) || (@config.github_repo.empty? == false) )
+			unless config.github_api.empty? && config.github_repo.empty?
 				Printer.print_status "!", RED
 				print BOLD + "Previous GitHub API + Repo is in RC, are you sure you want to overwrite?\n" + RESET
 				print "      (Y)es/(N)o: "
 
 				# Get user input
 				_overwrite = $stdin.gets.chomp
-				if (_overwrite.downcase == "no" || _overwrite.downcase == "n")
+				if ["no", "n"].include?(_overwrite.downcase)
 					print "\n"
 					Printer.print_status "x", RED
-					print BOLD + "Not overwriting current GitHub API + repo info\n\n" + RESET
+					print BOLD + "Not overwriting current GitHub API + repo info\n" + RESET
 					return false
 				end
 			end
@@ -58,7 +57,7 @@ module Watson
 			# Poor mans username/password grabbing
 			print BOLD + "Username: " + RESET
 			_username = $stdin.gets.chomp
-			if (_username.empty?)
+			if _username.empty?
 				Printer.print_status "x", RED
 				print BOLD + "Input blank. Please enter your username!\n\n" + RESET
 				return false
@@ -71,7 +70,7 @@ module Watson
 			_password = $stdin.gets.chomp
 			system "stty echo"
 			print "\n\n"
-			if (_password.empty?)
+			if _password.empty?
 				Printer.print_status "x", RED
 				print BOLD + "Input is blank. Please enter your password!\n\n" + RESET
 				return false
@@ -97,20 +96,19 @@ module Watson
 			_json, _resp  = Watson::Remote.http_call(opts)
 
 			# Check response to validate authorization
-			if (_resp.code == "201")
+			if _resp.code == "201"
 				Printer.print_status "o", GREEN
 				print BOLD + "Obtained OAuth Token\n\n" + RESET
 			else
 				Printer.print_status "x", RED
 				print BOLD + "Unable to obtain OAuth Token\n" + RESET
-				print "      Status: #{_resp.code} - #{_resp.message}\n\n"
+				print "      Status: #{ _resp.code } - #{ _resp.message }\n\n"
 				return false
 			end	
 	
 			# Store API key obtained from POST to @config.github_api
-			@config.github_api = _json["token"]
-			debug_print "Config GitHub API Key updated to: #{@config.github_api}\n"
-
+			config.github_api = _json["token"]
+			debug_print "Config GitHub API Key updated to: #{ config.github_api }\n"
 
 
 			# Get repo information, if blank give error
@@ -122,7 +120,7 @@ module Watson
 
 			print BOLD + "Owner: " + RESET
 			_owner = $stdin.gets.chomp
-			if (_owner.empty?)
+			if _owner.empty?
 				print "\n"
 				Printer.print_status "x", RED
 				print BOLD + "Input blank. Please enter the owner the repo is under!\n\n" + RESET
@@ -131,7 +129,7 @@ module Watson
 
 			print BOLD + "Repo: " + RESET
 			_repo = $stdin.gets.chomp
-			if (_repo.empty?)
+			if _repo.empty?
 				print "\n"
 				Printer.print_status "x", RED
 				print BOLD + "Input blank. Please enter the repo name!\n\n" + RESET
@@ -147,10 +145,10 @@ module Watson
 			# Label URL for GitHub + SSL
 			#  
 			# Auth token
-			opts = {:url        => "https://api.github.com/repos/#{_owner}/#{_repo}/labels",
+			opts = {:url        => "https://api.github.com/repos/#{ _owner }/#{ _repo }/labels",
 					:ssl        => true,
 					:method     => "POST",
-					:auth		=> @config.github_api, 
+					:auth		=> config.github_api, 
 					:data       => {"name" => "watson", 
 							        "color" => "00AEEF" }, 
 					:verbose    => false
@@ -160,12 +158,12 @@ module Watson
 		
 			# [review] - This is pretty messy, maybe clean it up later	
 			# Check response to validate repo access
-			if (_resp.code == "404")
+			if _resp.code == "404"
 				print "\n"
 				Printer.print_status "x", RED
-				print BOLD + "Unable to access /#{_owner}/#{_repo} with given credentials\n" + RESET
+				print BOLD + "Unable to access /#{ _owner }/#{ _repo } with given credentials\n" + RESET
 				print "      Check that credentials are correct and repository exists under user\n"
-				print "      Status: #{_resp.code} - #{_resp.message}\n\n"
+				print "      Status: #{ _resp.code } - #{ _resp.message }\n\n"
 				return false
 
 			else
@@ -177,28 +175,28 @@ module Watson
 			end
 	
 			# Store owner/repo obtained from POST to @config.github_repo
-			@config.github_repo = "#{_owner}/#{_repo}"
-			debug_print "Config GitHub API Key updated to: #{@config.github_repo}\n"
+			config.github_repo = "#{ _owner }/#{ _repo }"
+			debug_print "Config GitHub API Key updated to: #{ config.github_repo }\n"
 
 			# Inform user of label creation status (created above) 
 			Printer.print_status "+", GREEN
 			print BOLD + "Creating label for watson on GitHub...\n" + RESET
-			if (_resp.code == "201")
+			if _resp.code == "201"
 				Printer.print_status "+", GREEN
 				print BOLD + "Label successfully created\n" + RESET
-			elsif (_resp.code == "422" && _json["code"] = "already_exists")
+			elsif _resp.code == "422" && _json["code"] == "already_exists"
 				Printer.print_status "!", YELLOW
 				print BOLD + "Label already exists\n" + RESET
 			else
 				Printer.print_status "x", RED
-				print BOLD + "Unable to create label for /#{_owner}/#{_repo}\n" + RESET
-				print "      Status: #{_resp.code} - #{_resp.message}\n"
+				print BOLD + "Unable to create label for /#{ _owner }/#{ _repo }\n" + RESET
+				print "      Status: #{ _resp.code } - #{ _resp.message }\n"
 			end
 
 			# All setup has been completed, need to update RC
 			# Call config updater/writer from @config to write config	
 			debug_print "Updating config with new GitHub info\n"
-			@config.update_conf("github_api", "github_repo")
+			config.update_conf("github_api", "github_repo")
 
 			# Give user some info
 			print "\n"
@@ -210,19 +208,19 @@ module Watson
 
 			return true
 
-		end ########## setup ##########
+		end
 
 
 		###########################################################
-		# get_issues 
-		###########################################################
+		# Get all remote GitHub issues and store into Config container class  
 
 		def get_issues(config)
+
 			# Identify method entry
-			debug_print "#{self.class} : #{__method__}\n"
+			debug_print "#{ self.class } : #{ __method__ }\n"
 
 			# Only attempt to get issues if API is specified 
-			if (config.github_api.empty?)
+			if config.github_api.empty?
 				debug_print "No API found, this shouldn't be called...\n"
 				return false
 			end
@@ -231,7 +229,7 @@ module Watson
 			# Get all open tickets
 			# Create options hash to pass to Remote::http_call 
 			# Issues URL for GitHub + SSL
-			opts = {:url        => "https://api.github.com/repos/#{config.github_repo}/issues?labels=watson&state=open",
+			opts = {:url        => "https://api.github.com/repos/#{ config.github_repo }/issues?labels=watson&state=open",
 					:ssl        => true,
 					:method     => "GET",
 					:auth		=> config.github_api, 
@@ -242,11 +240,11 @@ module Watson
 			
 			
 			# Check response to validate repo access
-			if (_resp.code != "200")
+			if _resp.code != "200"
 				Printer.print_status "x", RED
-				print BOLD + "Unable to access remote #{config.github_repo}, GitHub API may be invalid\n" + RESET
+				print BOLD + "Unable to access remote #{ config.github_repo }, GitHub API may be invalid\n" + RESET
 				print "      Consider running --remote (-r) option to regenerate key\n\n"
-				print "      Status: #{_resp.code} - #{_resp.message}\n"
+				print "      Status: #{ _resp.code } - #{ _resp.message }\n"
 
 				debug_print "GitHub invalid, setting config var\n"
 				config.github_valid = false
@@ -259,7 +257,7 @@ module Watson
 			# Get all closed tickets
 			# Create option hash to pass to Remote::http_call
 			# Issues URL for GitHub + SSL
-			opts = {:url        => "https://api.github.com/repos/#{config.github_repo}/issues?labels=watson&state=closed",
+			opts = {:url        => "https://api.github.com/repos/#{ config.github_repo }/issues?labels=watson&state=closed",
 					:ssl        => true,
 					:method     => "GET",
 					:auth		=> config.github_api, 
@@ -270,11 +268,11 @@ module Watson
 
 			# Check response to validate repo access
 			# Shouldn't be necessary if we passed the last check but just to be safe
-			if (_resp.code != "200")
+			if _resp.code != "200"
 				Printer.print_status "x", RED
 				print BOLD + "Unable to get closed issues.\n" + RESET
 				print "      Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n" 
-				print "      Status: #{_resp.code} - #{_resp.message}\n"
+				print "      Status: #{ _resp.code } - #{ _resp.message }\n"
 				
 				debug_print "GitHub invalid, setting config var\n"
 				config.github_valid = false
@@ -284,23 +282,21 @@ module Watson
 			config.github_issues[:closed] = _json.empty? ? Hash.new : _json
 			config.github_valid = true
 			return true
-		end ########## get_issues ##########	
-
+		end 
 
 
 		###########################################################
-		# post_issues 
-		###########################################################
+		# Post given issue to remote GitHub repo 
+		def post_issue(issue, config)
 		# [todo] - Better way to identify/compare remote->local issues than md5
 		# 		   Current md5 based on some things that easily can change, need better ident
 
-		def post_issue(issue, config)
 			# Identify method entry
-			debug_print "#{self.class} : #{__method__}\n"
+			debug_print "#{ self.class } : #{ __method__ }\n"
 	
 				
 			# Only attempt to get issues if API is specified 
-			if (config.github_api.empty?)
+			if config.github_api.empty?
 				debug_print "No API found, this shouldn't be called...\n"
 				return false
 			end
@@ -313,40 +309,40 @@ module Watson
 			#		   Makes watson code cleaner but not as readable comment on GitHub...?
 			debug_print "Checking open issues to see if already posted\n"
 			config.github_issues[:open].each do | _open | 
-				if (_open["body"].include?(issue[:md5]))
-					debug_print "Found in #{_open["title"]}, not posting\n"
+				if _open["body"].include?(issue[:md5])
+					debug_print "Found in #{ _open["title"] }, not posting\n"
 					return false
 				end
-				debug_print "Did not find in #{_open["title"]}\n"
+				debug_print "Did not find in #{ _open["title"] }\n"
 			end	
 			
 			
 			debug_print "Checking closed issues to see if already posted\n"
 			config.github_issues[:closed].each do  | _closed | 
-				if (_closed["body"].include?(issue[:md5]))
-					debug_print "Found in #{_closed["title"]}, not posting\n"
+				if _closed["body"].include?(issue[:md5])
+					debug_print "Found in #{ _closed["title"] }, not posting\n"
 					return false
 				end
-				debug_print "Did not find in #{_closed["title"]}\n"
+				debug_print "Did not find in #{ _closed["title"] }\n"
 			end
 		
 			# We didn't find the md5 for this issue in the open or closed issues, so safe to post
 		
 			# Create the body text for the issue here, too long to fit nicely into opts hash
 			# [review] - Only give relative path for privacy when posted
-			_body = "__filename__ : #{issue[:path]}\n" +
-					"__line #__ : #{issue[:line_number]}\n" + 
-					"__tag__ : #{issue[:tag]}\n" +
-					"__md5__ : #{issue[:md5]}\n\n" +
-					"#{issue[:context].join}\n"
+			_body = "__filename__ : #{ issue[:path] }\n" +
+					"__line #__ : #{ issue[:line_number] }\n" + 
+					"__tag__ : #{ issue[:tag] }\n" +
+					"__md5__ : #{ issue[:md5] }\n\n" +
+					"#{ issue[:context].join }\n"
 			
 			# Create option hash to pass to Remote::http_call
 			# Issues URL for GitHub + SSL
-			opts = {:url        => "https://api.github.com/repos/#{config.github_repo}/issues",
+			opts = {:url        => "https://api.github.com/repos/#{ config.github_repo }/issues",
 					:ssl        => true,
 					:method     => "POST",
 					:auth		=> config.github_api, 
-					:data		=> { "title" => issue[:comment] + " [#{issue[:path]}]",
+					:data		=> { "title" => issue[:comment] + " [#{ issue[:path] }]",
 									 "labels" => [issue[:tag], "watson"],
 									 "body" => _body },
 					:verbose    => false 
@@ -357,21 +353,18 @@ module Watson
 				
 			# Check response to validate repo access
 			# Shouldn't be necessary if we passed the last check but just to be safe
-			if (_resp.code != "201")
+			if _resp.code != "201"
 				Printer.print_status "x", RED
 				print BOLD + "Post unsuccessful. \n" + RESET
 				print "      Since the open issues were obtained earlier, something is probably wrong and you should let someone know...\n" 
-				print "      Status: #{_resp.code} - #{_resp.message}\n"
+				print "      Status: #{ _resp.code } - #{ _resp.message }\n"
 				return false
 			end
 		
 			return true	
-		end ########## post_issue ##########	
+		end
 		
-		end ########## class << self ##########
-
-
-
-		end ########## class GitHub ##########
-	end ########## class Remote ##########
-end ########## module Watson ##########
+		end
+		end
+	end
+end
