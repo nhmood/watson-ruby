@@ -345,7 +345,7 @@ module Watson
 					:ssl        => true,
 					:method     => "POST",
 					:basic_auth => [config.bitbucket_api, config.bitbucket_pw],
-					:data		=> [{"title" => issue[:comment] + " [#{ issue[:path] }]",
+					:data		=> [{"title" => issue[:title] + " [#{ issue[:path] }]",
 									"content" => _body }],
 					:verbose    => false 
 				   }

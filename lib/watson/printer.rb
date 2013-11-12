@@ -258,7 +258,7 @@ module Watson
 					cprint "\n"
 					entry[_tag].each do | _issue |
 						cprint WHITE + "  line #{_issue[:line_number]} - " + RESET
-						cprint BOLD + "#{_issue[:comment]}" + RESET
+						cprint BOLD + "#{_issue[:title]}" + RESET
 
 
 						# Check to see if it has been resolved on GitHub/Bitbucket

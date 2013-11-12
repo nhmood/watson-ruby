@@ -342,7 +342,7 @@ module Watson
 					:ssl        => true,
 					:method     => "POST",
 					:auth		=> config.github_api, 
-					:data		=> { "title" => issue[:comment] + " [#{ issue[:path] }]",
+					:data		=> { "title" => issue[:title] + " [#{ issue[:path] }]",
 									 "labels" => [issue[:tag], "watson"],
 									 "body" => _body },
 					:verbose    => false 
