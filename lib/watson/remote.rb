@@ -77,9 +77,6 @@ module Watson
 			# Check for basic authentication key in hash
 			if opts[:basic_auth].size == 2
 				_req.basic_auth(opts[:basic_auth][0], opts[:basic_auth][1])
-			else
-				debug_print "Invalid basic HTTP auth credentials\n"
-				return false
 			end	
 
 			# Check for Authentication token key in hash to be used in header

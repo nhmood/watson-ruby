@@ -421,6 +421,10 @@ module Watson
 			# Identify method entry
 			debug_print "#{ self } : #{ __method__ }\n"
 		
+			Printer.print_header
+		
+			print BOLD + "Existing Remotes:\n" + RESET
+	
 			# Check the config for any remote entries (GitHub or Bitbucket) and print
 			# We *should* always have a repo + API together, but API should be enough
 			if @config.github_api.empty? && @config.bitbucket_api.empty?

@@ -27,7 +27,6 @@ module Watson
 			# Identify method entry
 			debug_print "#{ self.class } : #{ __method__ }\n"
 		
-			Printer.print_header
 			Printer.print_status "+", GREEN
 			print BOLD + "Obtaining OAuth Token for GitHub...\n" + RESET
 			
