@@ -279,10 +279,16 @@ module Watson
 
 
 				case _section
-				when "context"
+				when "context_depth"
 					# No need for regex on context value, command should read this in only as a # 
 					# Chomp to get rid of any nonsense
 					@context_depth = _line.chomp!
+
+
+				when "parse_depth"
+					# No need for regex on parse value, command should read this in only as a # 
+					# Chomp to get rid of any nonsense
+					@parse_depth = _line.chomp!
 
 
 				when "dirs"
@@ -376,6 +382,8 @@ module Watson
 				end
 
 			end
+
+			return true
 		end
 
 
