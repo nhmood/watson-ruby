@@ -1,5 +1,6 @@
-*.swp
-dev/
-.watsonrc
-NOTES
 doc/
+dev/
+pkg/
+NOTES
+*.swp
+.watsonrc
