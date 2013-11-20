@@ -23,7 +23,11 @@ Gem::Specification.new do |s|
 	s.require_paths = ["assets", "bin", "lib"]
 
 	# Runtime Dependencies
-	s.add_runtime_dependency("json","~> 1.8.1")
+	s.add_runtime_dependency 'json'
+
+	# Development Dependencies
+	s.add_development_dependency 'rake'
+	s.add_development_dependency 'rspec'
 end
 
 
