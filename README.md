@@ -1,10 +1,10 @@
 # watson-ruby  
 ### an inline issue manager
-[watson](http://goosecode.com/watson) is a tool for creating and tracking bug reports, issues, and internal notes in code.    
+[watson](http://goosecode.com/watson) ([mirror](http://nhmood.github.io/watson-ruby)) is a tool for creating and tracking bug reports, issues, and internal notes in code.    
 It is avaliable in two flavors, [watson-ruby](http://github.com/nhmood/watson-ruby) and [watson-perl](http://github.com/watson-perl)
 
-### See watson in action [here](http://goosecode.com/watson) ([mirror](http://github.com))
-### See the RDoc documentation [here](http://goosecode.com/watson/documentation) ([mirror](http://github.com))
+### See watson in action [here](http://goosecode.com/watson) ([mirror](http://nhmood.github.io/watson-ruby))
+### See the RDoc documentation [here](http://goosecode.com/watson/ruby-documentation) ([mirror](http://nhmood.github.io/watson-ruby/documentation))
 
 ## Installation
 watson-ruby has been tested with **Ruby v2.0.0p247** and **RubyGems v2.0.3** (on **Arch Linux**)  
@@ -12,11 +12,20 @@ watson-ruby requires the ```json``` gem
 
 ### From Repo
 watson-ruby is avaliable as a RubyGem.  
-You can either build the gem yourself or donwloa d
-watson-perl is self contained in a single file and has **no** CPAN dependencies.  
-Because of this, it _should_ run on a vanilla version of perl (tested with perl 5.18.1 on Arch Linux).  
+You can either download it directory from ```gem``` using
+```
+gem install watson
+```
+
+Or you can clone this repo and install with Rake
+```
+clone https://github.com/nhmood/watson-ruby.git .
+cd watson-ruby
+rake 
+```
+  
 ## Usage
-For a quick idea of how to use watson, check out the [app demo](http://goosecode.com/watson)!  
+For a quick idea of how to use watson, check out the [app demo](http://goosecode.com/watson)! ([mirror](http://nhmood.github.io/watson-ruby))  
 See below for a description of what all the command line arguments do.
 
 ## Command line arguments
@@ -124,8 +133,8 @@ Currently, OAuth has yet to be implemented for Bitbucket so the Bitbucket userna
 The remote related .watsonrc options shouldn't need to be edited manually, as they are automatically populated when the -r, --remote setup is called.
 
 ## Special Thanks
-Special thanks to [@samirahmed](http://twitter.com/samirahmed) for his super Ruby help and encouraging the Ruby port!  
-Special thanks to [@eugenekolo](http://twitter.com/eugenekolo) for his super Perl help!  
+Special thanks to [@samirahmed](http://github.com/samirahmed) for his super Ruby help and encouraging the Ruby port!  
+Special thanks to [@eugenekolo](http://twitter.com/eugenekolo) [[email](eugenek@bu.edu)] for his super Perl help!  
 Special thanks to [@crowell](http://twitter.com/crowell) for testing out watson-ruby!
 
 ## FAQ
