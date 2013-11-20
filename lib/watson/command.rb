@@ -167,8 +167,8 @@ module Watson
     		print "If no RC file exists, default RC file will be created\n"
 
     		print "\n"
-    		print "   -d, --dirs            list of directories to search in\n"
 			print "   -c, --context-depth   number of lines of context to provide with posted issue\n"
+    		print "   -d, --dirs            list of directories to search in\n"
     		print "   -f, --files           list of files to search in\n"
     		print "   -h, --help            print help\n"
     		print "   -i, --ignore          list of files, directories, or types to ignore\n"
