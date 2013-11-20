@@ -11,7 +11,7 @@ watson-ruby has been tested with **Ruby v2.0.0p247** and **RubyGems v2.0.3** (on
 watson-ruby requires the ```json``` gem 
 
 ### From Repo
-watson-ruby is avaliable as a RubyGem.  
+watson-ruby is avaliable as a RubyGems ([link](https://rubygems.org/gems/watson-ruby)).  
 You can either download it directory from ```gem``` using
 ```
 gem install watson
