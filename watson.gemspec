@@ -22,6 +22,9 @@ Gem::Specification.new do |s|
 
 	s.require_paths = ["assets", "bin", "lib"]
 
+	# Ruby Dependency
+	s.required_ruby_version = '>= 2.0.0'
+
 	# Runtime Dependencies
 	s.add_runtime_dependency 'json'
 
