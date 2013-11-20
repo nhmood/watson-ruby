@@ -227,7 +227,7 @@ module Watson
 				# Find any comment line with [tag] - text (any comb of space and # acceptable)
 				# Using if match to stay consistent (with config.rb) see there for
 				# explanation of why I do this (not a good good one persay...)
-				_mtch = _line.match(/^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/)
+				_mtch = _line.encode('UTF-8', :invalid => :replace).match(/^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/)
 				if !_mtch
 					debug_print "No valid tag found in line, skipping\n"
 					next
