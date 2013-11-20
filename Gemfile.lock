@@ -1,0 +1,16 @@
+PATH
+  remote: .
+  specs:
+    watson (1.0.0)
+      json (~> 1.8.1)
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    json (1.8.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  watson!
