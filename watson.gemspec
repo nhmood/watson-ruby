@@ -4,7 +4,7 @@ $:.push File.expand_path("../lib", __FILE__)
 require "watson/version"
 
 Gem::Specification.new do |s|
-	s.name			= 'watson'
+	s.name			= 'watson-ruby'
 	s.version		= Watson::VERSION 
 	s.date			= '2013-11-06'
 
