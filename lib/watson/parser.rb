@@ -368,18 +368,19 @@ module Watson
 				debug_print "Extension: #{ _mtch }\n"
 
 				# Break if we don't find a match 
-				break if _mtch == nil
+				break if _mtch.nil?
 
 				# Determine file type
 				case _mtch[0]
-				# C / C++
+				# C / C++, Java, C#
 				# [todo] - Add /* style comment
-				when ".cpp", ".cc", ".c", ".hpp", ".h"
+				when ".cpp", ".cc", ".c", ".hpp", ".h",
+					 ".java", ".class", ".cs"
 					debug_print "Comment type is: //\n"
 					return "//"
 
-				# Bash / Ruby / Perl
-				when ".sh", ".rb", ".pl"
+				# Bash, Ruby, Perl, Python
+				when ".sh", ".rb", ".pl", ".py"
 					debug_print "Comment type is: #\n"
 					return "#"
 
