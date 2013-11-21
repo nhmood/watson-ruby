@@ -375,7 +375,7 @@ module Watson
 				# C / C++, Java, C#
 				# [todo] - Add /* style comment
 				when ".cpp", ".cc", ".c", ".hpp", ".h",
-					 ".java", ".class", ".cs"
+					 ".java", ".class", ".cs", ".js", ".php"
 					debug_print "Comment type is: //\n"
 					return "//"
 
