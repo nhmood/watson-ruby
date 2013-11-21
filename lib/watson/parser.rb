@@ -380,7 +380,7 @@ module Watson
 					return "//"
 
 				# Bash, Ruby, Perl, Python
-				when ".sh", ".rb", ".pl", ".py"
+				when ".sh", ".rb", ".pl", ".py", ".coffee"
 					debug_print "Comment type is: #\n"
 					return "#"
 
