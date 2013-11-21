@@ -116,7 +116,7 @@ The .watsonrc is placed in every directory that watson is run from as opposed to
 For example, a C/C++ project might want to look in src/ and ignore obj/ whereas a Ruby project might want to look in lib/ and ignore assets/.  
 
 The .watsonrc file is fairly straightforward...  
-**[dirs]** - This is a newline separated list of directories to ignore.
+**[dirs]** - This is a newline separated list of directories to look in while parsing.
 
 **[tags]** - This is a newline separated list of tags to look for while parsing.
 
