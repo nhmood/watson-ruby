@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>class Watson::Remote::GitHub - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="../../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../../";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="../../js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="../../index.html">Home</a>
+    <a href="../../table_of_contents.html#classes">Classes</a>
+    <a href="../../table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>lib/watson/github.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    <nav id="parent-class-section" class="section">
+  <h3 class="section-header">Parent</h3>
+  
+  <p class="link">Object
+  
+</nav>
+
+    <!-- Included Modules -->
+<nav id="includes-section" class="section">
+  <h3 class="section-header">Included Modules</h3>
+
+  <ul class="link-list">
+  
+  
+    <li><a class="include" href="../../Watson.html">Watson</a>
+  
+  
+  </ul>
+</nav>
+
+    
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li ><a href="#method-c-get_issues">::get_issues</a>
+    
+    <li ><a href="#method-c-post_issue">::post_issue</a>
+    
+    <li ><a href="#method-c-setup">::setup</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="../../Watson.html">Watson</a>
+  
+    <li><a href="../../Watson/Command.html">Watson::Command</a>
+  
+    <li><a href="../../Watson/Config.html">Watson::Config</a>
+  
+    <li><a href="../../Watson/FS.html">Watson::FS</a>
+  
+    <li><a href="../../Watson/Parser.html">Watson::Parser</a>
+  
+    <li><a href="../../Watson/Printer.html">Watson::Printer</a>
+  
+    <li><a href="../../Watson/Remote.html">Watson::Remote</a>
+  
+    <li><a href="../../Watson/Remote/Bitbucket.html">Watson::Remote::Bitbucket</a>
+  
+    <li><a href="../../Watson/Remote/GitHub.html">Watson::Remote::GitHub</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="class">class Watson::Remote::GitHub</h1>
+
+  <div id="description" class="description">
+    
+<p><a href="GitHub.html">GitHub</a> remote access class Contains all necessary
+methods to obtain access to, get issue list, and post issues to <a
+href="GitHub.html">GitHub</a></p>
+
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <!-- Constants -->
+    <section id="constants-list" class="section">
+      <h3 class="section-header">Constants</h3>
+      <dl>
+      
+        <dt id="DEBUG">DEBUG
+        
+        <dd class="description"><p>Debug printing for this class</p>
+        
+      
+      </dl>
+    </section>
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Class Methods</h3>
+
+    
+      <div id="method-c-get_issues" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">get_issues</span><span
+            class="method-args">(config)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Get all remote <a href="GitHub.html">GitHub</a> issues and store into <a
+href="../Config.html">Config</a> container class</p>
+          
+          
+
+          
+          <div class="method-source-code" id="get_issues-source">
+            <pre><span class="ruby-comment"># File lib/watson/github.rb, line 216</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">get_issues</span>(<span class="ruby-identifier">config</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self.class } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-comment"># Only attempt to get issues if API is specified </span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_api</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No API found, this shouldn&#39;t be called...\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+
+        <span class="ruby-comment"># Get all open tickets</span>
+        <span class="ruby-comment"># Create options hash to pass to Remote::http_call </span>
+        <span class="ruby-comment"># Issues URL for GitHub + SSL</span>
+        <span class="ruby-identifier">opts</span> = {<span class="ruby-value">:url</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;https://api.github.com/repos/#{ config.github_repo }/issues?labels=watson&amp;state=open&quot;</span>,
+                        <span class="ruby-value">:ssl</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">true</span>,
+                        <span class="ruby-value">:method</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;GET&quot;</span>,
+                        <span class="ruby-value">:auth</span>              =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_api</span>, 
+                        <span class="ruby-value">:verbose</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">false</span> 
+                   }
+
+        <span class="ruby-identifier">_json</span>, <span class="ruby-identifier">_resp</span>  = <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Remote</span>.<span class="ruby-identifier">http_call</span>(<span class="ruby-identifier">opts</span>)
+        
+        
+        <span class="ruby-comment"># Check response to validate repo access</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_resp</span>.<span class="ruby-identifier">code</span> <span class="ruby-operator">!=</span> <span class="ruby-string">&quot;200&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;Unable to access remote #{ config.github_repo }, GitHub API may be invalid\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      Consider running --remote (-r) option to regenerate key\n\n&quot;</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;      Status: #{ _resp.code } - #{ _resp.message }\n&quot;</span>
+
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;GitHub invalid, setting config var\n&quot;</span>
+                <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_valid</span> = <span class="ruby-keyword">false</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_issues</span>[<span class="ruby-value">:open</span>] = <span class="ruby-identifier">_json</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">?</span> <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">_json</span>
+        <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_valid</span> = <span class="ruby-keyword">true</span>
+        
+        <span class="ruby-comment"># Get all closed tickets</span>
+        <span class="ruby-comment"># Create option hash to pass to Remote::http_call</span>
+        <span class="ruby-comment"># Issues URL for GitHub + SSL</span>
+        <span class="ruby-identifier">opts</span> = {<span class="ruby-value">:url</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;https://api.github.com/repos/#{ config.github_repo }/issues?labels=watson&amp;state=closed&quot;</span>,
+                        <span class="ruby-value">:ssl</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">true</span>,
+                        <span class="ruby-value">:method</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;GET&quot;</span>,
+                        <span class="ruby-value">:auth</span>              =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_api</span>, 
+                        <span class="ruby-value">:verbose</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">false</span> 
+                   }
+
+        <span class="ruby-identifier">_json</span>, <span class="ruby-identifier">_resp</span>  = <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Remote</span>.<span class="ruby-identifier">http_call</span>(<span class="ruby-identifier">opts</span>)
+
+        <span class="ruby-comment"># Check response to validate repo access</span>
+        <span class="ruby-comment"># Shouldn&#39;t be necessary if we passed the last check but just to be safe</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_resp</span>.<span class="ruby-identifier">code</span> <span class="ruby-operator">!=</span> <span class="ruby-string">&quot;200&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Unable to get closed issues.\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n&quot;</span> 
+                <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;      Status: #{ _resp.code } - #{ _resp.message }\n&quot;</span>
+                
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;GitHub invalid, setting config var\n&quot;</span>
+                <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_valid</span> = <span class="ruby-keyword">false</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_issues</span>[<span class="ruby-value">:closed</span>] = <span class="ruby-identifier">_json</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">?</span> <span class="ruby-constant">Hash</span>.<span class="ruby-identifier">new</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">_json</span>
+        <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_valid</span> = <span class="ruby-keyword">true</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- get_issues-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- get_issues-method -->
+
+    
+      <div id="method-c-post_issue" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">post_issue</span><span
+            class="method-args">(issue, config)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Post given issue to remote <a href="GitHub.html">GitHub</a> repo</p>
+          
+          
+
+          
+          <div class="method-source-code" id="post_issue-source">
+            <pre><span class="ruby-comment"># File lib/watson/github.rb, line 289</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">post_issue</span>(<span class="ruby-identifier">issue</span>, <span class="ruby-identifier">config</span>)
+<span class="ruby-comment"># [todo] - Better way to identify/compare remote-&gt;local issues than md5</span>
+<span class="ruby-comment">#                Current md5 based on some things that easily can change, need better ident</span>
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self.class } : #{ __method__ }\n&quot;</span>
+        
+                
+        <span class="ruby-comment"># Only attempt to get issues if API is specified </span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_api</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No API found, this shouldn&#39;t be called...\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># Check that issue hasn&#39;t been posted already by comparing md5s</span>
+        <span class="ruby-comment"># Go through all open issues, if there is a match in md5, return out of method</span>
+        <span class="ruby-comment"># [todo] - Play with idea of making body of GitHub issue hash format to be exec&#39;d</span>
+        <span class="ruby-comment">#               Store pieces in text as :md5 =&gt; &quot;whatever&quot; so when we get issues we can</span>
+        <span class="ruby-comment">#               call exec and turn it into a real hash for parsing in watson</span>
+        <span class="ruby-comment">#               Makes watson code cleaner but not as readable comment on GitHub...?</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Checking open issues to see if already posted\n&quot;</span>
+        <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_issues</span>[<span class="ruby-value">:open</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_open</span> <span class="ruby-operator">|</span> 
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">_open</span>[<span class="ruby-string">&quot;body&quot;</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">issue</span>[<span class="ruby-value">:md5</span>])
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Found in #{ _open[&quot;title&quot;] }, not posting\n&quot;</span>
+                        <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+                <span class="ruby-keyword">end</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Did not find in #{ _open[&quot;title&quot;] }\n&quot;</span>
+        <span class="ruby-keyword">end</span>  
+        
+        
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Checking closed issues to see if already posted\n&quot;</span>
+        <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_issues</span>[<span class="ruby-value">:closed</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span>  <span class="ruby-operator">|</span> <span class="ruby-identifier">_closed</span> <span class="ruby-operator">|</span> 
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">_closed</span>[<span class="ruby-string">&quot;body&quot;</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">issue</span>[<span class="ruby-value">:md5</span>])
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Found in #{ _closed[&quot;title&quot;] }, not posting\n&quot;</span>
+                        <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+                <span class="ruby-keyword">end</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Did not find in #{ _closed[&quot;title&quot;] }\n&quot;</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># We didn&#39;t find the md5 for this issue in the open or closed issues, so safe to post</span>
+
+        <span class="ruby-comment"># Create the body text for the issue here, too long to fit nicely into opts hash</span>
+        <span class="ruby-comment"># [review] - Only give relative path for privacy when posted</span>
+        <span class="ruby-identifier">_body</span> = <span class="ruby-node">&quot;__filename__ : #{ issue[:path] }\n&quot;</span> <span class="ruby-operator">+</span>
+                        <span class="ruby-node">&quot;__line #__ : #{ issue[:line_number] }\n&quot;</span> <span class="ruby-operator">+</span> 
+                        <span class="ruby-node">&quot;__tag__ : #{ issue[:tag] }\n&quot;</span> <span class="ruby-operator">+</span>
+                        <span class="ruby-node">&quot;__md5__ : #{ issue[:md5] }\n\n&quot;</span> <span class="ruby-operator">+</span>
+                        <span class="ruby-node">&quot;#{ issue[:context].join }\n&quot;</span>
+        
+        <span class="ruby-comment"># Create option hash to pass to Remote::http_call</span>
+        <span class="ruby-comment"># Issues URL for GitHub + SSL</span>
+        <span class="ruby-identifier">opts</span> = {<span class="ruby-value">:url</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;https://api.github.com/repos/#{ config.github_repo }/issues&quot;</span>,
+                        <span class="ruby-value">:ssl</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">true</span>,
+                        <span class="ruby-value">:method</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;POST&quot;</span>,
+                        <span class="ruby-value">:auth</span>              =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_api</span>, 
+                        <span class="ruby-value">:data</span>              =<span class="ruby-operator">&gt;</span> { <span class="ruby-string">&quot;title&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">issue</span>[<span class="ruby-value">:title</span>] <span class="ruby-operator">+</span> <span class="ruby-node">&quot; [#{ issue[:path] }]&quot;</span>,
+                                                         <span class="ruby-string">&quot;labels&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">issue</span>[<span class="ruby-value">:tag</span>], <span class="ruby-string">&quot;watson&quot;</span>],
+                                                         <span class="ruby-string">&quot;body&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">_body</span> },
+                        <span class="ruby-value">:verbose</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">false</span> 
+                   }
+
+        <span class="ruby-identifier">_json</span>, <span class="ruby-identifier">_resp</span>  = <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Remote</span>.<span class="ruby-identifier">http_call</span>(<span class="ruby-identifier">opts</span>)
+
+                
+        <span class="ruby-comment"># Check response to validate repo access</span>
+        <span class="ruby-comment"># Shouldn&#39;t be necessary if we passed the last check but just to be safe</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_resp</span>.<span class="ruby-identifier">code</span> <span class="ruby-operator">!=</span> <span class="ruby-string">&quot;201&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Post unsuccessful. \n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      Since the open issues were obtained earlier, something is probably wrong and you should let someone know...\n&quot;</span> 
+                <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;      Status: #{ _resp.code } - #{ _resp.message }\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>  
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- post_issue-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- post_issue-method -->
+
+    
+      <div id="method-c-setup" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">setup</span><span
+            class="method-args">(config)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Setup remote access to <a href="GitHub.html">GitHub</a>  Get Username,
+Repo, and PW and perform necessary HTTP calls to check validity</p>
+          
+          
+
+          
+          <div class="method-source-code" id="setup-source">
+            <pre><span class="ruby-comment"># File lib/watson/github.rb, line 25</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">setup</span>(<span class="ruby-identifier">config</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self.class } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;+&quot;</span>, <span class="ruby-constant">GREEN</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Obtaining OAuth Token for GitHub...\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        
+        <span class="ruby-comment"># Check config to make sure no previous API exists</span>
+        <span class="ruby-keyword">unless</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_api</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_repo</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;!&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Previous GitHub API + Repo is in RC, are you sure you want to overwrite?\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      (Y)es/(N)o: &quot;</span>
+
+                <span class="ruby-comment"># Get user input</span>
+                <span class="ruby-identifier">_overwrite</span> = <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">gets</span>.<span class="ruby-identifier">chomp</span>
+                <span class="ruby-keyword">if</span> [<span class="ruby-string">&quot;no&quot;</span>, <span class="ruby-string">&quot;n&quot;</span>].<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">_overwrite</span>.<span class="ruby-identifier">downcase</span>)
+                        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+                        <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Not overwriting current GitHub API + repo info\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                        <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+
+
+        <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;!&quot;</span>, <span class="ruby-constant">YELLOW</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Access to your GitHub account required to make/update issues\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      See help or README for more details on GitHub/Bitbucket access\n\n&quot;</span>
+
+
+        <span class="ruby-comment"># [todo] - Don&#39;t just check for blank password but invalid as well</span>
+        <span class="ruby-comment"># Poor mans username/password grabbing</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Username: &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">_username</span> = <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">gets</span>.<span class="ruby-identifier">chomp</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_username</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Input blank. Please enter your username!\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># [fix] - Crossplatform password block needed, not sure if current method is safe either</span>
+        <span class="ruby-comment"># Block output to tty to prevent PW showing, Linux/Unix only :(</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Password: &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">system</span> <span class="ruby-string">&quot;stty -echo&quot;</span>
+        <span class="ruby-identifier">_password</span> = <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">gets</span>.<span class="ruby-identifier">chomp</span>
+        <span class="ruby-identifier">system</span> <span class="ruby-string">&quot;stty echo&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n\n&quot;</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_password</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Input is blank. Please enter your password!\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># HTTP Request to get OAuth Token</span>
+        <span class="ruby-comment"># GitHub API v3 - http://developer.github.com/v3/</span>
+
+        <span class="ruby-comment"># Create options hash to pass to Remote::http_call </span>
+        <span class="ruby-comment"># Auth URL for GitHub + SSL</span>
+        <span class="ruby-comment"># Repo scope + notes for watson</span>
+        <span class="ruby-comment"># Basic auth with user input</span>
+        <span class="ruby-identifier">opts</span> = {<span class="ruby-value">:url</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;https://api.github.com/authorizations&quot;</span>,
+                        <span class="ruby-value">:ssl</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">true</span>,
+                        <span class="ruby-value">:method</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;POST&quot;</span>,
+                        <span class="ruby-value">:basic_auth</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-identifier">_username</span>, <span class="ruby-identifier">_password</span>],
+                        <span class="ruby-value">:data</span>       =<span class="ruby-operator">&gt;</span> {<span class="ruby-string">&quot;scopes&quot;</span> =<span class="ruby-operator">&gt;</span> [<span class="ruby-string">&quot;repo&quot;</span>], 
+                                             <span class="ruby-string">&quot;note&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;watson&quot;</span>, 
+                                                <span class="ruby-string">&quot;note_url&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;http://watson.goosecode.com/&quot;</span> }, 
+                        <span class="ruby-value">:verbose</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">false</span>
+                   }
+
+        <span class="ruby-identifier">_json</span>, <span class="ruby-identifier">_resp</span>  = <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Remote</span>.<span class="ruby-identifier">http_call</span>(<span class="ruby-identifier">opts</span>)
+
+        <span class="ruby-comment"># Check response to validate authorization</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_resp</span>.<span class="ruby-identifier">code</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;201&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;o&quot;</span>, <span class="ruby-constant">GREEN</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Obtained OAuth Token\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-keyword">else</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Unable to obtain OAuth Token\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;      Status: #{ _resp.code } - #{ _resp.message }\n\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>  
+        
+        <span class="ruby-comment"># Store API key obtained from POST to @config.github_api</span>
+        <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_api</span> = <span class="ruby-identifier">_json</span>[<span class="ruby-string">&quot;token&quot;</span>]
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Config GitHub API Key updated to: #{ config.github_api }\n&quot;</span>
+
+
+        <span class="ruby-comment"># Get repo information, if blank give error</span>
+        <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;!&quot;</span>, <span class="ruby-constant">YELLOW</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Repo information required\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      Please provide owner that repo is under followed by repo name\n&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      e.g. owner: nhmood, repo: watson (case sensitive)\n&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      See help or README for more details on GitHub access\n\n&quot;</span>
+
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Owner: &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">_owner</span> = <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">gets</span>.<span class="ruby-identifier">chomp</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_owner</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Input blank. Please enter the owner the repo is under!\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Repo: &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">_repo</span> = <span class="ruby-identifier">$stdin</span>.<span class="ruby-identifier">gets</span>.<span class="ruby-identifier">chomp</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_repo</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Input blank. Please enter the repo name!\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+
+        <span class="ruby-comment"># Make call to GitHub API to create new label for Issues</span>
+        <span class="ruby-comment"># If status returns not 404, then we have access to repo (+ it exists)</span>
+        <span class="ruby-comment"># If 422, then (most likely) the label already exists</span>
+
+        <span class="ruby-comment"># Create options hash to pass to Remote::http_call </span>
+        <span class="ruby-comment"># Label URL for GitHub + SSL</span>
+        <span class="ruby-comment">#  </span>
+        <span class="ruby-comment"># Auth token</span>
+        <span class="ruby-identifier">opts</span> = {<span class="ruby-value">:url</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-node">&quot;https://api.github.com/repos/#{ _owner }/#{ _repo }/labels&quot;</span>,
+                        <span class="ruby-value">:ssl</span>        =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">true</span>,
+                        <span class="ruby-value">:method</span>     =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;POST&quot;</span>,
+                        <span class="ruby-value">:auth</span>              =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_api</span>, 
+                        <span class="ruby-value">:data</span>       =<span class="ruby-operator">&gt;</span> {<span class="ruby-string">&quot;name&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;watson&quot;</span>, 
+                                                <span class="ruby-string">&quot;color&quot;</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-string">&quot;00AEEF&quot;</span> }, 
+                        <span class="ruby-value">:verbose</span>    =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword">false</span>
+                   }
+
+        <span class="ruby-identifier">_json</span>, <span class="ruby-identifier">_resp</span>  = <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Remote</span>.<span class="ruby-identifier">http_call</span>(<span class="ruby-identifier">opts</span>)
+
+        <span class="ruby-comment"># [review] - This is pretty messy, maybe clean it up later   </span>
+        <span class="ruby-comment"># Check response to validate repo access</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_resp</span>.<span class="ruby-identifier">code</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;404&quot;</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;Unable to access /#{ _owner }/#{ _repo } with given credentials\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      Check that credentials are correct and repository exists under user\n&quot;</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;      Status: #{ _resp.code } - #{ _resp.message }\n\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+
+        <span class="ruby-keyword">else</span>
+                <span class="ruby-comment"># If it is anything but a 404, I THINK it means we have access...</span>
+                <span class="ruby-comment"># Will assume that until proven otherwise</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;o&quot;</span>, <span class="ruby-constant">GREEN</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Repo successfully accessed\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-keyword">end</span>
+        
+        <span class="ruby-comment"># Store owner/repo obtained from POST to @config.github_repo</span>
+        <span class="ruby-identifier">config</span>.<span class="ruby-identifier">github_repo</span> = <span class="ruby-node">&quot;#{ _owner }/#{ _repo }&quot;</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Config GitHub API Key updated to: #{ config.github_repo }\n&quot;</span>
+
+        <span class="ruby-comment"># Inform user of label creation status (created above) </span>
+        <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;+&quot;</span>, <span class="ruby-constant">GREEN</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Creating label for watson on GitHub...\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">_resp</span>.<span class="ruby-identifier">code</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;201&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;+&quot;</span>, <span class="ruby-constant">GREEN</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Label successfully created\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">_resp</span>.<span class="ruby-identifier">code</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;422&quot;</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">_json</span>[<span class="ruby-string">&quot;code&quot;</span>] <span class="ruby-operator">==</span> <span class="ruby-string">&quot;already_exists&quot;</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;!&quot;</span>, <span class="ruby-constant">YELLOW</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Label already exists\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-keyword">else</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;Unable to create label for /#{ _owner }/#{ _repo }\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;      Status: #{ _resp.code } - #{ _resp.message }\n&quot;</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># All setup has been completed, need to update RC</span>
+        <span class="ruby-comment"># Call config updater/writer from @config to write config    </span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Updating config with new GitHub info\n&quot;</span>
+        <span class="ruby-identifier">config</span>.<span class="ruby-identifier">update_conf</span>(<span class="ruby-string">&quot;github_api&quot;</span>, <span class="ruby-string">&quot;github_repo&quot;</span>)
+
+        <span class="ruby-comment"># Give user some info</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+        <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;o&quot;</span>, <span class="ruby-constant">GREEN</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;GitHub successfully setup\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      Issues will now automatically be retrieved from GitHub by default\n&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      Use -p, --push to post issues to GitHub\n&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      See help or README for more details on GitHub/Bitbucket access\n\n&quot;</span>
+
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- setup-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- setup-method -->
+
+    
+    </section><!-- public-class-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 4.0.1.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

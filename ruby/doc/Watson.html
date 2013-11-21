@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>module Watson - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="module">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="./index.html">Home</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>lib/watson.rb
+    <li>lib/watson/bitbucket.rb
+    <li>lib/watson/command.rb
+    <li>lib/watson/config.rb
+    <li>lib/watson/fs.rb
+    <li>lib/watson/github.rb
+    <li>lib/watson/parser.rb
+    <li>lib/watson/printer.rb
+    <li>lib/watson/remote.rb
+    <li>lib/watson/version.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    
+    
+    
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li ><a href="#method-i-check_less">#check_less</a>
+    
+    <li ><a href="#method-i-debug_print">#debug_print</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./Watson.html">Watson</a>
+  
+    <li><a href="./Watson/Command.html">Watson::Command</a>
+  
+    <li><a href="./Watson/Config.html">Watson::Config</a>
+  
+    <li><a href="./Watson/FS.html">Watson::FS</a>
+  
+    <li><a href="./Watson/Parser.html">Watson::Parser</a>
+  
+    <li><a href="./Watson/Printer.html">Watson::Printer</a>
+  
+    <li><a href="./Watson/Remote.html">Watson::Remote</a>
+  
+    <li><a href="./Watson/Remote/Bitbucket.html">Watson::Remote::Bitbucket</a>
+  
+    <li><a href="./Watson/Remote/GitHub.html">Watson::Remote::GitHub</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="module">module Watson</h1>
+
+  <div id="description" class="description">
+    
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <!-- Constants -->
+    <section id="constants-list" class="section">
+      <h3 class="section-header">Constants</h3>
+      <dl>
+      
+        <dt id="BLUE">BLUE
+        
+        <dd class="description">
+        
+      
+        <dt id="BOLD">BOLD
+        
+        <dd class="description"><p>Color definitions for pretty printing Defined here because we need Global
+scope but makes sense to have them in the printer.rb file at least</p>
+        
+      
+        <dt id="CYAN">CYAN
+        
+        <dd class="description">
+        
+      
+        <dt id="GLOBAL_DEBUG_OFF">GLOBAL_DEBUG_OFF
+        
+        <dd class="description"><p>Gllobal flag to turn OFF debugging across all files</p>
+        
+      
+        <dt id="GLOBAL_DEBUG_ON">GLOBAL_DEBUG_ON
+        
+        <dd class="description"><p>Global flag to turn ON debugging across all files</p>
+        
+      
+        <dt id="GRAY">GRAY
+        
+        <dd class="description">
+        
+      
+        <dt id="GREEN">GREEN
+        
+        <dd class="description">
+        
+      
+        <dt id="MAGENTA">MAGENTA
+        
+        <dd class="description">
+        
+      
+        <dt id="RED">RED
+        
+        <dd class="description">
+        
+      
+        <dt id="RESET">RESET
+        
+        <dd class="description">
+        
+      
+        <dt id="UNDERLINE">UNDERLINE
+        
+        <dd class="description">
+        
+      
+        <dt id="VERSION">VERSION
+        
+        <dd class="description">
+        
+      
+        <dt id="WHITE">WHITE
+        
+        <dd class="description">
+        
+      
+        <dt id="YELLOW">YELLOW
+        
+        <dd class="description">
+        
+      
+      </dl>
+    </section>
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-check_less" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">check_less</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Perform system check to see if we are able to use unix less for printing</p>
+          
+          
+
+          
+          <div class="method-source-code" id="check_less-source">
+            <pre><span class="ruby-comment"># File lib/watson.rb, line 63</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">check_less</span>
+        <span class="ruby-comment"># Check if system has less (so we can print out to it to allow scrolling)</span>
+        <span class="ruby-comment"># [todo] - Implement this scrolling thing inside watson with ncurses</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-identifier">system</span>(<span class="ruby-string">&quot;which less &gt; /dev/null 2&gt;&amp;1&quot;</span>)  
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- check_less-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- check_less-method -->
+
+    
+      <div id="method-i-debug_print" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">debug_print</span><span
+            class="method-args">(msg)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Global debug print that prints based on local file DEBUG flag as well as
+GLOBAL debug flag</p>
+          
+          
+
+          
+          <div class="method-source-code" id="debug_print-source">
+            <pre><span class="ruby-comment"># File lib/watson.rb, line 45</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">debug_print</span>(<span class="ruby-identifier">msg</span>)
+<span class="ruby-comment"># [todo] - If input msg is a Hash, use pp to dump it</span>
+
+        <span class="ruby-comment"># Print only if DEBUG flag of calling class is true OR </span>
+        <span class="ruby-comment"># GLOBAL_DEBUG_ON of Watson module (defined above) is true</span>
+        <span class="ruby-comment"># AND GLOBAL_DEBUG_OFF of Watson module (Defined above) is false</span>
+
+        <span class="ruby-comment"># Sometimes we call debug_print from a static method (class &lt;&lt; self)</span>
+        <span class="ruby-comment"># and other times from a class method, and ::DEBUG is accessed differently </span>
+        <span class="ruby-comment"># from a class vs object, so lets take care of that</span>
+        <span class="ruby-identifier">_DEBUG</span> = (<span class="ruby-keyword">self</span>.<span class="ruby-identifier">is_a?</span> <span class="ruby-constant">Class</span>) <span class="ruby-operator">?</span> <span class="ruby-keyword">self</span><span class="ruby-operator">::</span><span class="ruby-constant">DEBUG</span> <span class="ruby-operator">:</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">class</span><span class="ruby-operator">::</span><span class="ruby-constant">DEBUG</span>
+
+        <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;=&gt; #{msg}&quot;</span> <span class="ruby-keyword">if</span> ( (<span class="ruby-identifier">_DEBUG</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">true</span> <span class="ruby-operator">||</span> <span class="ruby-constant">GLOBAL_DEBUG_ON</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">true</span>) <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-constant">GLOBAL_DEBUG_OFF</span> <span class="ruby-operator">==</span> <span class="ruby-keyword">false</span>))
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- debug_print-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- debug_print-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 4.0.1.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

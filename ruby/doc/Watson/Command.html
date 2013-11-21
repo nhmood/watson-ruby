@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+
+<title>class Watson::Command - RDoc Documentation</title>
+
+<link type="text/css" media="screen" href="../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="../index.html">Home</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>lib/watson/command.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    <nav id="parent-class-section" class="section">
+  <h3 class="section-header">Parent</h3>
+  
+  <p class="link">Object
+  
+</nav>
+
+    <!-- Included Modules -->
+<nav id="includes-section" class="section">
+  <h3 class="section-header">Included Modules</h3>
+
+  <ul class="link-list">
+  
+  
+    <li><a class="include" href="../Watson.html">Watson</a>
+  
+  
+  </ul>
+</nav>
+
+    
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li ><a href="#method-c-execute">::execute</a>
+    
+    <li ><a href="#method-c-help">::help</a>
+    
+    <li ><a href="#method-c-set_context">::set_context</a>
+    
+    <li ><a href="#method-c-set_dirs">::set_dirs</a>
+    
+    <li ><a href="#method-c-set_files">::set_files</a>
+    
+    <li ><a href="#method-c-set_ignores">::set_ignores</a>
+    
+    <li ><a href="#method-c-set_parse_depth">::set_parse_depth</a>
+    
+    <li ><a href="#method-c-set_tags">::set_tags</a>
+    
+    <li ><a href="#method-c-setup_remote">::setup_remote</a>
+    
+    <li ><a href="#method-c-version">::version</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="../Watson.html">Watson</a>
+  
+    <li><a href="../Watson/Command.html">Watson::Command</a>
+  
+    <li><a href="../Watson/Config.html">Watson::Config</a>
+  
+    <li><a href="../Watson/FS.html">Watson::FS</a>
+  
+    <li><a href="../Watson/Parser.html">Watson::Parser</a>
+  
+    <li><a href="../Watson/Printer.html">Watson::Printer</a>
+  
+    <li><a href="../Watson/Remote.html">Watson::Remote</a>
+  
+    <li><a href="../Watson/Remote/Bitbucket.html">Watson::Remote::Bitbucket</a>
+  
+    <li><a href="../Watson/Remote/GitHub.html">Watson::Remote::GitHub</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="class">class Watson::Command</h1>
+
+  <div id="description" class="description">
+    
+<p><a href="Command.html">Command</a> line parser class Controls program flow
+and parses options given by command line</p>
+
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <!-- Constants -->
+    <section id="constants-list" class="section">
+      <h3 class="section-header">Constants</h3>
+      <dl>
+      
+        <dt id="DEBUG">DEBUG
+        
+        <dd class="description"><p>Debug printing for this class</p>
+        
+      
+      </dl>
+    </section>
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Class Methods</h3>
+
+    
+      <div id="method-c-execute" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">execute</span><span
+            class="method-args">(*args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p><a href="Command.html">Command</a> line controller Manages program flow
+from given command line arguments</p>
+          
+          
+
+          
+          <div class="method-source-code" id="execute-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 18</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">execute</span>(<span class="ruby-operator">*</span><span class="ruby-identifier">args</span>)
+<span class="ruby-comment"># [review] - Should command line args append or overwrite config/RC parameters?</span>
+<span class="ruby-comment">#                      Currently we overwrite, maybe add flag to overwrite or not?</span>
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-comment"># List of possible flags, used later in parsing and for user reference</span>
+        <span class="ruby-identifier">_flag_list</span> = [<span class="ruby-string">&quot;-c&quot;</span>, <span class="ruby-string">&quot;--context-depth&quot;</span>,
+                                  <span class="ruby-string">&quot;-d&quot;</span>, <span class="ruby-string">&quot;--dirs&quot;</span>,
+                             <span class="ruby-string">&quot;-f&quot;</span>, <span class="ruby-string">&quot;--files&quot;</span>,
+                                  <span class="ruby-string">&quot;-h&quot;</span>, <span class="ruby-string">&quot;--help&quot;</span>,
+                             <span class="ruby-string">&quot;-i&quot;</span>, <span class="ruby-string">&quot;--ignore&quot;</span>,
+                             <span class="ruby-string">&quot;-p&quot;</span>, <span class="ruby-string">&quot;--parse-depth&quot;</span>,
+                             <span class="ruby-string">&quot;-r&quot;</span>, <span class="ruby-string">&quot;--remote&quot;</span>,
+                             <span class="ruby-string">&quot;-t&quot;</span>, <span class="ruby-string">&quot;--tags&quot;</span>,
+                             <span class="ruby-string">&quot;-u&quot;</span>, <span class="ruby-string">&quot;--update&quot;</span>,
+                                  <span class="ruby-string">&quot;-v&quot;</span>, <span class="ruby-string">&quot;--version&quot;</span>
+                                 ]
+
+
+        <span class="ruby-comment"># If we get the version or help flag, ignore all other flags</span>
+        <span class="ruby-comment"># Just display these and exit</span>
+        <span class="ruby-comment"># Using .index instead of .include? to stay consistent with other checks</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-identifier">help</span>                          <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&#39;-h&#39;</span>) <span class="ruby-operator">!=</span> <span class="ruby-keyword">nil</span>  <span class="ruby-operator">||</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&#39;--help&#39;</span>)    <span class="ruby-operator">!=</span> <span class="ruby-keyword">nil</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-identifier">version</span>                       <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&#39;-v&#39;</span>) <span class="ruby-operator">!=</span> <span class="ruby-keyword">nil</span>  <span class="ruby-operator">||</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">index</span>(<span class="ruby-string">&#39;--version&#39;</span>) <span class="ruby-operator">!=</span> <span class="ruby-keyword">nil</span>
+
+
+
+        <span class="ruby-comment"># If not one of the above then we are performing actual watson stuff</span>
+        <span class="ruby-comment"># Create all the necessary watson components so we can perform</span>
+        <span class="ruby-comment"># all actions associated with command line args</span>
+
+
+        <span class="ruby-comment"># Only create Config, don&#39;t call run method</span>
+        <span class="ruby-comment"># Populate Config parameters from CL THEN call run to fill in gaps from RC</span>
+        <span class="ruby-comment"># Saves some messy checking and sorting/organizing of parameters</span>
+        <span class="ruby-ivar">@config</span>      = <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Config</span>.<span class="ruby-identifier">new</span>
+        <span class="ruby-ivar">@parser</span>      = <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Parser</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@config</span>)
+        <span class="ruby-ivar">@printer</span>     = <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Printer</span>.<span class="ruby-identifier">new</span>(<span class="ruby-ivar">@config</span>)
+        
+        <span class="ruby-comment"># Capture Ctrl+C interrupt for clean exit</span>
+        <span class="ruby-comment"># [review] - Not sure this is the correct place to put the Ctrl+C capture</span>
+        <span class="ruby-identifier">trap</span>(<span class="ruby-string">&quot;INT&quot;</span>) <span class="ruby-keyword">do</span>
+                <span class="ruby-constant">File</span>.<span class="ruby-identifier">delete</span>(<span class="ruby-ivar">@config</span>.<span class="ruby-identifier">tmp_file</span>) <span class="ruby-keyword">if</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">exists?</span>(<span class="ruby-ivar">@config</span>.<span class="ruby-identifier">tmp_file</span>)
+                <span class="ruby-identifier">exit</span> <span class="ruby-value">2</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># Parse command line options</span>
+        <span class="ruby-comment"># Begin by slicing off until we reach a valid flag</span>
+        
+        <span class="ruby-comment"># Always look at first array element in case and then slice off what we need</span>
+        <span class="ruby-comment"># Accept parameters to be added / overwritten if called twice</span>
+        <span class="ruby-comment"># Slice out from argument until next argument</span>
+
+        <span class="ruby-comment"># Clean up argument list by removing elements until the first valid flag     </span>
+        <span class="ruby-keyword">until</span> <span class="ruby-identifier">_flag_list</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>]) <span class="ruby-operator">||</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                <span class="ruby-comment"># [review] - Make this non-debug print to user?</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Unrecognized flag #{ args[0] }\n&quot;</span>
+                <span class="ruby-identifier">args</span>.<span class="ruby-identifier">slice!</span>(<span class="ruby-value">0</span>)
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># Parse command line options</span>
+        <span class="ruby-comment"># Grab flag (should be first arg) then slice off args until next flag</span>
+        <span class="ruby-comment"># Repeat until all args have been dealt with</span>
+
+        <span class="ruby-keyword">until</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+                <span class="ruby-comment"># Set flag for calling function later</span>
+                <span class="ruby-identifier">_flag</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">slice!</span>(<span class="ruby-value">0</span>)
+
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Current Flag: #{ _flag }\n&quot;</span>
+
+                <span class="ruby-comment"># Go through args until we find the next valid flag or all args are parsed </span>
+                <span class="ruby-identifier">_i</span> = <span class="ruby-value">0</span>
+                <span class="ruby-keyword">until</span> <span class="ruby-identifier">_flag_list</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">args</span>[<span class="ruby-identifier">_i</span>]) <span class="ruby-operator">||</span>  <span class="ruby-identifier">_i</span> <span class="ruby-operator">&gt;</span> (<span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">-</span> <span class="ruby-value">1</span>) 
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Arg: #{ args[_i] }\n&quot;</span>
+                        <span class="ruby-identifier">_i</span> = <span class="ruby-identifier">_i</span> <span class="ruby-operator">+</span> <span class="ruby-value">1</span>        
+                <span class="ruby-keyword">end</span>
+                        
+                <span class="ruby-comment"># Slice off the args for the flag (inclusive) using index from above</span>
+                <span class="ruby-comment"># [review] - This is a bit messy (to slice by _i - 1) when we have control</span>
+                <span class="ruby-comment"># over the _i index above but I don&#39;t want to</span>
+                <span class="ruby-comment"># think about the logic right now so look at later</span>
+                <span class="ruby-identifier">_flag_args</span> = <span class="ruby-identifier">args</span>.<span class="ruby-identifier">slice!</span>(<span class="ruby-value">0</span><span class="ruby-operator">..</span>(<span class="ruby-identifier">_i</span><span class="ruby-operator">-</span><span class="ruby-value">1</span>))
+
+                <span class="ruby-keyword">case</span> <span class="ruby-identifier">_flag</span> 
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;-c&quot;</span>, <span class="ruby-string">&quot;--context-depth&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Found -c/--context-depth argument\n&quot;</span>
+                        <span class="ruby-identifier">set_context</span>(<span class="ruby-identifier">_flag_args</span>)
+
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;-d&quot;</span>, <span class="ruby-string">&quot;--dirs&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Found -d/--dirs argument\n&quot;</span>
+                        <span class="ruby-identifier">set_dirs</span>(<span class="ruby-identifier">_flag_args</span>)
+                
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;-f&quot;</span>, <span class="ruby-string">&quot;--files&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Found -f/--files argument\n&quot;</span>
+                        <span class="ruby-identifier">set_files</span>(<span class="ruby-identifier">_flag_args</span>)
+
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;-i&quot;</span>, <span class="ruby-string">&quot;--ignore&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Found -i/--ignore argument\n&quot;</span>
+                        <span class="ruby-identifier">set_ignores</span>(<span class="ruby-identifier">_flag_args</span>)
+
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;-p&quot;</span>, <span class="ruby-string">&quot;--parse-depth&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Found -r/--parse-depth argument\n&quot;</span>
+                        <span class="ruby-identifier">set_parse_depth</span>(<span class="ruby-identifier">_flag_args</span>)
+                
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;-r&quot;</span>, <span class="ruby-string">&quot;--remote&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Found -r/--remote argument\n&quot;</span>
+                        <span class="ruby-comment"># Run config to populate all the fields and such</span>
+                        <span class="ruby-comment"># [review] - Not a fan of running these here but want to avoid getting all issues when running remote (which @config.run does)</span>
+                        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">check_conf</span>
+                        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">read_conf</span>
+                        <span class="ruby-identifier">setup_remote</span>(<span class="ruby-identifier">_flag_args</span>)
+                        
+                        <span class="ruby-comment"># If setting up remote, exit afterwards</span>
+                        <span class="ruby-identifier">exit</span> <span class="ruby-keyword">true</span>
+                
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;-t&quot;</span>, <span class="ruby-string">&quot;--tags&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Found -t/--tags argument\n&quot;</span>
+                        <span class="ruby-identifier">set_tags</span>(<span class="ruby-identifier">_flag_args</span>)
+
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;-u&quot;</span>, <span class="ruby-string">&quot;--update&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Found -u/--update argument\n&quot;</span>
+                        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">remote_valid</span> =  <span class="ruby-keyword">true</span>
+
+
+                <span class="ruby-keyword">else</span>
+                        <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Unknown argument #{ _flag }\n&quot;</span>
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Args length 0, running watson...\n&quot;</span>
+        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">run</span>
+        <span class="ruby-identifier">structure</span> = <span class="ruby-ivar">@parser</span>.<span class="ruby-identifier">run</span>
+        <span class="ruby-ivar">@printer</span>.<span class="ruby-identifier">run</span>(<span class="ruby-identifier">structure</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- execute-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- execute-method -->
+
+    
+      <div id="method-c-help" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">help</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Print help for watson</p>
+          
+          
+
+          
+          <div class="method-source-code" id="help-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 158</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">help</span>
+<span class="ruby-comment"># [todo] - Add bold and colored printing</span>
+        
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+        
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span>;
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Usage: watson [OPTION]...\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Running watson with no arguments will parse with settings in RC file\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;If no RC file exists, default RC file will be created\n&quot;</span>
+
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -c, --context-depth   number of lines of context to provide with posted issue\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -d, --dirs            list of directories to search in\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -f, --files           list of files to search in\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -h, --help            print help\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -i, --ignore          list of files, directories, or types to ignore\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -p, --parse-depth     depth to recursively parse directories\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -r, --remote          list / create tokens for Bitbucket/GitHub\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -t, --tags            list of tags to search for\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -u, --update          update remote repos with current issues\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;   -v, --version            print watson version and info\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Any number of files, tags, dirs, and ignores can be listed after flag\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Ignored files should be space separated\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;To use *.filetype identifier, encapsulate in \&quot;\&quot; to avoid shell substitutions \n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Report bugs to: watson\@goosecode.com\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;watson home page: &lt;http://goosecode.com/projects/watson&gt;\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-string">&quot;[goosecode] labs | 2012-2013\n&quot;</span>
+<span class="ruby-identifier">print</span> <span class="ruby-constant">RESET</span>;
+
+    <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- help-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- help-method -->
+
+    
+      <div id="method-c-set_context" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">set_context</span><span
+            class="method-args">(args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p><a href="Command.html#method-c-set_context">::set_context</a> Set
+context_depth parameter in config</p>
+          
+          
+
+          
+          <div class="method-source-code" id="set_context-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 217</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set_context</span>(<span class="ruby-identifier">args</span>) 
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+        
+        <span class="ruby-comment"># Need at least one dir in args</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span>
+                <span class="ruby-comment"># [review] - Make this a non-debug print to user?</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No args passed, exiting\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+
+        <span class="ruby-comment"># For context_depth we do NOT append to RC, ALWAYS overwrite</span>
+        <span class="ruby-comment"># For each argument passed, make sure valid, then set @config.parse_depth </span>
+        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_context_depth</span> <span class="ruby-operator">|</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">_context_depth</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^(\d+)/</span>)
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Setting #{ _context_depth } to config context_depth\n&quot;</span>        
+                        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">context_depth</span> = <span class="ruby-identifier">_context_depth</span>.<span class="ruby-identifier">to_i</span>
+                <span class="ruby-keyword">else</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ _context_depth } invalid depth, ignoring\n&quot;</span>
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># Doesn&#39;t make much sense to set context_depth for each individual post</span>
+        <span class="ruby-comment"># When you use this command line arg, it writes the config parameter </span>
+        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">update_conf</span>(<span class="ruby-string">&quot;context_depth&quot;</span>)
+
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated context_depth: #{ @config.context_depth }\n&quot;</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- set_context-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- set_context-method -->
+
+    
+      <div id="method-c-set_dirs" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">set_dirs</span><span
+            class="method-args">(args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p><a href="Command.html#method-c-set_dirs">::set_dirs</a></p>
+
+<p>Set directories to be parsed by watson</p>
+          
+          
+
+          
+          <div class="method-source-code" id="set_dirs-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 253</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set_dirs</span>(<span class="ruby-identifier">args</span>) 
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+        
+        <span class="ruby-comment"># Need at least one dir in args</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span>
+                <span class="ruby-comment"># [review] - Make this a non-debug print to user?</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No args passed, exiting\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># Set config flag for CL entryset  in config</span>
+        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">cl_entry_set</span> = <span class="ruby-keyword">true</span>  
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated cl_entry_set flag: #{ @config.cl_entry_set }\n&quot;</span>
+        
+        <span class="ruby-comment"># [review] - Should we clean the dir before adding here?</span>
+        <span class="ruby-comment"># For each argument passed, make sure valid, then add to @config.dir_list</span>
+        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_dir</span> <span class="ruby-operator">|</span>
+                <span class="ruby-comment"># Error check on input</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">FS</span>.<span class="ruby-identifier">check_dir</span>(<span class="ruby-identifier">_dir</span>)
+                        <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Unable to open #{ _dir }\n&quot;</span>
+                <span class="ruby-keyword">else</span>
+                        <span class="ruby-comment"># Clean up directory path</span>
+                        <span class="ruby-identifier">_dir</span> = <span class="ruby-identifier">_dir</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^((\w+)?\.?\/?)+/</span>)[<span class="ruby-value">0</span>].<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp">/(\/)+$/</span>, <span class="ruby-string">&quot;&quot;</span>)
+                        <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-identifier">_dir</span>.<span class="ruby-identifier">empty?</span>
+                                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Adding #{ _dir } to config dir_list\n&quot;</span>
+                                <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">dir_list</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">_dir</span>)
+                        <span class="ruby-keyword">end</span>
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated dirs: #{ @config.dir_list }\n&quot;</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- set_dirs-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- set_dirs-method -->
+
+    
+      <div id="method-c-set_files" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">set_files</span><span
+            class="method-args">(args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p><a href="Command.html#method-c-set_files">::set_files</a></p>
+
+<p>Set files to be parsed by watson</p>
+          
+          
+
+          
+          <div class="method-source-code" id="set_files-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 293</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set_files</span>(<span class="ruby-identifier">args</span>) 
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+        
+        <span class="ruby-comment"># Need at least one file in args</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No args passed, exiting\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># Set config flag for CL entryset  in config</span>
+        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">cl_entry_set</span> = <span class="ruby-keyword">true</span>  
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated cl_entry_set flag: #{ @config.cl_entry_set }\n&quot;</span>
+
+        <span class="ruby-comment"># For each argument passed, make sure valid, then add to @config.file_list</span>
+        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_file</span> <span class="ruby-operator">|</span>
+                <span class="ruby-comment"># Error check on input</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">FS</span>.<span class="ruby-identifier">check_file</span>(<span class="ruby-identifier">_file</span>)
+                        <span class="ruby-identifier">print</span> <span class="ruby-node">&quot;Unable to open #{ _file }\n&quot;</span>
+                <span class="ruby-keyword">else</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Adding #{ _file } to config file_list\n&quot;</span>
+                        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">file_list</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">_file</span>)
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated files: #{ @config.file_list }\n&quot;</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- set_files-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- set_files-method -->
+
+    
+      <div id="method-c-set_ignores" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">set_ignores</span><span
+            class="method-args">(args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p><a href="Command.html#method-c-set_ignores">::set_ignores</a> Set files and
+dirs to be ignored when parsing by watson</p>
+          
+          
+
+          
+          <div class="method-source-code" id="set_ignores-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 327</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set_ignores</span>(<span class="ruby-identifier">args</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+        
+        <span class="ruby-comment"># Need at least one ignore in args</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No args passed, exiting\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># Set config flag for CL ignore set in config</span>
+        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">cl_ignore_set</span> = <span class="ruby-keyword">true</span> 
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated cl_ignore_set flag: #{ @config.cl_ignore_set }\n&quot;</span>
+
+
+        <span class="ruby-comment"># For ignores we do NOT overwrite RC, just append    </span>
+        <span class="ruby-comment"># For each argument passed, add to @config.ignore_list</span>
+        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_ignore</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Adding #{ _ignore } to config ignore_list\n&quot;</span>
+                <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">ignore_list</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">_ignore</span>)
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated ignores: #{ @config.ignore_list }\n&quot;</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- set_ignores-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- set_ignores-method -->
+
+    
+      <div id="method-c-set_parse_depth" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">set_parse_depth</span><span
+            class="method-args">(args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p><a href="Command.html#method-c-set_parse_depth">::set_parse_depth</a>  Set
+how deep to recursively parse directories</p>
+          
+          
+
+          
+          <div class="method-source-code" id="set_parse_depth-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 358</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set_parse_depth</span>(<span class="ruby-identifier">args</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+        
+        <span class="ruby-comment"># This should be a single, numeric, value</span>
+        <span class="ruby-comment"># If they pass more, just take the last valid value</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No args passed, exiting\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># For max_dpeth we do NOT append to RC, ALWAYS overwrite     </span>
+        <span class="ruby-comment"># For each argument passed, make sure valid, then set @config.parse_depth </span>
+        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_parse_depth</span> <span class="ruby-operator">|</span>
+                <span class="ruby-keyword">if</span> <span class="ruby-identifier">_parse_depth</span>.<span class="ruby-identifier">match</span>(<span class="ruby-regexp">/^(\d+)/</span>)
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Setting #{ _parse_depth } to config parse_depth\n&quot;</span>    
+                        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">parse_depth</span> = <span class="ruby-identifier">_parse_depth</span>
+                <span class="ruby-keyword">else</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ _parse_depth } invalid depth, ignoring\n&quot;</span>
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated parse_depth: #{ @config.parse_depth }\n&quot;</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- set_parse_depth-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- set_parse_depth-method -->
+
+    
+      <div id="method-c-set_tags" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">set_tags</span><span
+            class="method-args">(args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p><a href="Command.html#method-c-set_tags">::set_tags</a> Set tags to look
+for when parsing files and folders</p>
+          
+          
+
+          
+          <div class="method-source-code" id="set_tags-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 389</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">set_tags</span>(<span class="ruby-identifier">args</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+        
+        <span class="ruby-comment"># Need at least one tag in args</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-value">0</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;No args passed, exiting\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+        
+        <span class="ruby-comment"># Set config flag for CL tag set in config</span>
+        <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">cl_tag_set</span> = <span class="ruby-keyword">true</span>    
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated cl_tag_set flag: #{ @config.cl_tag_set }\n&quot;</span>
+
+        <span class="ruby-comment"># If set from CL, we overwrite the RC parameters</span>
+        <span class="ruby-comment"># For each argument passed, add to @config.tag_list</span>
+        <span class="ruby-identifier">args</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span> <span class="ruby-identifier">_tag</span> <span class="ruby-operator">|</span>
+                <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Adding #{ _tag } to config tag_list\n&quot;</span>
+                <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">tag_list</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">_tag</span>)
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;Updated tags: #{ @config.tag_list }\n&quot;</span>
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- set_tags-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- set_tags-method -->
+
+    
+      <div id="method-c-setup_remote" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">setup_remote</span><span
+            class="method-args">(args)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p><a href="Command.html#method-c-setup_remote">::setup_remote</a> Handle
+setup of remote issue posting for GitHub and Bitbucket</p>
+          
+          
+
+          
+          <div class="method-source-code" id="setup_remote-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 419</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">setup_remote</span>(<span class="ruby-identifier">args</span>)
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_header</span>
+
+        <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Existing Remotes:\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        
+        <span class="ruby-comment"># Check the config for any remote entries (GitHub or Bitbucket) and print</span>
+        <span class="ruby-comment"># We *should* always have a repo + API together, but API should be enough</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">github_api</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-ivar">@config</span>.<span class="ruby-identifier">bitbucket_api</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;!&quot;</span>, <span class="ruby-constant">YELLOW</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;No remotes currently exist\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-ivar">@config</span>.<span class="ruby-identifier">github_api</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;GitHub User : &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{ @config.github_api }\n&quot;</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;GitHub Repo : &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{ @config.github_repo }\n\n&quot;</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-keyword">if</span> <span class="ruby-operator">!</span><span class="ruby-ivar">@config</span>.<span class="ruby-identifier">bitbucket_api</span>.<span class="ruby-identifier">empty?</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Bitbucket User : &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{ @config.bitbucket_api }\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Bitbucket Repo : &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span> <span class="ruby-operator">+</span> <span class="ruby-node">&quot;#{ @config.bitbucket_repo }\n\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+        <span class="ruby-keyword">end</span>
+
+        <span class="ruby-comment"># If github or bitbucket passed, setup</span>
+        <span class="ruby-comment"># If just -r (0 args) do nothing and only have above printed</span>
+        <span class="ruby-comment"># If more than 1 arg is passed, unrecognized, warn user      </span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span>
+                <span class="ruby-keyword">case</span> <span class="ruby-identifier">args</span>[<span class="ruby-value">0</span>].<span class="ruby-identifier">downcase</span>
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;github&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;GitHub setup called from CL\n&quot;</span>
+                        <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Remote</span><span class="ruby-operator">::</span><span class="ruby-constant">GitHub</span>.<span class="ruby-identifier">setup</span>(<span class="ruby-ivar">@config</span>) 
+                
+                <span class="ruby-keyword">when</span> <span class="ruby-string">&quot;bitbucket&quot;</span>
+                        <span class="ruby-identifier">debug_print</span> <span class="ruby-string">&quot;Bitbucket setup called from CL\n&quot;</span>
+                        <span class="ruby-constant">Watson</span><span class="ruby-operator">::</span><span class="ruby-constant">Remote</span><span class="ruby-operator">::</span><span class="ruby-constant">Bitbucket</span>.<span class="ruby-identifier">setup</span>(<span class="ruby-ivar">@config</span>) 
+                <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">1</span>
+                <span class="ruby-constant">Printer</span>.<span class="ruby-identifier">print_status</span> <span class="ruby-string">&quot;x&quot;</span>, <span class="ruby-constant">RED</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-constant">BOLD</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot;Incorrect arguments passed\n&quot;</span> <span class="ruby-operator">+</span> <span class="ruby-constant">RESET</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      Please specify either Github or Bitbucket to setup remote\n&quot;</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      Or pass without argument to see current remotes\n&quot;</span>
+                <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;      See help (-h/--help) for more details\n&quot;</span>
+                <span class="ruby-keyword">return</span> <span class="ruby-keyword">false</span>
+        <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- setup_remote-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- setup_remote-method -->
+
+    
+      <div id="method-c-version" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">version</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Print version information about watson</p>
+          
+          
+
+          
+          <div class="method-source-code" id="version-source">
+            <pre><span class="ruby-comment"># File lib/watson/command.rb, line 199</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">version</span>
+
+        <span class="ruby-comment"># Identify method entry</span>
+        <span class="ruby-identifier">debug_print</span> <span class="ruby-node">&quot;#{ self } : #{ __method__ }\n&quot;</span>
+
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;watson v1.0\n&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Copyright (c) 2012-2013 goosecode labs\n&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Licensed under MIT, see LICENSE for details\n&quot;</span>
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;\n&quot;</span>
+
+        <span class="ruby-identifier">print</span> <span class="ruby-string">&quot;Written by nhmood, see &lt;http://goosecode.com/projects/watson&gt;\n&quot;</span>              
+        <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- version-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- version-method -->
+
+    
+    </section><!-- public-class-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 4.0.1.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

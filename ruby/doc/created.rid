@@ -1,0 +1,11 @@
+Wed, 20 Nov 2013 21:00:14 -0500
+lib/watson.rb	Tue, 12 Nov 2013 14:45:02 -0500
+lib/watson/config.rb	Wed, 13 Nov 2013 21:23:07 -0500
+lib/watson/remote.rb	Tue, 12 Nov 2013 19:07:02 -0500
+lib/watson/fs.rb	Mon, 11 Nov 2013 22:41:13 -0500
+lib/watson/github.rb	Tue, 12 Nov 2013 19:13:08 -0500
+lib/watson/parser.rb	Tue, 19 Nov 2013 23:54:21 -0500
+lib/watson/version.rb	Wed, 20 Nov 2013 10:59:45 -0500
+lib/watson/printer.rb	Tue, 12 Nov 2013 18:45:48 -0500
+lib/watson/bitbucket.rb	Tue, 12 Nov 2013 19:12:46 -0500
+lib/watson/command.rb	Tue, 19 Nov 2013 21:44:42 -0500
