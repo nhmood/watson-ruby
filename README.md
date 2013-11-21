@@ -14,7 +14,7 @@ watson-ruby requires the ```json``` gem
 watson-ruby is avaliable as a RubyGems ([link](https://rubygems.org/gems/watson-ruby)).  
 You can either download it directory from ```gem``` using
 ```
-gem install watson
+gem install watson-ruby
 ```
 
 Or you can clone this repo and install with Rake
