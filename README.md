@@ -135,7 +135,7 @@ The remote related .watsonrc options shouldn't need to be edited manually, as th
 ## Special Thanks
 Special thanks to [@samirahmed](http://github.com/samirahmed) for his super Ruby help and encouraging the Ruby port!  
 Special thanks to [@eugenekolo](http://twitter.com/eugenekolo) [[email](eugenek@bu.edu)] for his super Perl help!  
-Special thanks to [@crowell](http://twitter.com/crowell) for testing out watson-ruby!
+Special thanks to [@crowell](http://github.com/crowell) for testing out watson-ruby!
 
 ## FAQ
 - **Why Ruby?**  
