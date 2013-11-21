@@ -4,7 +4,7 @@
 It is avaliable in two flavors, [watson-ruby](http://github.com/nhmood/watson-ruby) and [watson-perl](http://github.com/watson-perl)
 
 ### See watson in action [here](http://goosecode.com/watson) ([mirror](http://nhmood.github.io/watson-ruby))
-### See the RDoc documentation [here](http://goosecode.com/watson/ruby-documentation) ([mirror](http://nhmood.github.io/watson-ruby/documentation))
+### See the RDoc documentation [here](http://goosecode.com/watson/ruby/doc/) ([mirror](http://nhmood.github.io/watson-ruby/ruby/doc/))
 
 ## Installation
 watson-ruby has been tested with **Ruby v2.0.0p247** and **RubyGems v2.0.3** (on **Arch Linux**)  
