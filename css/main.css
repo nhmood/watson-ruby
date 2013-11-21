@@ -231,21 +231,21 @@ body, html {
 #download a {
     text-decoration: none;
     color: #323232;
+}
+
+#download i {
+    vertical-align: middle;
+    margin-right: 15px;
     
-    transition: color 0.5s ease-in-out;
+	transition: color 0.5s ease-in-out;
     -webkit-transition: color 0.5s ease-in-out;
     -moz-transition: color 0.5s ease-in-out;
     -ms-transition: color 0.5s ease-in-out;
     -o-transition: color 0.5s ease-in-out;
 }
 
-#download a:hover {
+#download a:hover i {
     color: #0099ff ;
-}
-
-#download i {
-    vertical-align: middle;
-    margin-right: 15px;
 }
 
 #download hr {
