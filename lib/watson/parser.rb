@@ -206,202 +206,204 @@ module Watson
       _data = Array.new()
       File.open(_absolute_path, 'r').read.each_line do |_line|
         _data.push(_line)
-      end
-    end
-
-    # Initialize issue list hash
-    _issue_list                 = Hash.new()
-    _issue_list[:relative_path] = _relative_path
-    _issue_list[:absolute_path] = _absolute_path
-    _issue_list[:has_issues]    = false
-    @config.tag_list.each do |_tag|
-      debug_print "Creating array named #{ _tag }\n"
-      # [review] - Use to_sym to make tag into symbol instead of string?
-      _issue_list[_tag] = Array.new
-    end
-
-    # Loop through all array elements (lines in file) and look for issues
-    _data.each_with_index do |_line, _i|
-
-      # Find any comment line with [tag] - text (any comb of space and # acceptable)
-      # Using if match to stay consistent (with config.rb) see there for
-      # explanation of why I do this (not a good good one persay...)
-
-      _mtch = _line.encode('UTF-8', :invalid => :replace).match(/^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/)
-
-
-      if !_mtch
-        debug_print "No valid tag found in line, skipping\n"
-        next
-      end
-
-      # Set tag
-      _tag = _mtch[1]
-
-      # Make sure that the tag that was found is something we accept
-      # If not, skip it but tell user about an unrecognized tag
-      if !@config.tag_list.include?(_tag)
-        Printer.print_status "!", RED
-        print "Unknown tag [#{ _tag }] found, ignoring\n"
-        print "      You might want to include it in your RC or with the -t/--tags flag\n"
-        next
-      end
-
-      # Found a valid match (with recognized tag)
-      # Set flag for this issue_list (for file) to indicate that
-      _issue_list[:has_issues] = true
-
-      _title = _mtch[2]
-      debug_print "Issue found\n"
-      debug_print "Tag: #{ _tag }\n"
-      debug_print "Issue: #{ _title }\n"
-
-      # Create hash for each issue found
-      _issue               = Hash.new
-      _issue[:line_number] = _i + 1
-      _issue[:title]       = _title
-
-      # Grab context of issue specified by Config param (+1 to include issue itself)
-      _context             = _data[_i..(_i + @config.context_depth + 1)]
-
-      # [review] - There has got to be a better way to do this...
-      # Go through each line of context and determine indentation
-      # Used to preserve indentation in post
-      _cut                 = Array.new
-      _context.each do |_line|
-        _max = 0
-        # Until we reach a non indent OR the line is empty, keep slicin'
-        until !_line.match(/^( |\t|\n)/) || _line.empty?
-          # [fix] - Replace with inplace slice!
-          _line = _line.slice(1..-1)
-          _max  = _max + 1
-
-          debug_print "New line: #{ _line }\n"
-          debug_print "Max indent: #{ _max }\n"
-        end
-
-        # Push max indent for current line to the _cut array
-        _cut.push(_max)
-      end
-
-      # Print old _context
-      debug_print "\n\n Old Context \n"
-      debug_print PP.pp(_context, "")
-      debug_print "\n\n"
-
-      # Trim the context lines to be left aligned but maintain indentation
-      # Then add a single \t to the beginning so the Markdown is pretty on GitHub/Bitbucket
-      _context.map! { |_line| "\t#{ _line.slice(_cut.min .. -1) }" }
-
-      # Print new _context
-      debug_print("\n\n New Context \n")
-      debug_print PP.pp(_context, "")
-      debug_print("\n\n")
-
-      _issue[:context] = _context
-
-      # These are accessible from _issue_list, but we pass individual issues
-      # to the remote poster, so we need this here to reference them for GitHub/Bitbucket
-      _issue[:tag]     = _tag
-      _issue[:path]    = _relative_path
-
-      # Generate md5 hash for each specific issue (for bookkeeping)
-      _issue[:md5]     = ::Digest::MD5.hexdigest("#{ _tag }, #{ _relative_path }, #{ _title }")
-      debug_print "#{ _issue }\n"
-
-
-      # [todo] - Figure out a way to queue up posts so user has a progress bar?
-      # That way user can tell that wait is because of http calls not app
-
-      # If GitHub is valid, pass _issue to GitHub poster function
-      # [review] - Keep Remote as a static method and pass config every time?
-      #			 Or convert to a regular class and make an instance with @config
-
-      if @config.remote_valid
-        if @config.github_valid
-          debug_print "GitHub is valid, posting issue\n"
-          Remote::GitHub.post_issue(_issue, @config)
-        else
-          debug_print "GitHub invalid, not posting issue\n"
-        end
-
-
-        if @config.bitbucket_valid
-          debug_print "Bitbucket is valid, posting issue\n"
-          Remote::Bitbucket.post_issue(_issue, @config)
-        else
-          debug_print "Bitbucket invalid, not posting issue\n"
         end
       end
+  
+      # Initialize issue list hash 
+      _issue_list = Hash.new()
+      _issue_list[:relative_path] = _relative_path 
+      _issue_list[:absolute_path] = _absolute_path
+      _issue_list[:has_issues] = false
+      @config.tag_list.each do | _tag |
+        debug_print "Creating array named #{ _tag }\n"
+        # [review] - Use to_sym to make tag into symbol instead of string?
+        _issue_list[_tag] = Array.new
+      end
 
-      # [review] - Use _tag string as symbol reference in hash or keep as string?
-      # Look into to_sym to keep format of all _issue params the same
-      _issue_list[_tag].push(_issue)
+      # Loop through all array elements (lines in file) and look for issues
+      _data.each_with_index do |_line, _i|
+
+        # Find any comment line with [tag] - text (any comb of space and # acceptable)
+        # Using if match to stay consistent (with config.rb) see there for
+        # explanation of why I do this (not a good good one persay...)
+        begin
+          _mtch = _line.encode('UTF-8', :invalid => :replace).match(/^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/)
+        rescue ArgumentError
+          debug_print "File not UTF-8: #{_absolute_path}"
+        end
+
+        if !_mtch
+          debug_print "No valid tag found in line, skipping\n"
+          next
+        end
+
+        # Set tag
+        _tag = _mtch[1]
+
+        # Make sure that the tag that was found is something we accept
+        # If not, skip it but tell user about an unrecognized tag
+        if !@config.tag_list.include?(_tag)
+          Printer.print_status "!", RED
+          print "Unknown tag [#{ _tag }] found, ignoring\n"
+          print "      You might want to include it in your RC or with the -t/--tags flag\n"
+          next
+        end
+
+        # Found a valid match (with recognized tag)
+        # Set flag for this issue_list (for file) to indicate that
+        _issue_list[:has_issues] = true
+
+        _title = _mtch[2]
+        debug_print "Issue found\n"
+        debug_print "Tag: #{ _tag }\n"
+        debug_print "Issue: #{ _title }\n"
+
+        # Create hash for each issue found
+        _issue               = Hash.new
+        _issue[:line_number] = _i + 1
+        _issue[:title]       = _title
+
+        # Grab context of issue specified by Config param (+1 to include issue itself)
+        _context             = _data[_i..(_i + @config.context_depth + 1)]
+
+        # [review] - There has got to be a better way to do this...
+        # Go through each line of context and determine indentation
+        # Used to preserve indentation in post
+        _cut                 = Array.new
+        _context.each do |_line|
+          _max = 0
+          # Until we reach a non indent OR the line is empty, keep slicin'
+          until !_line.match(/^( |\t|\n)/) || _line.empty?
+            # [fix] - Replace with inplace slice!
+            _line = _line.slice(1..-1)
+            _max  = _max + 1
+
+            debug_print "New line: #{ _line }\n"
+            debug_print "Max indent: #{ _max }\n"
+          end
+
+          # Push max indent for current line to the _cut array
+          _cut.push(_max)
+        end
+
+        # Print old _context
+        debug_print "\n\n Old Context \n"
+        debug_print PP.pp(_context, "")
+        debug_print "\n\n"
+
+        # Trim the context lines to be left aligned but maintain indentation
+        # Then add a single \t to the beginning so the Markdown is pretty on GitHub/Bitbucket
+        _context.map! { |_line| "\t#{ _line.slice(_cut.min .. -1) }" }
+
+        # Print new _context
+        debug_print("\n\n New Context \n")
+        debug_print PP.pp(_context, "")
+        debug_print("\n\n")
+
+        _issue[:context] = _context
+
+        # These are accessible from _issue_list, but we pass individual issues
+        # to the remote poster, so we need this here to reference them for GitHub/Bitbucket
+        _issue[:tag]     = _tag
+        _issue[:path]    = _relative_path
+
+        # Generate md5 hash for each specific issue (for bookkeeping)
+        _issue[:md5]     = ::Digest::MD5.hexdigest("#{ _tag }, #{ _relative_path }, #{ _title }")
+        debug_print "#{ _issue }\n"
+
+
+        # [todo] - Figure out a way to queue up posts so user has a progress bar?
+        # That way user can tell that wait is because of http calls not app
+
+        # If GitHub is valid, pass _issue to GitHub poster function
+        # [review] - Keep Remote as a static method and pass config every time?
+        #			 Or convert to a regular class and make an instance with @config
+
+        if @config.remote_valid
+          if @config.github_valid
+            debug_print "GitHub is valid, posting issue\n"
+            Remote::GitHub.post_issue(_issue, @config)
+          else
+            debug_print "GitHub invalid, not posting issue\n"
+          end
+
+
+          if @config.bitbucket_valid
+            debug_print "Bitbucket is valid, posting issue\n"
+            Remote::Bitbucket.post_issue(_issue, @config)
+          else
+            debug_print "Bitbucket invalid, not posting issue\n"
+          end
+        end
+
+        # [review] - Use _tag string as symbol reference in hash or keep as string?
+        # Look into to_sym to keep format of all _issue params the same
+        _issue_list[_tag].push(_issue)
+
+      end
+
+      # [review] - Return of parse_file is different than watson-perl
+      # Not sure which makes more sense, ruby version seems simpler
+      # perl version might have to stay since hash scoping is weird in perl
+      debug_print "\nIssue list: #{ _issue_list }\n"
+
+      return _issue_list
+    end
+
+
+    ###########################################################
+    # Get comment syntax for given file
+    def get_comment_type(filename)
+
+      # Identify method entry
+      debug_print "#{ self } : #{ __method__ }\n"
+
+      # Grab the file extension (.something)
+      # Check to see whether it is recognized and set comment type
+      # If unrecognized, try to grab the next .something extension
+      # This is to account for file.cpp.1 or file.cpp.bak, ect
+
+      # [review] - Matz style while loop a la http://stackoverflow.com/a/10713963/1604424
+      # Create _mtch var so we can access it outside of the do loop
+
+      _mtch = String.new()
+      loop do
+        _mtch = filename.match(/(\.(\w+))$/)
+        debug_print "Extension: #{ _mtch }\n"
+
+        # Break if we don't find a match
+        break if _mtch.nil?
+
+        # Determine file type
+        case _mtch[0]
+          # C / C++, Java, C#
+          # [todo] - Add /* style comment
+          when ".cpp", ".cc", ".c", ".hpp", ".h",
+              ".java", ".class", ".cs", ".js", ".php"
+            debug_print "Comment type is: //\n"
+            return "//"
+
+          # Bash, Ruby, Perl, Python
+          when ".sh", ".rb", ".pl", ".py"
+            debug_print "Comment type is: #\n"
+            return "#"
+
+          # Can't recognize extension, keep looping in case of .bk, .#, ect
+          else
+            filename = filename.gsub(/(\.(\w+))$/, "")
+            debug_print "Didn't recognize, searching #{ filename }\n"
+
+        end
+      end
+
+      # We didn't find any matches from the filename, return error (0)
+      # Deal with what default to use in calling method
+      # [review] - Is Ruby convention to return 1 or 0 (or -1) on failure/error?
+      debug_print "Couldn't find any recognized extension type\n"
+      return false
 
     end
 
-    # [review] - Return of parse_file is different than watson-perl
-    # Not sure which makes more sense, ruby version seems simpler
-    # perl version might have to stay since hash scoping is weird in perl
-    debug_print "\nIssue list: #{ _issue_list }\n"
 
-    return _issue_list
   end
-
-
-  ###########################################################
-  # Get comment syntax for given file
-  def get_comment_type(filename)
-
-    # Identify method entry
-    debug_print "#{ self } : #{ __method__ }\n"
-
-    # Grab the file extension (.something)
-    # Check to see whether it is recognized and set comment type
-    # If unrecognized, try to grab the next .something extension
-    # This is to account for file.cpp.1 or file.cpp.bak, ect
-
-    # [review] - Matz style while loop a la http://stackoverflow.com/a/10713963/1604424
-    # Create _mtch var so we can access it outside of the do loop
-
-    _mtch = String.new()
-    loop do
-      _mtch = filename.match(/(\.(\w+))$/)
-      debug_print "Extension: #{ _mtch }\n"
-
-      # Break if we don't find a match
-      break if _mtch.nil?
-
-      # Determine file type
-      case _mtch[0]
-        # C / C++, Java, C#
-        # [todo] - Add /* style comment
-        when ".cpp", ".cc", ".c", ".hpp", ".h",
-            ".java", ".class", ".cs", ".js", ".php"
-          debug_print "Comment type is: //\n"
-          return "//"
-
-        # Bash, Ruby, Perl, Python
-        when ".sh", ".rb", ".pl", ".py"
-          debug_print "Comment type is: #\n"
-          return "#"
-
-        # Can't recognize extension, keep looping in case of .bk, .#, ect
-        else
-          filename = filename.gsub(/(\.(\w+))$/, "")
-          debug_print "Didn't recognize, searching #{ filename }\n"
-
-      end
-    end
-
-    # We didn't find any matches from the filename, return error (0)
-    # Deal with what default to use in calling method
-    # [review] - Is Ruby convention to return 1 or 0 (or -1) on failure/error?
-    debug_print "Couldn't find any recognized extension type\n"
-    return false
-
-  end
-
-
-end
 end
