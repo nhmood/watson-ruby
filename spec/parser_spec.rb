@@ -22,6 +22,10 @@ describe Parser do
 				@parser.get_comment_type('lib/watson.rb').should eql '#'	
 			end
 
+			it 'return correct extension (# for coffee)' do
+				@parser.get_comment_type('lib/watson.coffee').should eql '#'	
+			end
+
 			it 'return correct extension (// for c/c++)' do
 				@parser.get_comment_type('lib/watson.cpp').should eql '//'
 			end
