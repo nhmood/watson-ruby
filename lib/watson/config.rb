@@ -176,7 +176,7 @@ module Watson
 			
 			# Generate full path since File doesn't care about the LOAD_PATH
 			# [review] - gsub uses (.?)+ to grab anything after lib (optional), better regex? 
-			_full_path = __dir__.gsub(/\/lib(.?)+/, '') + "/" + "assets/defaultConf"
+			_full_path = __dir__.gsub(%r!/lib/watson(.?)+!, '') + "/assets/defaultConf"
 			debug_print "Full path to defaultConf (in gem): #{ _full_path }\n"
 			
 			# Check to make sure we can access the default file
