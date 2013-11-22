@@ -6,12 +6,6 @@ $(window).load(function() {
 	$("#download #perl").hide();
 });
 
-// Fade items sequentially
-// When done with all, initiate first button click for GIF show
-// Delay first click by some time using window.setTimeout
-$('.fade').hide().each(function(i){
-       $(this).delay(i * 1500).fadeIn(1500);
-});
 
 // On click for download section
 // Toggle style from selected and show/hide section
