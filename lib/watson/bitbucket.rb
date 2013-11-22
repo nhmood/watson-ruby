@@ -141,9 +141,9 @@ module Watson
 	
 			# No OAuth for Bitbucket yet so just store username in api for config
 			# This will let us just prompt for PW
-			config.bitbucket_api = _owner
+			config.bitbucket_api = _username
 			config.bitbucket_pw = _password	# Never gets written to file
-			config.bitbucket_repo = _repo
+			config.bitbucket_repo = "#{ _owner }/#{ _repo }"
 			debug_print " \n"
 
 			# All setup has been completed, need to update RC
@@ -176,7 +176,6 @@ module Watson
 				return false
 			end
 
-
 			# If we haven't obtained the pw from user yet, do it
 			if config.bitbucket_pw.empty?
 				# No OAuth for Bitbucket yet, gotta get user password in order to make calls :(
@@ -202,7 +201,7 @@ module Watson
 			# Get all open tickets (anything but resolved)
 			# Create options hash to pass to Remote::http_call 
 			# Issues URL for Bitbucket + SSL
-			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_api }/#{ config.bitbucket_repo }/issues?status=!resolved",
+			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues?status=!resolved",
 					:ssl        => true,
 					:method     => "GET",
 					:basic_auth => [config.bitbucket_api, config.bitbucket_pw],
@@ -233,7 +232,7 @@ module Watson
 			# Get all closed tickets
 			# Create options hash to pass to Remote::http_call 
 			# Issues URL for Bitbucket + SSL
-			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_api }/#{ config.bitbucket_repo }/issues?status=resolved",
+			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues?status=resolved",
 					:ssl        => true,
 					:method     => "GET",
 					:basic_auth => [config.bitbucket_api, config.bitbucket_pw],
@@ -340,7 +339,7 @@ module Watson
 			# Create option hash to pass to Remote::http_call
 			# Issues URL for GitHub + SSL
 			# No tag or label concept in Bitbucket unfortunately :(
-			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_api }/#{ config.bitbucket_repo }/issues",
+			opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues",
 					:ssl        => true,
 					:method     => "POST",
 					:basic_auth => [config.bitbucket_api, config.bitbucket_pw],
