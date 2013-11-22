@@ -385,6 +385,14 @@ module Watson
 					 ".java", ".class", ".cs", ".js", ".php"
 					debug_print "Comment type is: //\n"
 					return "//"
+					
+				when ".hs"
+					debug_print "Comment type is: --\n"
+					return "--"
+					
+				when ".erl"
+					debug_print "Comment type is: %\n"
+					return "%"
 
 				# Bash, Ruby, Perl, Python
 				when ".sh", ".rb", ".pl", ".py", ".coffee"
