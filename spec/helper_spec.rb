@@ -1,5 +1,5 @@
 # [review] - Using own funky path loading because traditional way seems wrong?
-# Commented out version is traditional, seen in many apps. If you use that and 
+# Commented out version is traditional, seen in many apps. If you use that and
 # look at load_path you get path/../lib (I'd expect those to be separate?)
 # My funky version adds path/., path/bin, path/assets separately
 # Maybe I don't get how the load path is supposed to look though...
