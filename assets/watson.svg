@@ -2,24 +2,24 @@
 <!-- Generator: Adobe Illustrator 15.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 width="512px" height="512px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
+   width="512px" height="512px" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve">
 <rect fill="#F8DB94" width="512" height="512"/>
 <g id="Layer_1">
-	<g>
-		
-			<rect x="170.641" y="291.813" transform="matrix(0.8585 0.5128 -0.5128 0.8585 217.9851 -42.775)" fill="#6D6E71" width="31.729" height="163.625"/>
-	</g>
-	
-		<rect x="107.541" y="332.827" transform="matrix(0.8585 0.5128 -0.5128 0.8585 238.3663 -15.0629)" display="none" fill="#BB9753" width="77.874" height="183.164"/>
-	<circle fill="#F5F6F7" cx="292.525" cy="186.898" r="139.89"/>
-	<circle fill="#00AEEF" cx="292.523" cy="186.898" r="123.796"/>
-	<circle fill="#FFFFFF" cx="317.697" cy="148.521" r="65.613"/>
-	<circle fill="#00AEEF" cx="306.143" cy="160.076" r="74.278"/>
-	
-		<rect x="145.48" y="342.301" transform="matrix(0.8585 0.5128 -0.5128 0.8585 229.5986 -30.2952)" fill="#8B5E3C" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" width="48.435" height="117.213"/>
-	<rect x="123.344" y="438.277" transform="matrix(0.8586 0.5127 -0.5127 0.8586 246.86 -12.2127)" width="44.441" height="6.057"/>
-	
-		<rect x="131.203" y="425.132" transform="matrix(0.8586 0.5127 -0.5127 0.8586 241.2317 -18.1018)" width="44.441" height="6.057"/>
+  <g>
+
+      <rect x="170.641" y="291.813" transform="matrix(0.8585 0.5128 -0.5128 0.8585 217.9851 -42.775)" fill="#6D6E71" width="31.729" height="163.625"/>
+  </g>
+
+    <rect x="107.541" y="332.827" transform="matrix(0.8585 0.5128 -0.5128 0.8585 238.3663 -15.0629)" display="none" fill="#BB9753" width="77.874" height="183.164"/>
+  <circle fill="#F5F6F7" cx="292.525" cy="186.898" r="139.89"/>
+  <circle fill="#00AEEF" cx="292.523" cy="186.898" r="123.796"/>
+  <circle fill="#FFFFFF" cx="317.697" cy="148.521" r="65.613"/>
+  <circle fill="#00AEEF" cx="306.143" cy="160.076" r="74.278"/>
+
+    <rect x="145.48" y="342.301" transform="matrix(0.8585 0.5128 -0.5128 0.8585 229.5986 -30.2952)" fill="#8B5E3C" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" width="48.435" height="117.213"/>
+  <rect x="123.344" y="438.277" transform="matrix(0.8586 0.5127 -0.5127 0.8586 246.86 -12.2127)" width="44.441" height="6.057"/>
+
+    <rect x="131.203" y="425.132" transform="matrix(0.8586 0.5127 -0.5127 0.8586 241.2317 -18.1018)" width="44.441" height="6.057"/>
 </g>
 <rect x="138.849" y="412.382" transform="matrix(0.8586 0.5127 -0.5127 0.8586 235.7759 -23.8257)" width="44.441" height="6.057"/>
 </svg>
