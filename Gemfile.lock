@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    watson (1.0.0)
+    watson-ruby (1.0.1)
       json
 
 GEM
@@ -25,4 +25,4 @@ PLATFORMS
 DEPENDENCIES
   rake
   rspec
-  watson!
+  watson-ruby!
