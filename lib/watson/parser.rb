@@ -209,7 +209,7 @@ module Watson
 				_data.push(_line)
 				# If we can't encode (ever) to UTF-8, clear _data and break
 				begin
-				_line.encode('UTF-8', :invalid => :replace).match()
+				_line.encode('UTF-8', :invalid => :replace)
 				rescue ArgumentError
 					debug_print "Could not encode to UTF-8, non-text\n"
 					_data = Array.new()
