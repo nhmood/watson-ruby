@@ -19,9 +19,10 @@ gem install watson-ruby
 
 Or you can clone this repo and install with Rake
 ```
-clone https://github.com/nhmood/watson-ruby.git .
+git clone https://github.com/nhmood/watson-ruby.git .
 cd watson-ruby
-rake 
+bundle install
+bundle exec rake 
 ```
   
 ## Usage
