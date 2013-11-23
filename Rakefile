@@ -14,8 +14,8 @@ RSpec::Core::RakeTask.new(:spec)
 
 desc 'Generate RDoc documentation'
 RDoc::Task.new(:rdoc) do | rdoc |
-	rdoc.rdoc_dir = 'doc'
-	rdoc.rdoc_files.include 'lib'
+  rdoc.rdoc_dir = 'doc'
+  rdoc.rdoc_files.include 'lib'
 end
 
 

@@ -9,13 +9,13 @@
 // [review] - Should I use char *argv[] or char **argv?
 int main(int argc, char *argv[]){
 
-	// [review] - Use namespace std to avoid std::String or not?
-	std::String sherlock = "Elementary, my dear watson!\n";
+  // [review] - Use namespace std to avoid std::String or not?
+  std::String sherlock = "Elementary, my dear watson!\n";
 
-	for (int i = 0; i < 10; i++){
-		// [fix] - printf with %s and sherlock won't compile
-		printf("%s\n", sherlock);
-	}
+  for (int i = 0; i < 10; i++){
+    // [fix] - printf with %s and sherlock won't compile
+    printf("%s\n", sherlock);
+  }
 
 
 }

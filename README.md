@@ -35,7 +35,7 @@ Usage: watson [OPTION]...
 Running watson with no arguments will parse with settings in RC file
 If no RC file exists, default RC file will be created
 
-   -c, --context-lines			number of lines of context to provide with posted issue
+   -c, --context-lines      number of lines of context to provide with posted issue
    -d, --dirs                   list of directories to search in
    -f, --files                  list of files to search in
    -h, --help                   print help
@@ -43,7 +43,7 @@ If no RC file exists, default RC file will be created
    -p, --parse-depth            depth to recursively parse directories
    -r, --remote                 list / create tokens for Bitbucket/Github
    -t, --tags                   list of tags to search for
-   -u, --update					update remote repos with current issues
+   -u, --update         update remote repos with current issues
    -v, --version                print watson version and info
 
 Any number of files, tags, dirs, and ignores can be listed after flag
@@ -140,9 +140,9 @@ Special thanks to [@crowell](http://github.com/crowell) for testing out watson-r
 
 ## FAQ
 - **Why Ruby?**  
-	I wanted to learn Ruby and this seemed like a pretty decent project.  
+  I wanted to learn Ruby and this seemed like a pretty decent project.  
 
 - **Why is the Ruby version different from the Perl version?**  
-	The Ruby version was developed after the Perl version was made. Because of this, it was a lot easier to add on features that were thought of while/after making the Perl version as the plumbing was still being setup.  
-	With a combination of wanting to finish watson-ruby as well as laziness, some of the improvements that were added to watson-ruby *have yet* to be pulled back into watson-perl.  
-	If you are interested in helping out or maintaining watson-perl let me know!
+  The Ruby version was developed after the Perl version was made. Because of this, it was a lot easier to add on features that were thought of while/after making the Perl version as the plumbing was still being setup.  
+  With a combination of wanting to finish watson-ruby as well as laziness, some of the improvements that were added to watson-ruby *have yet* to be pulled back into watson-perl.  
+  If you are interested in helping out or maintaining watson-perl let me know!
