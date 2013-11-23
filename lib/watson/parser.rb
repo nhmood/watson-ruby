@@ -56,10 +56,10 @@ module Watson
       _structure[:subdirs] = _completed_dirs
 
       debug_print "_structure dump\n\n"
-      debug_print PP.pp(_structure, "")
+      debug_print PP.pp(_structure, '')
       debug_print "\n\n"
 
-      return _structure
+      _structure
     end
 
 
@@ -71,11 +71,11 @@ module Watson
       debug_print "#{ self } : #{ __method__ }\n"
 
       # Error check on input
-      if !Watson::FS.check_dir(dir)
+      if Watson::FS.check_dir(dir)
+        debug_print "Opened #{ dir } for parsing\n"
+      else
         print "Unable to open #{ dir }, exiting\n"
         return false
-      else
-        debug_print "Opened #{ dir } for parsing\n"
       end
 
       debug_print "Parsing through all files/directories in #{ dir }\n"
@@ -103,25 +103,25 @@ module Watson
           # [review] - Better "Ruby" way to check for "*"?
           # [review] - Probably cleaner way to perform multiple checks below
           # Look for *.type on list, regex to match entry
-          if _ignore[0] == "*"
+          if _ignore[0] == '*'
             _cut = _ignore[1..-1]
             if _entry.match(/#{ _cut }/)
               debug_print "#{ _entry } is on the ignore list, setting to \"\"\n"
-              _entry = ""
+              _entry = ''
               break
             end
             # Else check for verbose ignore match
           else
             if  _entry == _ignore || File.absolute_path(_entry) == _ignore
               debug_print "#{ _entry } is on the ignore list, setting to \"\"\n"
-              _entry = ""
+              _entry = ''
               break
             end
           end
         end
 
         # If the resulting entry (after filtering) isn't empty, parse it and push into file array
-        if !_entry.empty?
+        unless _entry.empty?
           debug_print "Parsing #{ _entry }\n"
           _completed_files.push(parse_file(_entry))
         end
@@ -166,12 +166,13 @@ module Watson
       _structure[:curdir]  = dir
       _structure[:files]   = _completed_files
       _structure[:subdirs] = _completed_dirs
-      return _structure
+      _structure
     end
 
 
     ###########################################################
     # Parse through individual files looking for issue tags, then generate formatted issue hash
+    #noinspection RubyResolve
     def parse_file(filename)
       # [review] - Rename method input param to filename (more verbose?)
 
@@ -182,20 +183,20 @@ module Watson
       _absolute_path = File.absolute_path(filename)
 
       # Error check on input, use input filename to make sure relative path is correct
-      if !Watson::FS.check_file(_relative_path)
-        print "Unable to open #{ _relative_path }, exiting\n"
-        return false
-      else
+      if Watson::FS.check_file(_relative_path)
         debug_print "Opened #{ _relative_path } for parsing\n"
         debug_print "Short path: #{ _relative_path }\n"
+      else
+        print "Unable to open #{ _relative_path }, exiting\n"
+        return false
       end
 
 
       # Get filetype and set corresponding comment type
       _comment_type = get_comment_type(_relative_path)
-      if !_comment_type
+      unless _comment_type
         debug_print "Using default (#) comment type\n"
-        _comment_type = "#"
+        _comment_type = '#'
       end
 
 
@@ -242,8 +243,8 @@ module Watson
 
         # Make sure that the tag that was found is something we accept
         # If not, skip it but tell user about an unrecognized tag
-        if !@config.tag_list.include?(_tag)
-          Printer.print_status "!", RED
+        unless @config.tag_list.include?(_tag)
+          Printer.print_status '!', RED
           print "Unknown tag [#{ _tag }] found, ignoring\n"
           print "      You might want to include it in your RC or with the -t/--tags flag\n"
           next
@@ -270,15 +271,16 @@ module Watson
         # Go through each line of context and determine indentation
         # Used to preserve indentation in post
         _cut                 = Array.new
-        _context.each do |_line|
+        # [review] - Don't  use _line because it shadows the above _line
+        _context.each do |_line_sub|
           _max = 0
           # Until we reach a non indent OR the line is empty, keep slicin'
-          until !_line.match(/^( |\t|\n)/) || _line.empty?
+          until !_line_sub.match(/^( |\t|\n)/) || _line_sub.empty?
             # [fix] - Replace with inplace slice!
-            _line = _line.slice(1..-1)
+            _line_sub = _line_sub.slice(1..-1)
             _max  = _max + 1
 
-            debug_print "New line: #{ _line }\n"
+            debug_print "New line: #{ _line_sub }\n"
             debug_print "Max indent: #{ _max }\n"
           end
 
@@ -288,16 +290,16 @@ module Watson
 
         # Print old _context
         debug_print "\n\n Old Context \n"
-        debug_print PP.pp(_context, "")
+        debug_print PP.pp(_context, '')
         debug_print "\n\n"
 
         # Trim the context lines to be left aligned but maintain indentation
         # Then add a single \t to the beginning so the Markdown is pretty on GitHub/Bitbucket
-        _context.map! { |_line| "\t#{ _line.slice(_cut.min .. -1) }" }
+        _context.map! { |_line_sub| "\t#{ _line_sub.slice(_cut.min .. -1) }" }
 
         # Print new _context
         debug_print("\n\n New Context \n")
-        debug_print PP.pp(_context, "")
+        debug_print PP.pp(_context, '')
         debug_print("\n\n")
 
         _issue[:context] = _context
@@ -347,7 +349,7 @@ module Watson
       # perl version might have to stay since hash scoping is weird in perl
       debug_print "\nIssue list: #{ _issue_list }\n"
 
-      return _issue_list
+      _issue_list
     end
 
 
@@ -366,7 +368,7 @@ module Watson
       # [review] - Matz style while loop a la http://stackoverflow.com/a/10713963/1604424
       # Create _mtch var so we can access it outside of the do loop
 
-      _mtch = String.new()
+
       loop do
         _mtch = filename.match(/(\.(\w+))$/)
         debug_print "Extension: #{ _mtch }\n"
@@ -378,19 +380,28 @@ module Watson
         case _mtch[0]
           # C / C++, Java, C#
           # [todo] - Add /* style comment
-          when ".cpp", ".cc", ".c", ".hpp", ".h",
-              ".java", ".class", ".cs", ".js", ".php"
+          when '.cpp', '.cc', '.c', '.hpp', '.h',
+              '.java', '.class', '.cs', '.js', '.php',
+              '.m', '.mm', '.go'
             debug_print "Comment type is: //\n"
-            return "//"
+            return '//'
+
+          when '.hs'
+            debug_print "Comment type is: --\n"
+            return '--'
+
+          when '.erl'
+            debug_print "Comment type is: %\n"
+            return '%'
 
           # Bash, Ruby, Perl, Python
-          when ".sh", ".rb", ".pl", ".py"
+          when '.sh', '.rb', '.pl', '.py', '.coffee'
             debug_print "Comment type is: #\n"
-            return "#"
+            return '#'
 
           # Can't recognize extension, keep looping in case of .bk, .#, ect
           else
-            filename = filename.gsub(/(\.(\w+))$/, "")
+            filename = filename.gsub(/(\.(\w+))$/, '')
             debug_print "Didn't recognize, searching #{ filename }\n"
 
         end
@@ -400,7 +411,7 @@ module Watson
       # Deal with what default to use in calling method
       # [review] - Is Ruby convention to return 1 or 0 (or -1) on failure/error?
       debug_print "Couldn't find any recognized extension type\n"
-      return false
+      false
 
     end
 
