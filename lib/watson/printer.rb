@@ -112,7 +112,7 @@ module Watson
 			if @config.use_less
 				debug_print "Unix less avaliable, setting output to #{ @config.tmp_file }\n"
 				@output = File.open(@config.tmp_file, 'w')
-			elsif
+			else
 				debug_print "Unix less is unavaliable, setting output to STDOUT\n"
 				@output = STDOUT
 			end	
