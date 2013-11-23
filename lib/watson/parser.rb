@@ -209,10 +209,10 @@ module Watson
         _data.push(_line)
         _line.encode('UTF-8', :invalid => :replace)
       end
-  
-      # Initialize issue list hash 
+
+      # Initialize issue list hash
       _issue_list = Hash.new()
-      _issue_list[:relative_path] = _relative_path 
+      _issue_list[:relative_path] = _relative_path
       _issue_list[:absolute_path] = _absolute_path
       _issue_list[:has_issues] = false
       @config.tag_list.each do | _tag |

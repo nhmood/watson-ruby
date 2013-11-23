@@ -19,11 +19,11 @@ describe Parser do
   describe '#get_comment_type' do
     context 'known extension' do
       it 'return correct extension (# for ruby)' do
-        @parser.get_comment_type('lib/watson.rb').should eql '#'  
+        @parser.get_comment_type('lib/watson.rb').should eql '#'
       end
 
       it 'return correct extension (# for coffee)' do
-        @parser.get_comment_type('lib/watson.coffee').should eql '#'  
+        @parser.get_comment_type('lib/watson.coffee').should eql '#'
       end
 
       it 'return correct extension (// for c/c++)' do
@@ -72,7 +72,7 @@ describe Parser do
         FileUtils.mkdir('test_dir')
         FileUtils.cp('assets/examples/main.cpp', 'test_dir/')
       end
-    
+
       it 'generate populated hash structure from file' do
         @structure = @parser.parse_file('test_dir/main.cpp')
 
@@ -85,7 +85,7 @@ describe Parser do
         FileUtils.rm_rf('test_dir')
       end
     end
-    
+
   end
 
   describe '#parse_dir' do
@@ -112,7 +112,7 @@ describe Parser do
         FileUtils.mkdir('test_dir')
         FileUtils.cp('assets/examples/main.cpp', 'test_dir/')
       end
-      
+
       it 'generate hash structure with parsed file' do
         @structure = @parser.parse_dir('test_dir/', 0)
         @structure[:files][0][:relative_path].should == 'test_dir/main.cpp'

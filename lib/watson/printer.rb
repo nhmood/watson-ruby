@@ -1,5 +1,5 @@
 module Watson
-    
+
     # Color definitions for pretty printing
     # Defined here because we need Global scope but makes sense to have them
     # in the printer.rb file at least
@@ -29,38 +29,38 @@ module Watson
     include Watson
 
     # Debug printing for this class
-    DEBUG = false     
+    DEBUG = false
 
     class << self
-  
+
     # Include for debug_print (for static methods)
     include Watson
 
     ###########################################################
-    # Custom color print for static call (only writes to STDOUT)   
+    # Custom color print for static call (only writes to STDOUT)
     def cprint (msg = "", color = "")
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-    
+
       # This little check will allow us to take a Constant defined color
       # As well as a [0-256] value if specified
-      if (color.is_a?(String))  
+      if (color.is_a?(String))
         debug_print "Custom color specified for cprint\n"
         STDOUT.write(color)
       elsif (color.between?(0, 256))
         debug_print "No or Default color specified for cprint\n"
         STDOUT.write("\e[38;5;#{ color }m")
       end
-    
+
       STDOUT.write(msg)
     end
 
 
     ###########################################################
-    # Standard header print for static call (uses static cprint) 
-    def print_header 
-    
+    # Standard header print for static call (uses static cprint)
+    def print_header
+
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
 
@@ -76,9 +76,9 @@ module Watson
 
 
     ###########################################################
-    # Status printer for static call (uses static cprint) 
+    # Status printer for static call (uses static cprint)
     # Print status block in standard format
-    def print_status(msg, color) 
+    def print_status(msg, color)
       cprint RESET + BOLD
       cprint WHITE + "[ "
       cprint "#{ msg } ", color
@@ -93,19 +93,19 @@ module Watson
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-      
+
       @config = config
       return true
-    end 
+    end
 
-    
+
     ###########################################################
-    # Take parsed structure and print out in specified formatting 
+    # Take parsed structure and print out in specified formatting
     def run(structure)
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-    
+
       # Check Config to see if we have access to less for printing
       # If so, open our temp file as the output to write to
       # Else, just print out to STDOUT
@@ -115,8 +115,8 @@ module Watson
       else
         debug_print "Unix less is unavaliable, setting output to STDOUT\n"
         @output = STDOUT
-      end 
-      
+      end
+
       # Print header for output
       debug_print "Printing Header\n"
       print_header
@@ -148,7 +148,7 @@ module Watson
 
       # This little check will allow us to take a Constant defined color
       # As well as a [0-256] value if specified
-      if (color.is_a?(String))  
+      if (color.is_a?(String))
         debug_print "Custom color specified for cprint\n"
         @output.write(color)
       elsif (color.between?(0, 256))
@@ -159,10 +159,10 @@ module Watson
       @output.write(msg)
     end
 
-  
+
     ###########################################################
     # Standard header print for class call (uses member cprint)
-    def print_header 
+    def print_header
       # Identify method entry
 
       debug_print "#{ self } : #{ __method__ }\n"
@@ -183,7 +183,7 @@ module Watson
     ###########################################################
     # Status printer for member call (uses member cprint)
     # Print status block in standard format
-    def print_status(msg, color) 
+    def print_status(msg, color)
       cprint RESET + BOLD
       cprint WHITE + "[ "
       cprint "#{ msg } ", color
@@ -193,7 +193,7 @@ module Watson
 
     ###########################################################
     # Go through all files and directories and call necessary printing methods
-    # Print all individual entries, call print_structure on each subdir  
+    # Print all individual entries, call print_structure on each subdir
     def print_structure(structure)
 
       # Identify method entry
@@ -234,9 +234,9 @@ module Watson
         cprint "\n"
         print_status "x", RED
         cprint BOLD + UNDERLINE + RED + "#{entry[:relative_path]}" + RESET + "\n"
-      end 
+      end
 
-  
+
       # [review] - Should the tag structure be self contained in the hash
       #      Or is it ok to reference @config to figure out the tags
       @config.tag_list.each do | _tag |
@@ -249,7 +249,7 @@ module Watson
           cprint "\n"
           next
         end
-        
+
         debug_print "#{ _tag } has issues in it, print!\n"
         print_status "#{ _tag }", BLUE
         cprint "\n"
@@ -261,8 +261,8 @@ module Watson
 
 
           # Check to see if it has been resolved on GitHub/Bitbucket
-          debug_print "Checking if issue has been resolved\n" 
-          @config.github_issues[:closed].each do | _closed | 
+          debug_print "Checking if issue has been resolved\n"
+          @config.github_issues[:closed].each do | _closed |
             if _closed["body"].include?(_issue[:md5])
               debug_print "Found in #{ _closed[:comment] }, not posting\n"
               cprint BOLD + " [" + RESET
@@ -270,10 +270,10 @@ module Watson
               cprint BOLD + "]" + RESET
             end
             debug_print "Did not find in #{ _closed[:comment] }\n"
-          end 
+          end
 
           debug_print "Checking if issue has been resolved\n"
-          @config.bitbucket_issues[:closed].each do  | _closed | 
+          @config.bitbucket_issues[:closed].each do  | _closed |
             if _closed["content"].include?(_issue[:md5])
               debug_print "Found in #{ _closed["content"] }, not posting\n"
               cprint BOLD + " [" + RESET
@@ -288,6 +288,6 @@ module Watson
         cprint "\n"
       end
     end
-  
+
   end
-end 
+end

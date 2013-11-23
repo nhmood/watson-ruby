@@ -16,7 +16,7 @@ describe Config do
 
   describe '#create_conf' do
     it 'create config file, return true' do
-      @config.create_conf.should be_true  
+      @config.create_conf.should be_true
       File.exists?(@file).should be_true
     end
   end
@@ -35,7 +35,7 @@ describe Config do
         File.exists?(@file).should be_true
       end
     end
-  end 
+  end
 
   describe '#read_conf' do
     context 'config does not exist' do
@@ -53,24 +53,24 @@ describe Config do
         @config.dir_list.should include('.')
         @config.tag_list.should include('fix', 'review', 'todo')
         @config.ignore_list.should include('.git', '*.swp')
-        
+
       end
     end
   end
 
   describe '#update_conf' do
-    before do 
+    before do
       @config.check_conf
-      @config.parse_depth = 1000 
-      @config.update_conf('parse_depth') 
-    end 
+      @config.parse_depth = 1000
+      @config.update_conf('parse_depth')
+    end
 
     it 'updated config.parse_depth should be 1000' do
       @new_config = Config.new
       @new_config.check_conf.should be_true
       @new_config.read_conf.should be_true
       @new_config.parse_depth.to_i.should eql 1000
-    end   
+    end
   end
 
   # [review] - Should this be #initialize or #new?
@@ -81,7 +81,7 @@ describe Config do
       @config.cl_ignore_set.should be_false
 
       @config.use_less.should be_false
-      
+
       @config.ignore_list.should == []
       @config.dir_list.should == []
       @config.file_list.should == []
@@ -101,7 +101,7 @@ describe Config do
       @config.bitbucket_issues.should == {:open => Hash.new(),
                        :closed => Hash.new() }
 
-    end 
+    end
   end
 
   describe '#run' do
@@ -110,7 +110,7 @@ describe Config do
       @config.ignore_list.should include('.git', '*.swp')
       @config.tag_list.should include('fix', 'review', 'todo')
       @config.dir_list.should include('.')
-    end 
+    end
 
   end
 

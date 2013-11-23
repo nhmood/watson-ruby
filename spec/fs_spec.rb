@@ -29,7 +29,7 @@ describe FS do
         FS.check_file('spec/fs_spec.rb').should be_true
       end
     end
-  end 
+  end
 
   describe '.check_dir' do
     context 'blank input dir' do

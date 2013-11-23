@@ -1,15 +1,15 @@
 # watson rc
 # watson - inline issue manager
-# [goosecode] labs 
+# [goosecode] labs
 
 
-# Directories 
-[dirs] 
+# Directories
+[dirs]
 ./
 
- 
-# Tags 
-[tags] 
+
+# Tags
+[tags]
 fix
 review
 todo

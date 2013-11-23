@@ -1,3 +1,3 @@
-module Watson 
+module Watson
   VERSION = "1.0.5"
 end

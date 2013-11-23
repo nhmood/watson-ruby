@@ -3,8 +3,8 @@
 #include <string>
 
 // [todo] - Find more Sherlock Holmes quotes
-// [todo] - Write Watson response function 
-// [todo] - Add debug mode with debug prints 
+// [todo] - Write Watson response function
+// [todo] - Add debug mode with debug prints
 
 // [review] - Should I use char *argv[] or char **argv?
 int main(int argc, char *argv[]){
