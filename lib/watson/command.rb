@@ -2,16 +2,16 @@ module Watson
   # Command line parser class
   # Controls program flow and parses options given by command line
   class Command
-    
+
     # Debug printing for this class
     DEBUG = false
-    
+
     class << self
 
     # Include for debug_print
     include Watson
 
-  
+
     ###########################################################
     # Command line controller
     # Manages program flow from given command line arguments
@@ -21,7 +21,7 @@ module Watson
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-    
+
       # List of possible flags, used later in parsing and for user reference
       _flag_list = ["-c", "--context-depth",
               "-d", "--dirs",
@@ -55,7 +55,7 @@ module Watson
       @config   = Watson::Config.new
       @parser   = Watson::Parser.new(@config)
       @printer  = Watson::Printer.new(@config)
-  
+
       # Capture Ctrl+C interrupt for clean exit
       # [review] - Not sure this is the correct place to put the Ctrl+C capture
       trap("INT") do
@@ -65,18 +65,18 @@ module Watson
 
       # Parse command line options
       # Begin by slicing off until we reach a valid flag
-      
+
       # Always look at first array element in case and then slice off what we need
       # Accept parameters to be added / overwritten if called twice
       # Slice out from argument until next argument
-    
-      # Clean up argument list by removing elements until the first valid flag  
+
+      # Clean up argument list by removing elements until the first valid flag
       until _flag_list.include?(args[0]) || args.length == 0
         # [review] - Make this non-debug print to user?
         debug_print "Unrecognized flag #{ args[0] }\n"
         args.slice!(0)
       end
-    
+
       # Parse command line options
       # Grab flag (should be first arg) then slice off args until next flag
       # Repeat until all args have been dealt with
@@ -87,20 +87,20 @@ module Watson
 
         debug_print "Current Flag: #{ _flag }\n"
 
-        # Go through args until we find the next valid flag or all args are parsed 
+        # Go through args until we find the next valid flag or all args are parsed
         _i = 0
-        until _flag_list.include?(args[_i]) ||  _i > (args.length - 1) 
+        until _flag_list.include?(args[_i]) ||  _i > (args.length - 1)
           debug_print "Arg: #{ args[_i] }\n"
-          _i = _i + 1 
+          _i = _i + 1
         end
-          
+
         # Slice off the args for the flag (inclusive) using index from above
         # [review] - This is a bit messy (to slice by _i - 1) when we have control
         # over the _i index above but I don't want to
         # think about the logic right now so look at later
         _flag_args = args.slice!(0..(_i-1))
 
-        case _flag 
+        case _flag
         when "-c", "--context-depth"
           debug_print "Found -c/--context-depth argument\n"
           set_context(_flag_args)
@@ -108,7 +108,7 @@ module Watson
         when "-d", "--dirs"
           debug_print "Found -d/--dirs argument\n"
           set_dirs(_flag_args)
-        
+
         when "-f", "--files"
           debug_print "Found -f/--files argument\n"
           set_files(_flag_args)
@@ -120,7 +120,7 @@ module Watson
         when "-p", "--parse-depth"
           debug_print "Found -r/--parse-depth argument\n"
           set_parse_depth(_flag_args)
-        
+
         when "-r", "--remote"
           debug_print "Found -r/--remote argument\n"
           # Run config to populate all the fields and such
@@ -128,10 +128,10 @@ module Watson
           @config.check_conf
           @config.read_conf
           setup_remote(_flag_args)
-          
+
           # If setting up remote, exit afterwards
           exit true
-        
+
         when "-t", "--tags"
           debug_print "Found -t/--tags argument\n"
           set_tags(_flag_args)
@@ -154,13 +154,13 @@ module Watson
 
 
     ###########################################################
-    # Print help for watson 
+    # Print help for watson
     def help
     # [todo] - Add bold and colored printing
-      
+
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-      
+
       print BOLD;
       print "Usage: watson [OPTION]...\n"
         print "Running watson with no arguments will parse with settings in RC file\n"
@@ -188,7 +188,7 @@ module Watson
         print "watson home page: <http://goosecode.com/projects/watson>\n"
         print "[goosecode] labs | 2012-2013\n"
         print RESET;
-    
+
         return true
 
     end
@@ -197,16 +197,16 @@ module Watson
     ###########################################################
     # Print version information about watson
     def version
-    
+
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-    
+
       print "watson v1.0\n"
       print "Copyright (c) 2012-2013 goosecode labs\n"
       print "Licensed under MIT, see LICENSE for details\n"
       print "\n"
 
-      print "Written by nhmood, see <http://goosecode.com/projects/watson>\n"   
+      print "Written by nhmood, see <http://goosecode.com/projects/watson>\n"
       return true
     end
 
@@ -214,11 +214,11 @@ module Watson
     ###########################################################
     # set_context
     # Set context_depth parameter in config
-    def set_context(args) 
-    
+    def set_context(args)
+
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-      
+
       # Need at least one dir in args
       if args.length <= 0
         # [review] - Make this a non-debug print to user?
@@ -226,12 +226,12 @@ module Watson
         return false
       end
 
-    
+
       # For context_depth we do NOT append to RC, ALWAYS overwrite
-      # For each argument passed, make sure valid, then set @config.parse_depth 
+      # For each argument passed, make sure valid, then set @config.parse_depth
       args.each do | _context_depth |
         if _context_depth.match(/^(\d+)/)
-          debug_print "Setting #{ _context_depth } to config context_depth\n" 
+          debug_print "Setting #{ _context_depth } to config context_depth\n"
           @config.context_depth = _context_depth.to_i
         else
           debug_print "#{ _context_depth } invalid depth, ignoring\n"
@@ -239,7 +239,7 @@ module Watson
       end
 
       # Doesn't make much sense to set context_depth for each individual post
-      # When you use this command line arg, it writes the config parameter  
+      # When you use this command line arg, it writes the config parameter
       @config.update_conf("context_depth")
 
       debug_print "Updated context_depth: #{ @config.context_depth }\n"
@@ -248,13 +248,13 @@ module Watson
 
 
     ###########################################################
-    # set_dirs  
-    # Set directories to be parsed by watson  
-    def set_dirs(args) 
+    # set_dirs
+    # Set directories to be parsed by watson
+    def set_dirs(args)
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-      
+
       # Need at least one dir in args
       if args.length <= 0
         # [review] - Make this a non-debug print to user?
@@ -263,9 +263,9 @@ module Watson
       end
 
       # Set config flag for CL entryset  in config
-      @config.cl_entry_set = true 
+      @config.cl_entry_set = true
       debug_print "Updated cl_entry_set flag: #{ @config.cl_entry_set }\n"
-      
+
       # [review] - Should we clean the dir before adding here?
       # For each argument passed, make sure valid, then add to @config.dir_list
       args.each do | _dir |
@@ -288,13 +288,13 @@ module Watson
 
 
     ###########################################################
-    # set_files  
-    # Set files to be parsed by watson  
-    def set_files(args) 
+    # set_files
+    # Set files to be parsed by watson
+    def set_files(args)
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-      
+
       # Need at least one file in args
       if args.length <= 0
         debug_print "No args passed, exiting\n"
@@ -302,7 +302,7 @@ module Watson
       end
 
       # Set config flag for CL entryset  in config
-      @config.cl_entry_set = true 
+      @config.cl_entry_set = true
       debug_print "Updated cl_entry_set flag: #{ @config.cl_entry_set }\n"
 
       # For each argument passed, make sure valid, then add to @config.file_list
@@ -323,12 +323,12 @@ module Watson
 
     ###########################################################
     # set_ignores
-    # Set files and dirs to be ignored when parsing by watson 
+    # Set files and dirs to be ignored when parsing by watson
     def set_ignores(args)
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-      
+
       # Need at least one ignore in args
       if args.length <= 0
         debug_print "No args passed, exiting\n"
@@ -336,11 +336,11 @@ module Watson
       end
 
       # Set config flag for CL ignore set in config
-      @config.cl_ignore_set = true  
+      @config.cl_ignore_set = true
       debug_print "Updated cl_ignore_set flag: #{ @config.cl_ignore_set }\n"
 
 
-      # For ignores we do NOT overwrite RC, just append 
+      # For ignores we do NOT overwrite RC, just append
       # For each argument passed, add to @config.ignore_list
       args.each do | _ignore |
         debug_print "Adding #{ _ignore } to config ignore_list\n"
@@ -353,13 +353,13 @@ module Watson
 
 
     ###########################################################
-    # set_parse_depth 
+    # set_parse_depth
     # Set how deep to recursively parse directories
     def set_parse_depth(args)
-    
+
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-      
+
       # This should be a single, numeric, value
       # If they pass more, just take the last valid value
       if args.length <= 0
@@ -367,11 +367,11 @@ module Watson
         return false
       end
 
-      # For max_dpeth we do NOT append to RC, ALWAYS overwrite  
-      # For each argument passed, make sure valid, then set @config.parse_depth 
+      # For max_dpeth we do NOT append to RC, ALWAYS overwrite
+      # For each argument passed, make sure valid, then set @config.parse_depth
       args.each do | _parse_depth |
         if _parse_depth.match(/^(\d+)/)
-          debug_print "Setting #{ _parse_depth } to config parse_depth\n" 
+          debug_print "Setting #{ _parse_depth } to config parse_depth\n"
           @config.parse_depth = _parse_depth
         else
           debug_print "#{ _parse_depth } invalid depth, ignoring\n"
@@ -385,20 +385,20 @@ module Watson
 
     ###########################################################
     # set_tags
-    # Set tags to look for when parsing files and folders 
+    # Set tags to look for when parsing files and folders
     def set_tags(args)
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-      
+
       # Need at least one tag in args
       if args.length <= 0
         debug_print "No args passed, exiting\n"
         return false
       end
-      
+
       # Set config flag for CL tag set in config
-      @config.cl_tag_set = true 
+      @config.cl_tag_set = true
       debug_print "Updated cl_tag_set flag: #{ @config.cl_tag_set }\n"
 
       # If set from CL, we overwrite the RC parameters
@@ -415,16 +415,16 @@ module Watson
 
     ###########################################################
     # setup_remote
-    # Handle setup of remote issue posting for GitHub and Bitbucket 
+    # Handle setup of remote issue posting for GitHub and Bitbucket
     def setup_remote(args)
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-    
+
       Printer.print_header
-    
+
       print BOLD + "Existing Remotes:\n" + RESET
-  
+
       # Check the config for any remote entries (GitHub or Bitbucket) and print
       # We *should* always have a repo + API together, but API should be enough
       if @config.github_api.empty? && @config.bitbucket_api.empty?
@@ -444,16 +444,16 @@ module Watson
 
       # If github or bitbucket passed, setup
       # If just -r (0 args) do nothing and only have above printed
-      # If more than 1 arg is passed, unrecognized, warn user 
+      # If more than 1 arg is passed, unrecognized, warn user
       if args.length == 1
         case args[0].downcase
         when "github"
           debug_print "GitHub setup called from CL\n"
-          Watson::Remote::GitHub.setup(@config) 
-        
+          Watson::Remote::GitHub.setup(@config)
+
         when "bitbucket"
           debug_print "Bitbucket setup called from CL\n"
-          Watson::Remote::Bitbucket.setup(@config) 
+          Watson::Remote::Bitbucket.setup(@config)
         end
       elsif args.length > 1
         Printer.print_status "x", RED
@@ -464,7 +464,7 @@ module Watson
         return false
       end
     end
-    
+
     end
   end
 end
