@@ -207,7 +207,7 @@ module Watson
       _data = Array.new()
       File.open(_absolute_path, 'r').read.each_line do |_line|
         _data.push(_line)
-        end
+        _line.encode('UTF-8', :invalid => :replace)
       end
   
       # Initialize issue list hash 
@@ -228,12 +228,12 @@ module Watson
         # Using if match to stay consistent (with config.rb) see there for
         # explanation of why I do this (not a good good one persay...)
         begin
-          _mtch = _line.encode('UTF-8', :invalid => :replace).match(/^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/)
+          _mtch = _line.match(/^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/)
         rescue ArgumentError
-          debug_print "File not UTF-8: #{_absolute_path}"
+          debug_print "Could not encode to UTF-8, non-text\n"
         end
 
-        if !_mtch
+        unless _mtch
           debug_print "No valid tag found in line, skipping\n"
           next
         end
@@ -278,7 +278,7 @@ module Watson
           until !_line_sub.match(/^( |\t|\n)/) || _line_sub.empty?
             # [fix] - Replace with inplace slice!
             _line_sub = _line_sub.slice(1..-1)
-            _max  = _max + 1
+            _max      = _max + 1
 
             debug_print "New line: #{ _line_sub }\n"
             debug_print "Max indent: #{ _max }\n"
