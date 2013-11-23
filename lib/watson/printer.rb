@@ -129,7 +129,7 @@ module Watson
       if @config.use_less
         @output.close
         # [review] - Way of calling a native Ruby less?
-        system("less #{ @config.tmp_file }")
+        system("less -R #{ @config.tmp_file }")
         debug_print "File displayed with less, now deleting...\n"
         File.delete(@config.tmp_file)
       end
