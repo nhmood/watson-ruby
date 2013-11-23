@@ -271,7 +271,6 @@ module Watson
         # Go through each line of context and determine indentation
         # Used to preserve indentation in post
         _cut                 = Array.new
-        # [review] - Don't  use _line because it shadows the above _line
         _context.each do |_line_sub|
           _max = 0
           # Until we reach a non indent OR the line is empty, keep slicin'
