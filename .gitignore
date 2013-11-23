@@ -4,5 +4,3 @@ pkg/
 NOTES
 *.swp
 .watsonrc
-.idea/
-watson-ruby.iml
