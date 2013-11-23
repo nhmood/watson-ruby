@@ -1,6 +1,6 @@
 module Watson
   # Dir/File parser class
-  # Contains all necessary methods to parse through files and directories 
+  # Contains all necessary methods to parse through files and directories
   # for specified tags and generate data structure containing found issues
   class Parser
 
@@ -11,29 +11,29 @@ module Watson
     # Include for Digest::MD5.hexdigest used in issue creating
     require 'digest'
     require 'pp'
-    
+
     # Debug printing for this class
-    DEBUG = false     
-  
+    DEBUG = false
+
     ###########################################################
-    # Initialize the parser with the current watson config 
+    # Initialize the parser with the current watson config
     def initialize(config)
     # [review] - Not sure if passing config here is best way to access it
-    
+
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-      
+
       @config = config
-    end 
+    end
 
 
     ###########################################################
-    # Begins parsing of files / dirs specified in the initial dir/file lists   
+    # Begins parsing of files / dirs specified in the initial dir/file lists
     def run
-    
+
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
-  
+
       # Go through all files added from CL (sort them first)
       # If empty, sort and each will do nothing, no errors
       _completed_dirs = Array.new()
@@ -43,14 +43,14 @@ module Watson
           _completed_files.push(parse_file(_file))
         end
       end
-      
-      # Then go through all the specified directories 
+
+      # Then go through all the specified directories
       # Initial parse depth to parse_dir is 0 (unlimited)
       @config.dir_list.sort.each do | _dir |
         _completed_dirs.push(parse_dir(_dir, 0))
-      end 
-      
-      # Create overall hash for parsed files  
+      end
+
+      # Create overall hash for parsed files
       _structure = Hash.new()
       _structure[:files] = _completed_files
       _structure[:subdirs]  = _completed_dirs
@@ -58,9 +58,9 @@ module Watson
       debug_print "_structure dump\n\n"
       debug_print PP.pp(_structure, "")
       debug_print "\n\n"
-      
+
       return _structure
-    end 
+    end
 
 
     ###########################################################
@@ -77,30 +77,30 @@ module Watson
       else
         debug_print "Opened #{ dir } for parsing\n"
       end
-      
+
       debug_print "Parsing through all files/directories in #{ dir }\n"
 
       # [review] - Shifted away from single Dir.glob loop to separate for dir/file
       #        This duplicates code but is much better for readability
       #        Not sure which is preferred?
-      
+
 
       # Remove leading . or ./
       _glob_dir = dir.gsub(/^\.(\/?)/, '')
       debug_print "_glob_dir: #{_glob_dir}\n"
-  
+
 
       # Go through directory to find all files
       # Create new array to hold all parsed files
       _completed_files = Array.new()
       Dir.glob("#{ _glob_dir }{*,.*}").select { | _fn | File.file?(_fn) }.sort.each do | _entry |
-        debug_print "Entry: #{_entry} is a file\n"  
-      
-      
+        debug_print "Entry: #{_entry} is a file\n"
+
+
         # [review] - Warning to user when file is ignored? (outside of debug_print)
         # Check against ignore list, if match, set to "" which will be ignored
         @config.ignore_list.each do | _ignore |
-          # [review] - Better "Ruby" way to check for "*"? 
+          # [review] - Better "Ruby" way to check for "*"?
           # [review] - Probably cleaner way to perform multiple checks below
           # Look for *.type on list, regex to match entry
           if _ignore[0] == "*"
@@ -118,30 +118,30 @@ module Watson
               break
             end
           end
-        end 
+        end
 
         # If the resulting entry (after filtering) isn't empty, parse it and push into file array
         if !_entry.empty?
           debug_print "Parsing #{ _entry }\n"
           _completed_files.push(parse_file(_entry))
-        end 
-      
+        end
+
       end
-         
-      
+
+
       # Go through directory to find all subdirs
-      # Create new array to hold all parsed subdirs 
+      # Create new array to hold all parsed subdirs
       _completed_dirs = Array.new()
       Dir.glob("#{ _glob_dir }{*, .*}").select { | _fn | File.directory?(_fn) }.sort.each do | _entry |
-        debug_print "Entry: #{ _entry } is a dir\n" 
-          
-        
+        debug_print "Entry: #{ _entry } is a dir\n"
+
+
 
         ## Depth limit logic
         # Current depth is depth of previous parse_dir (passed in as second param) + 1
         _cur_depth = depth + 1
         debug_print "Current Folder depth: #{ _cur_depth }\n"
-        
+
         # If Config.parse_depth is 0, no limit on subdir parsing
         if @config.parse_depth == 0
           debug_print "No max depth, parsing directory\n"
@@ -152,7 +152,7 @@ module Watson
           _completed_dirs.push(parse_dir("#{ _entry }/", _cur_depth))
         # Else, depth is greater than limit, ignore the directory
         else
-          debug_print "Depth greater than max depth, ignoring\n"  
+          debug_print "Depth greater than max depth, ignoring\n"
         end
 
         # Add directory to ignore list so it isn't repeated again accidentally
@@ -161,7 +161,7 @@ module Watson
 
 
       # [review] - Not sure if Dir.glob requires a explicit directory/file close?
-        
+
       # Create hash to hold all parsed files and directories
       _structure = Hash.new()
       _structure[:curdir] = dir
@@ -172,7 +172,7 @@ module Watson
 
 
     ###########################################################
-    # Parse through individual files looking for issue tags, then generate formatted issue hash 
+    # Parse through individual files looking for issue tags, then generate formatted issue hash
     def parse_file(filename)
     # [review] - Rename method input param to filename (more verbose?)
 
@@ -180,7 +180,7 @@ module Watson
       debug_print "#{ self } : #{ __method__ }\n"
 
       _relative_path = filename
-      _absolute_path = File.absolute_path(filename) 
+      _absolute_path = File.absolute_path(filename)
 
       # Error check on input, use input filename to make sure relative path is correct
       if !Watson::FS.check_file(_relative_path)
@@ -216,10 +216,10 @@ module Watson
           break
         end
       end
-  
-      # Initialize issue list hash 
+
+      # Initialize issue list hash
       _issue_list = Hash.new()
-      _issue_list[:relative_path] = _relative_path 
+      _issue_list[:relative_path] = _relative_path
       _issue_list[:absolute_path] = _absolute_path
       _issue_list[:has_issues] = false
       @config.tag_list.each do | _tag |
@@ -227,7 +227,7 @@ module Watson
         # [review] - Use to_sym to make tag into symbol instead of string?
         _issue_list[_tag] = Array.new
       end
-      
+
       # Loop through all array elements (lines in file) and look for issues
       _data.each_with_index do | _line, _i |
 
@@ -239,7 +239,7 @@ module Watson
           debug_print "No valid tag found in line, skipping\n"
           next
         end
-      
+
         # Set tag
         _tag = _mtch[1]
 
@@ -259,7 +259,7 @@ module Watson
         _title = _mtch[2]
         debug_print "Issue found\n"
         debug_print "Tag: #{ _tag }\n"
-        debug_print "Issue: #{ _title }\n"  
+        debug_print "Issue: #{ _title }\n"
 
         # Create hash for each issue found
         _issue = Hash.new
@@ -269,10 +269,10 @@ module Watson
         # Grab context of issue specified by Config param (+1 to include issue itself)
         _context = _data[_i..(_i + @config.context_depth + 1)]
 
-        # [review] - There has got to be a better way to do this... 
+        # [review] - There has got to be a better way to do this...
         # Go through each line of context and determine indentation
         # Used to preserve indentation in post
-        _cut = Array.new 
+        _cut = Array.new
         _context.each do | _line |
           _max = 0
           # Until we reach a non indent OR the line is empty, keep slicin'
@@ -284,11 +284,11 @@ module Watson
             debug_print "New line: #{ _line }\n"
             debug_print "Max indent: #{ _max }\n"
           end
-          
-          # Push max indent for current line to the _cut array 
-          _cut.push(_max) 
-        end 
-  
+
+          # Push max indent for current line to the _cut array
+          _cut.push(_max)
+        end
+
         # Print old _context
         debug_print "\n\n Old Context \n"
         debug_print PP.pp(_context, "")
@@ -297,18 +297,18 @@ module Watson
         # Trim the context lines to be left aligned but maintain indentation
         # Then add a single \t to the beginning so the Markdown is pretty on GitHub/Bitbucket
         _context.map! { | _line | "\t#{ _line.slice(_cut.min .. -1) }" }
-      
-        # Print new _context  
+
+        # Print new _context
         debug_print("\n\n New Context \n")
         debug_print PP.pp(_context, "")
         debug_print("\n\n")
 
         _issue[:context] = _context
-          
+
         # These are accessible from _issue_list, but we pass individual issues
         # to the remote poster, so we need this here to reference them for GitHub/Bitbucket
         _issue[:tag] = _tag
-        _issue[:path] = _relative_path 
+        _issue[:path] = _relative_path
 
         # Generate md5 hash for each specific issue (for bookkeeping)
         _issue[:md5] = ::Digest::MD5.hexdigest("#{ _tag }, #{ _relative_path }, #{ _title }")
@@ -317,7 +317,7 @@ module Watson
 
         # [todo] - Figure out a way to queue up posts so user has a progress bar?
         # That way user can tell that wait is because of http calls not app
-  
+
         # If GitHub is valid, pass _issue to GitHub poster function
         # [review] - Keep Remote as a static method and pass config every time?
         #      Or convert to a regular class and make an instance with @config
@@ -328,7 +328,7 @@ module Watson
               Remote::GitHub.post_issue(_issue, @config)
             else
               debug_print "GitHub invalid, not posting issue\n"
-            end 
+            end
 
 
             if @config.bitbucket_valid
@@ -338,13 +338,13 @@ module Watson
               debug_print "Bitbucket invalid, not posting issue\n"
             end
           end
-  
+
           # [review] - Use _tag string as symbol reference in hash or keep as string?
           # Look into to_sym to keep format of all _issue params the same
           _issue_list[_tag].push( _issue )
 
       end
-    
+
       # [review] - Return of parse_file is different than watson-perl
       # Not sure which makes more sense, ruby version seems simpler
       # perl version might have to stay since hash scoping is weird in perl
@@ -355,7 +355,7 @@ module Watson
 
 
     ###########################################################
-    # Get comment syntax for given file 
+    # Get comment syntax for given file
     def get_comment_type(filename)
 
       # Identify method entry
@@ -368,13 +368,13 @@ module Watson
 
       # [review] - Matz style while loop a la http://stackoverflow.com/a/10713963/1604424
       # Create _mtch var so we can access it outside of the do loop
-    
+
       _mtch = String.new()
       loop do
         _mtch = filename.match(/(\.(\w+))$/)
         debug_print "Extension: #{ _mtch }\n"
 
-        # Break if we don't find a match 
+        # Break if we don't find a match
         break if _mtch.nil?
 
         # Determine file type
@@ -386,11 +386,11 @@ module Watson
            ".m", ".mm", ".go"
           debug_print "Comment type is: //\n"
           return "//"
-          
+
         when ".hs"
           debug_print "Comment type is: --\n"
           return "--"
-          
+
         when ".erl"
           debug_print "Comment type is: %\n"
           return "%"
@@ -404,7 +404,7 @@ module Watson
         else
           filename = filename.gsub(/(\.(\w+))$/, "")
           debug_print "Didn't recognize, searching #{ filename }\n"
-        
+
         end
       end
 
@@ -412,9 +412,9 @@ module Watson
       # Deal with what default to use in calling method
       # [review] - Is Ruby convention to return 1 or 0 (or -1) on failure/error?
       debug_print "Couldn't find any recognized extension type\n"
-      return false 
-      
-    end 
+      return false
+
+    end
 
 
   end
