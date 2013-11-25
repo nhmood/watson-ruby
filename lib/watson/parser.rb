@@ -381,7 +381,7 @@ module Watson
           # [todo] - Add /* style comment
           when '.cpp', '.cc', '.c', '.hpp', '.h',
               '.java', '.class', '.cs', '.js', '.php',
-              '.m', '.mm', '.go'
+              '.m', '.mm', '.go', '.scala'
             debug_print "Comment type is: //\n"
             return '//'
 
