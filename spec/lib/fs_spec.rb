@@ -1,56 +1,51 @@
-module Watson
-
 require 'spec_helper'
 
-describe FS do
-  before(:each) do
-    silence_output
+module Watson
+  describe FS do
+    before do
+      silence_output
+    end
+
+    after do
+      enable_output
+    end
+
+    describe '.check_file' do
+      subject { FS.check_file(file_path) }
+
+      context 'given blank input file' do
+        let(:file_path) { '' }
+        it { should be_false }
+      end
+
+      context 'given invalid input file' do
+        let(:file_path) { 'chickensoup.rb' }
+        it { should be_false }
+      end
+
+      context 'given valid input file' do
+        let(:file_path) { __FILE__ }
+        it { should be_true }
+      end
+    end
+
+    describe '.check_directory' do
+      subject { FS.check_dir(directory) }
+
+      context 'given blank input directory' do
+        let(:directory) { '' }
+        it { should be_false }
+      end
+
+      context 'given invalid input directory' do
+        let(:directory) { './chickensoup' }
+        it { should be_false }
+      end
+
+      context 'given valid input directory' do
+        let(:directory) { 'spec/' }
+        it { should be_true }
+      end
+    end
   end
-
-  after(:each) do
-    enable_output
-  end
-
-  describe '.check_file' do
-    context 'blank input file' do
-      it 'should return false' do
-        FS.check_file('').should be_false
-      end
-    end
-
-    context 'invalid input file' do
-      it 'should return false' do
-        FS.check_file('chickensoup.rb').should be_false
-      end
-    end
-
-    context 'valid input file' do
-      it 'should return true' do
-        FS.check_file(__FILE__).should be_true
-      end
-    end
-  end
-
-  describe '.check_dir' do
-    context 'blank input dir' do
-      it 'should return false' do
-        FS.check_dir('').should be_false
-      end
-    end
-
-    context 'invalid input dir' do
-      it 'should return false' do
-        FS.check_dir('./chickensoup').should be_false
-      end
-    end
-
-    context 'valid input dir' do
-      it 'should return true' do
-        FS.check_dir('spec/').should be_true
-      end
-    end
-  end
-
-end
-
 end
