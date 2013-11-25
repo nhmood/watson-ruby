@@ -1,6 +1,6 @@
 module Watson
 
-require_relative 'helper_spec'
+require 'spec_helper'
 
 describe FS do
   before(:each) do
@@ -26,7 +26,7 @@ describe FS do
 
     context 'valid input file' do
       it 'should return true' do
-        FS.check_file('spec/fs_spec.rb').should be_true
+        FS.check_file(__FILE__).should be_true
       end
     end
   end

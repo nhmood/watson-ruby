@@ -1,5 +1,5 @@
 module Watson
-require_relative 'helper_spec'
+require 'spec_helper'
 
 describe Config do
   before(:each) do
