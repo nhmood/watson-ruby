@@ -29,6 +29,10 @@ describe Parser do
       it 'return correct extension (// for c/c++)' do
         @parser.get_comment_type('lib/watson.cpp').should eql '//'
       end
+
+      it 'return correct extension (;; for clojure)' do
+        @parser.get_comment_type('lib/watson.clj').should eql ';;'
+      end
     end
 
     context 'unknown extension' do
