@@ -128,7 +128,7 @@ module Watson
       exit if check_conf == false
       read_conf
 
-      unless @github_api.empty? && @github_api.empty?
+      unless @github_api.empty? && @github_repo.empty?
         Remote::GitHub.get_issues(self)
       end
 
