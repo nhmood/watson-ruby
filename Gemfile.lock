@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    watson-ruby (1.0.5)
+    watson-ruby (1.0.6)
       json
 
 GEM
