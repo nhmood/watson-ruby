@@ -166,7 +166,7 @@ module Watson
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
 
-      puts <<-HELP.gsub(/^ {,6}(?!$)/, '')
+      puts <<-HELP.gsub(/^ {,6}/, '')
       #{BOLD}Usage: watson [OPTION]...
       Running watson with no arguments will parse with settings in RC file
       If no RC file exists, default RC file will be created
