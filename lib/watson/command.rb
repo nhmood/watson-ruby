@@ -275,8 +275,8 @@ module Watson
         if !Watson::FS.check_dir(_dir)
           print "Unable to open #{ _dir }\n"
         else
-          # Clean up directory path
-          _dir = _dir.match(/^((\w+)?\.?\/?)+/)[0].gsub(/(\/)+$/, "")
+          # Clean up path, remove trailing forward slashes
+          _dir = _dir.gsub(/(\/)+$/, "")
           if !_dir.empty?
             debug_print "Adding #{ _dir } to config dir_list\n"
             @config.dir_list.push(_dir)
