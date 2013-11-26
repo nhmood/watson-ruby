@@ -349,7 +349,7 @@ module Watson
           # Don't eliminate trailing / because not sure if dir can have
           # same name as file (Linux it can't, but not sure about Win/Mac)
           # [review] - Can Win/Mac have dir + file with same name in same dir?
-          _mtch = _line.match(/^((\w+)?\.?\/?)+/)[0]
+          _mtch = _line.match(/^(\*?)((\w+)?\.?\/?)+/)[0]
           if !_mtch.empty?
             @ignore_list.push(_mtch)
             debug_print "#{ _mtch } added to @ignore_list\n"
