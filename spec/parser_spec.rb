@@ -18,24 +18,80 @@ describe Parser do
 
   describe '#get_comment_type' do
     context 'known extension' do
-      it 'return correct extension (# for ruby)' do
-        @parser.get_comment_type('lib/watson.rb').should eql '#'
+      it 'return correct extension for c++' do
+        @parser.get_comment_type('lib/watson.cpp').should eql ['//', '/*']
+        @parser.get_comment_type('lib/watson.cc').should  eql ['//', '/*']
+        @parser.get_comment_type('lib/watson.hpp').should eql ['//', '/*']
+        @parser.get_comment_type('lib/watson.c').should   eql ['//', '/*']
+        @parser.get_comment_type('lib/watson.h').should   eql ['//', '/*']
       end
 
-      it 'return correct extension (# for coffee)' do
-        @parser.get_comment_type('lib/watson.coffee').should eql '#'
+      it 'return correct extension for java' do
+        @parser.get_comment_type('lib/watson.java').should  eql ['//', '/*', '/**']
+        @parser.get_comment_type('lib/watson.class').should eql ['//', '/*', '/**']
       end
 
-      it 'return correct extension (// for c/c++)' do
-        @parser.get_comment_type('lib/watson.cpp').should eql '//'
+      it 'return correct extension for csharp' do
+        @parser.get_comment_type('lib/watson.cs').should  eql ['//', '/*']
       end
 
-      it 'return correct extension (// for scala)' do
-        @parser.get_comment_type('lib/watson.scala').should eql '//'
+      it 'return correct extension for javascript' do
+        @parser.get_comment_type('lib/watson.js').should  eql ['//', '/*']
+      end
+
+      it 'return correct extension for php' do
+        @parser.get_comment_type('lib/watson.php').should  eql ['//', '/*', '#']
+      end
+
+      it 'return correct extension for objectivec' do
+        @parser.get_comment_type('lib/watson.m').should   eql ['//', '/*']
+        @parser.get_comment_type('lib/watson.mm').should  eql ['//', '/*']
+      end
+
+      it 'return correct extension for go' do
+        @parser.get_comment_type('lib/watson.go').should  eql ['//', '/*']
+      end
+
+      it 'return correct extension for scala' do
+        @parser.get_comment_type('lib/watson.scala').should  eql ['//', '/*']
+      end
+
+      it 'return correct extension for erlang' do
+        @parser.get_comment_type('lib/watson.erl').should  eql ['%%', '%']
+      end
+
+      it 'return correct extension haskell' do
+        @parser.get_comment_type('lib/watson.hs').should eql ['--']
+      end
+
+      it 'return correct extension bash' do
+        @parser.get_comment_type('lib/watson.sh').should eql ['#']
+      end
+
+      it 'return correct extension ruby' do
+        @parser.get_comment_type('lib/watson.rb').should eql ['#']
+      end
+
+      it 'return correct extension perl' do
+        @parser.get_comment_type('lib/watson.pl').should eql ['#']
+        @parser.get_comment_type('lib/watson.pm').should eql ['#']
+        @parser.get_comment_type('lib/watson.t').should eql ['#']
+      end
+
+      it 'return correct extension python' do
+        @parser.get_comment_type('lib/watson.py').should eql ['#']
+      end
+
+      it 'return correct extension coffeescript' do
+        @parser.get_comment_type('lib/watson.coffee').should eql ['#']
+      end
+
+      it 'return correct extension zsh' do
+        @parser.get_comment_type('lib/watson.zsh').should eql ['#']
       end
 
       it 'return correct extension (;; for clojure)' do
-        @parser.get_comment_type('lib/watson.clj').should eql ';;'
+        @parser.get_comment_type('lib/watson.clj').should eql [';;']
       end
     end
 

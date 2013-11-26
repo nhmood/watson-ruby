@@ -368,6 +368,34 @@ module Watson
       # Create _mtch var so we can access it outside of the do loop
 
 
+
+      _ext = { '.cpp'     => ['//', '/*'],        # C++
+               '.cc'      => ['//', '/*'],
+               '.hpp'     => ['//', '/*'],
+               '.c'       => ['//', '/*'],        # C
+               '.h'       => ['//', '/*'],
+               '.java'    => ['//', '/*', '/**'], # Java
+               '.class'   => ['//', '/*', '/**'],
+               '.cs'      => ['//', '/*'],        # C#
+               '.js'      => ['//', '/*'],        # JavaScript
+               '.php'     => ['//', '/*', '#'],   # PHP
+               '.m'       => ['//', '/*'],        # ObjectiveC
+               '.mm'      => ['//', '/*'],
+               '.go'      => ['//', '/*'],        # Go(lang)
+               '.scala'   => ['//', '/*'],        # Scala
+               '.erl'     => ['%%', '%'],         # Erlang
+               '.hs'      => ['--'],              # Haskell
+               '.sh'      => ['#'],               # Bash
+               '.rb'      => ['#'],               # Ruby
+               '.pl'      => ['#'],               # Perl
+               '.pm'      => ['#'],
+               '.t'       => ['#'],
+               '.py'      => ['#'],               # Python
+               '.coffee'  => ['#'],               # CoffeeScript
+               '.zsh'     => ['#'],               # Zsh
+               '.clj'     => [';;']               # Clojure
+             }
+
       loop do
         _mtch = filename.match(/(\.(\w+))$/)
         debug_print "Extension: #{ _mtch }\n"
@@ -375,39 +403,12 @@ module Watson
         # Break if we don't find a match
         break if _mtch.nil?
 
-        # Determine file type
-        case _mtch[0]
-          # C / C++, Java, C#
-          # [todo] - Add /* style comment
-          when '.cpp', '.cc', '.c', '.hpp', '.h',
-              '.java', '.class', '.cs', '.js', '.php',
-              '.m', '.mm', '.go', '.scala'
-            debug_print "Comment type is: //\n"
-            return '//'
+        return _ext[_mtch[0]] if _ext.has_key?(_mtch[0])
 
-          when '.hs'
-            debug_print "Comment type is: --\n"
-            return '--'
+        # Can't recognize extension, keep looping in case of .bk, .#, ect
+        filename = filename.gsub(/(\.(\w+))$/, '')
+        debug_print "Didn't recognize, searching #{ filename }\n"
 
-          when '.erl'
-            debug_print "Comment type is: %\n"
-            return '%'
-
-          # Bash, Ruby, Perl, Python
-          when '.sh', '.rb', '.pl', '.py', '.coffee'
-            debug_print "Comment type is: #\n"
-            return '#'
-
-          when '.clj'
-            debug_print "Comment type is: ;;\n"
-            return ';;'
-
-          # Can't recognize extension, keep looping in case of .bk, .#, ect
-          else
-            filename = filename.gsub(/(\.(\w+))$/, '')
-            debug_print "Didn't recognize, searching #{ filename }\n"
-
-        end
       end
 
       # We didn't find any matches from the filename, return error (0)
