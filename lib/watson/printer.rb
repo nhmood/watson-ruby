@@ -5,17 +5,17 @@ module Watson
     # in the printer.rb file at least
 
     BOLD      = "\e[01m"
-    UNDERLINE   = "\e[4m"
+    UNDERLINE = "\e[4m"
     RESET     = "\e[00m"
 
-    GRAY  = "\e[38;5;0m"
-    RED   = "\e[38;5;1m"
-    GREEN = "\e[38;5;2m"
-    YELLOW  = "\e[38;5;3m"
-    BLUE  = "\e[38;5;4m"
-    MAGENTA = "\e[38;5;5m"
-    CYAN  = "\e[38;5;6m"
-    WHITE = "\e[38;5;7m"
+    GRAY      = "\e[38;5;0m"
+    RED       = "\e[38;5;1m"
+    GREEN     = "\e[38;5;2m"
+    YELLOW    = "\e[38;5;3m"
+    BLUE      = "\e[38;5;4m"
+    MAGENTA   = "\e[38;5;5m"
+    CYAN      = "\e[38;5;6m"
+    WHITE     = "\e[38;5;7m"
 
 
   # Printer class that handles all formatting and printing of parsed dir/file structure
@@ -224,16 +224,22 @@ module Watson
 
       # If no issues for this file, print that and break
       # The filename print is repetative, but reduces another check later
-      if entry[:has_issues] == false
-        debug_print "No issues for #{ entry }\n"
-        print_status "o", GREEN
-        cprint BOLD + UNDERLINE + GREEN + "#{ entry[:relative_path] }" + RESET + "\n"
-        return true
+      if !entry[:has_issues]
+        if @config.show_type != 'dirty'
+          debug_print "No issues for #{ entry }\n"
+          print_status "o", GREEN
+          cprint BOLD + UNDERLINE + GREEN + "#{ entry[:relative_path] }" + RESET + "\n"
+          return true
+        end
       else
-        debug_print "Issues found for #{ entry }\n"
-        cprint "\n"
-        print_status "x", RED
-        cprint BOLD + UNDERLINE + RED + "#{entry[:relative_path]}" + RESET + "\n"
+        if @config.show_type != 'clean'
+          debug_print "Issues found for #{ entry }\n"
+          cprint "\n"
+          print_status "x", RED
+          cprint BOLD + UNDERLINE + RED + "#{entry[:relative_path]}" + RESET + "\n"
+        else
+          return true
+        end
       end
 
 
@@ -246,7 +252,6 @@ module Watson
         # Maybe have individual has_issues for each one?
         if entry[_tag].size.zero?
           debug_print "#{ _tag } has no issues, skipping\n"
-          cprint "\n"
           next
         end
 

@@ -33,6 +33,9 @@ module Watson
     # Flag for command line setting of tag to parse for
     attr_accessor :cl_tag_set
 
+    # Entries that watson should show
+    attr_accessor :show_type
+    
     # Flag for whether less is avaliable to print results
     attr_reader   :use_less
     # Flag for where the temp file for printing is located
@@ -85,6 +88,8 @@ module Watson
       @cl_entry_set   = false
       @cl_tag_set   = false
       @cl_ignore_set  = false
+
+      @show_type = 'all'
 
       # System flags
       # [todo] - Add option to save output to file also

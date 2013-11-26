@@ -56,15 +56,16 @@ Usage: watson [OPTION]...
 Running watson with no arguments will parse with settings in RC file
 If no RC file exists, default RC file will be created
 
-   -c, --context-lines      number of lines of context to provide with posted issue
+   -c, --context-lines          number of lines of context to provide with posted issue
    -d, --dirs                   list of directories to search in
    -f, --files                  list of files to search in
    -h, --help                   print help
    -i, --ignore                 list of files, directories, or types to ignore
    -p, --parse-depth            depth to recursively parse directories
    -r, --remote                 list / create tokens for Bitbucket/Github
+   -s, --show                   whether to show [all, clean, dirty] files
    -t, --tags                   list of tags to search for
-   -u, --update         update remote repos with current issues
+   -u, --update                 update remote repos with current issues
    -v, --version                print watson version and info
 
 Any number of files, tags, dirs, and ignores can be listed after flag
@@ -82,6 +83,7 @@ watson home page: <http://goosecode.com/projects/watson>
 This parameter specifies how many lines of context watson should include when posting issues to remote repos.  
 When this parameter is set from the command line, the .watsonrc config file is written with the value; the command line option effectively sets the default value for this feature in the current directory.  
 The default value is set to 15 (and can be found in the lib/watson/command.rb file).  
+
 
 ### -d, --dirs [DIRS]
 This parameter specifies which directories watson should parse through.  
@@ -115,6 +117,14 @@ If watson is run without this parameter, the parsing depth is unlimited and will
 This parameter is used to both list currently established remotes as well as setup new ones.  
 If passed without any options, the currently established remotes will be listed.  
 If passed with a github or bitbucket argument, watson will proceed to ask some questions to set up the corresponding remote.  
+
+
+### -s, --show [ALL, CLEAN, DIRTY]
+This parameter is used to specify which types of files and entries are shown when watson is run.  
+If passed with the `clean` argument, only files that watson did *NOT* find issues in will be displayed.  
+If passed with the `dirty` argument, only files that watson *DID* find issues in will be displayed.  
+If passed with the `all` argument, watson will display all files, regardless of their issue status.  
+The default behavior of watson is the `all` option.  
 
 
 ### -t, --tags [TAGS]

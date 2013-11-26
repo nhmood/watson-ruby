@@ -24,16 +24,17 @@ module Watson
 
       # List of possible flags, used later in parsing and for user reference
       _flag_list = ["-c", "--context-depth",
-              "-d", "--dirs",
-              "-f", "--files",
-              "-h", "--help",
-              "-i", "--ignore",
-              "-p", "--parse-depth",
-              "-r", "--remote",
-              "-t", "--tags",
-              "-u", "--update",
-              "-v", "--version"
-             ]
+                    "-d", "--dirs",
+                    "-f", "--files",
+                    "-h", "--help",
+                    "-i", "--ignore",
+                    "-p", "--parse-depth",
+                    "-r", "--remote",
+                    "-s", "--show",
+                    "-t", "--tags",
+                    "-u", "--update",
+                    "-v", "--version"
+                   ]
 
 
       # If we get the version or help flag, ignore all other flags
@@ -132,6 +133,10 @@ module Watson
           # If setting up remote, exit afterwards
           exit true
 
+        when "-s", "--show"
+          debug_print "Found -s/--show argument\n"
+          set_show_type(_flag_args)
+
         when "-t", "--tags"
           debug_print "Found -t/--tags argument\n"
           set_tags(_flag_args)
@@ -163,33 +168,34 @@ module Watson
 
       print BOLD;
       print "Usage: watson [OPTION]...\n"
-        print "Running watson with no arguments will parse with settings in RC file\n"
-        print "If no RC file exists, default RC file will be created\n"
+      print "Running watson with no arguments will parse with settings in RC file\n"
+      print "If no RC file exists, default RC file will be created\n"
 
-        print "\n"
+      print "\n"
       print "   -c, --context-depth   number of lines of context to provide with posted issue\n"
-        print "   -d, --dirs            list of directories to search in\n"
-        print "   -f, --files           list of files to search in\n"
-        print "   -h, --help            print help\n"
-        print "   -i, --ignore          list of files, directories, or types to ignore\n"
-        print "   -p, --parse-depth     depth to recursively parse directories\n"
-        print "   -r, --remote          list / create tokens for Bitbucket/GitHub\n"
-        print "   -t, --tags            list of tags to search for\n"
-        print "   -u, --update          update remote repos with current issues\n"
-        print "   -v, --version      print watson version and info\n"
-        print "\n"
+      print "   -d, --dirs            list of directories to search in\n"
+      print "   -f, --files           list of files to search in\n"
+      print "   -h, --help            print help\n"
+      print "   -i, --ignore          list of files, directories, or types to ignore\n"
+      print "   -p, --parse-depth     depth to recursively parse directories\n"
+      print "   -r, --remote          list / create tokens for Bitbucket/GitHub\n"
+      print "   -s, --show            whether to show [all, clean, dirty] files\n"
+      print "   -t, --tags            list of tags to search for\n"
+      print "   -u, --update          update remote repos with current issues\n"
+      print "   -v, --version      print watson version and info\n"
+      print "\n"
 
-        print "Any number of files, tags, dirs, and ignores can be listed after flag\n"
-        print "Ignored files should be space separated\n"
-        print "To use *.filetype identifier, encapsulate in \"\" to avoid shell substitutions \n"
-        print "\n"
+      print "Any number of files, tags, dirs, and ignores can be listed after flag\n"
+      print "Ignored files should be space separated\n"
+      print "To use *.filetype identifier, encapsulate in \"\" to avoid shell substitutions \n"
+      print "\n"
 
-        print "Report bugs to: watson\@goosecode.com\n"
-        print "watson home page: <http://goosecode.com/projects/watson>\n"
-        print "[goosecode] labs | 2012-2013\n"
-        print RESET;
+      print "Report bugs to: watson\@goosecode.com\n"
+      print "watson home page: <http://goosecode.com/projects/watson>\n"
+      print "[goosecode] labs | 2012-2013\n"
+      print RESET;
 
-        return true
+      return true
 
     end
 
@@ -465,6 +471,42 @@ module Watson
       end
     end
 
+
+    ###########################################################
+    # set_show
+    # Set what files watson should show
+    def set_show_type(args)
+
+      # Identify method entry
+      debug_print "#{ self } : #{ __method__ }\n"
+
+      # This should be a single value, either all, clean, or dirty
+      # If they pass more, just take the last valid value
+      if args.length <= 0
+        debug_print "No args passed, exiting\n"
+        return false
+      end
+
+      args.each do | _show |
+        case _show.downcase
+        when 'clean'
+          debug_print "Setting config show to #{ _show }\n"
+          @config.show_type = 'clean'
+
+        when 'dirty'
+          debug_print "Setting config show to #{ _show }\n"
+          @config.show_type = 'dirty'
+
+        else
+          debug_print "Setting config show to #{ _show }\n"
+          @config.show_type = 'all'
+        end
+
+      end
+
+      debug_print "Updated show to: #{ @config.show_type }\n"
+      return true
+    end
     end
   end
 end
