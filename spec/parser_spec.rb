@@ -33,6 +33,10 @@ describe Parser do
       it 'return correct extension (// for scala)' do
         @parser.get_comment_type('lib/watson.scala').should eql '//'
       end
+
+      it 'return correct extension (;; for clojure)' do
+        @parser.get_comment_type('lib/watson.clj').should eql ';;'
+      end
     end
 
     context 'unknown extension' do

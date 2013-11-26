@@ -398,6 +398,10 @@ module Watson
             debug_print "Comment type is: #\n"
             return '#'
 
+          when '.clj'
+            debug_print "Comment type is: ;;\n"
+            return ';;'
+
           # Can't recognize extension, keep looping in case of .bk, .#, ect
           else
             filename = filename.gsub(/(\.(\w+))$/, '')
