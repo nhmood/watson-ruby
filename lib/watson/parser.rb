@@ -135,6 +135,21 @@ module Watson
       Dir.glob("#{ _glob_dir }{*, .*}").select { |_fn| File.directory?(_fn) }.sort.each do |_entry|
         debug_print "Entry: #{ _entry } is a dir\n"
 
+        # Check if entry is in ignore list
+        _skip = false
+        @config.ignore_list.each do |_ignore|
+          if  _entry == _ignore || File.absolute_path(_entry) == _ignore
+            debug_print "#{ _entry } is on the ignore list, setting to \"\"\n"
+            _skip = true
+          end
+        end
+
+        # If directory is on the ignore list then skip
+        if _skip == true
+          _completed_dirs = []
+          _completed_files = []
+          next
+        end
 
         ## Depth limit logic
         # Current depth is depth of previous parse_dir (passed in as second param) + 1
@@ -145,11 +160,13 @@ module Watson
         if @config.parse_depth == 0
           debug_print "No max depth, parsing directory\n"
           _completed_dirs.push(parse_dir("#{ _entry }/", _cur_depth))
-          # If current depth is less than limit (set in config), parse directory and pass depth
+        
+        # If current depth is less than limit (set in config), parse directory and pass depth
         elsif _cur_depth < @config.parse_depth.to_i + 1
           debug_print "Depth less than max dept (from config), parsing directory\n"
           _completed_dirs.push(parse_dir("#{ _entry }/", _cur_depth))
-          # Else, depth is greater than limit, ignore the directory
+       
+        # Else, depth is greater than limit, ignore the directory
         else
           debug_print "Depth greater than max depth, ignoring\n"
         end
