@@ -161,58 +161,54 @@ module Watson
     ###########################################################
     # Print help for watson
     def help
-    # [todo] - Add bold and colored printing
+      # [todo] - Add bold and colored printing
 
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
 
-      print BOLD;
-      print "Usage: watson [OPTION]...\n"
-      print "Running watson with no arguments will parse with settings in RC file\n"
-      print "If no RC file exists, default RC file will be created\n"
+      puts <<-HELP.gsub(/^ {,6}/, '')
+      #{BOLD}Usage: watson [OPTION]...
+      Running watson with no arguments will parse with settings in RC file
+      If no RC file exists, default RC file will be created
 
-      print "\n"
-      print "   -c, --context-depth   number of lines of context to provide with posted issue\n"
-      print "   -d, --dirs            list of directories to search in\n"
-      print "   -f, --files           list of files to search in\n"
-      print "   -h, --help            print help\n"
-      print "   -i, --ignore          list of files, directories, or types to ignore\n"
-      print "   -p, --parse-depth     depth to recursively parse directories\n"
-      print "   -r, --remote          list / create tokens for Bitbucket/GitHub\n"
-      print "   -s, --show            whether to show [all, clean, dirty] files\n"
-      print "   -t, --tags            list of tags to search for\n"
-      print "   -u, --update          update remote repos with current issues\n"
-      print "   -v, --version      print watson version and info\n"
-      print "\n"
+         -c, --context-depth   number of lines of context to provide with posted issue
+         -d, --dirs            list of directories to search in
+         -f, --files           list of files to search in
+         -h, --help            print help
+         -i, --ignore          list of files, directories, or types to ignore
+         -p, --parse-depth     depth to recursively parse directories
+         -r, --remote          list / create tokens for Bitbucket/GitHub
+         -t, --tags            list of tags to search for
+         -u, --update          update remote repos with current issues
+         -v, --version      print watson version and info
 
-      print "Any number of files, tags, dirs, and ignores can be listed after flag\n"
-      print "Ignored files should be space separated\n"
-      print "To use *.filetype identifier, encapsulate in \"\" to avoid shell substitutions \n"
-      print "\n"
+      Any number of files, tags, dirs, and ignores can be listed after flag
+      Ignored files should be space separated
+      To use *.filetype identifier, encapsulate in \"\" to avoid shell substitutions
 
-      print "Report bugs to: watson\@goosecode.com\n"
-      print "watson home page: <http://goosecode.com/projects/watson>\n"
-      print "[goosecode] labs | 2012-2013\n"
-      print RESET;
+      Report bugs to: watson\@goosecode.com
+      watson home page: <http://goosecode.com/projects/watson>
+      [goosecode] labs | 2012-2013#{RESET}
+      HELP
 
       return true
-
     end
 
 
     ###########################################################
     # Print version information about watson
     def version
-
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
 
-      print "watson v1.0\n"
-      print "Copyright (c) 2012-2013 goosecode labs\n"
-      print "Licensed under MIT, see LICENSE for details\n"
-      print "\n"
+      puts <<-VERSION.gsub(/^ {,6}/, '')
+      watson v#{::Watson::VERSION}
+      Copyright (c) 2012-2013 goosecode labs
+      Licensed under MIT, see LICENSE for details
 
-      print "Written by nhmood, see <http://goosecode.com/projects/watson>\n"
+      Written by nhmood, see <http://goosecode.com/projects/watson>
+      VERSION
+
       return true
     end
 
@@ -463,10 +459,13 @@ module Watson
         end
       elsif args.length > 1
         Printer.print_status "x", RED
-        print BOLD + "Incorrect arguments passed\n" + RESET
-        print "      Please specify either Github or Bitbucket to setup remote\n"
-        print "      Or pass without argument to see current remotes\n"
-        print "      See help (-h/--help) for more details\n"
+        puts <<-SUMMERY.gsub(/^ {,8}/, '')
+        #{BOLD}Incorrect arguments passed#{RESET}
+        Please specify either Github or Bitbucket to setup remote
+        Or pass without argument to see current remotes
+        See help (-h/--help) for more details
+        SUMMERY
+
         return false
       end
     end

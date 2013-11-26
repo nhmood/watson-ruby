@@ -6,6 +6,7 @@ require_relative 'watson/printer'
 require_relative 'watson/remote'
 require_relative 'watson/github'
 require_relative 'watson/bitbucket'
+require_relative 'watson/version'
 
 module Watson
   # [todo] - Replace all regex parentheses() with brackets[] if not matching
