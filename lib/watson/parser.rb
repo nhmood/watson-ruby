@@ -145,11 +145,7 @@ module Watson
         end
 
         # If directory is on the ignore list then skip
-        if _skip == true
-          _completed_dirs = []
-          _completed_files = []
-          next
-        end
+        next if _skip == true
 
         ## Depth limit logic
         # Current depth is depth of previous parse_dir (passed in as second param) + 1

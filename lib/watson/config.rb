@@ -234,9 +234,7 @@ module Watson
       # [review] - Keep *.swp in there?
       # [todo] - Add conditional to @rc_file such that if passed by -f we accept it
       # [todo] - Add current file (watson) to avoid accidentally printing app tags
-      @ignore_list.push(".")
       @ignore_list.push("..")
-      @ignore_list.push("*.swp")
       @ignore_list.push(@rc_file)
       @ignore_list.push(@tmp_file)
 
