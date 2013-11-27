@@ -1,18 +1,11 @@
 #!/usr/bin/env ruby
-# coding: utf-8
 
-# [review] - Using own funky path loading because traditional way seems wrong?
-# Commented out version is traditional, seen in many apps. If you use that and
-# look at load_path you get path/../lib (I'd expect those to be separate?)
-# My funky version adds path/., path/bin, path/assets separately
-# Maybe I don't get how the load path is supposed to look though...
-
-#$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
-$:.unshift *%w[. assets lib].map { |m| __dir__.gsub(/\/bin(.?)+/, '') + '/' + m }
-#p($:)
-
-
-require 'watson'
-
+lib = File.expand_path(File.dirname(__FILE__) + '/../lib')
+begin
+  require 'watson'
+rescue LoadError
+  $LOAD_PATH << lib
+  require 'watson'
+end
 
 Watson::Command.execute(*ARGV)
