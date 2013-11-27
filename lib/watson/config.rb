@@ -48,6 +48,8 @@ module Watson
     attr_accessor :github_valid
     # GitHub API key generated from Remote::GitHub setup
     attr_accessor :github_api
+    # GitHub Endpoint (for GitHub Enterprise)
+    attr_accessor :github_endpoint
     # GitHub repo associated with current directory + watson config
     attr_accessor :github_repo
     # Hash to hold list of all GitHub issues associated with repo
@@ -104,21 +106,22 @@ module Watson
       # Remote options
       @remote_valid   = false
 
-      @github_valid   = false
-      @github_api   = ""
-      @github_repo  = ""
-      @github_issues  = {:open   => Hash.new(),
-                :closed => Hash.new()
-                }
+      @github_valid    = false
+      @github_api      = ""
+      @github_endpoint = ""
+      @github_repo     = ""
+      @github_issues   = {:open   => Hash.new(),
+                          :closed => Hash.new()
+                          }
 
       # Keep API param (and put username there) for OAuth update later
       @bitbucket_valid  = false
       @bitbucket_api    = ""
       @bitbucket_pw     = ""
       @bitbucket_repo   = ""
-      @bitbucket_issues   = {:open   => Hash.new(),
-                   :closed => Hash.new()
-                  }
+      @bitbucket_issues = {:open   => Hash.new(),
+                           :closed => Hash.new()
+                          }
     end
 
 
@@ -362,6 +365,12 @@ module Watson
           # Chomp to get rid of any nonsense
           @github_api = _line.chomp!
           debug_print "GitHub API: #{ @github_api }\n"
+
+
+        when "github_endpoint"
+          # Same as above
+          @github_endpoint = _line.chomp!
+          debug_print "GitHub Endpoint #{ @github_endpoint }\n"
 
 
         when "github_repo"
