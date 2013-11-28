@@ -2,10 +2,6 @@ require 'json'
 
 module Watson::Formatters
   class JsonFormatter < BaseFormatter
-    def initialize(config)
-      @config = config
-    end
-
     def run(structure)
       debug_print "#{self} : #{__method__}\n"
 
