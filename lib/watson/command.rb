@@ -493,6 +493,8 @@ module Watson
         case args.pop.to_s
         when 'j', 'json'
           Watson::Formatters::JsonFormatter
+        when 'unite'
+          Watson::Formatters::UniteFormatter
         else
           Watson::Formatters::DefaultFormatter
         end
