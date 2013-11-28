@@ -97,12 +97,12 @@ module Watson::Formatters
         debug_print "Issues found for #{entry}\n"
         cprint "\n"
         print_status 'x', RED
-        cprint "#{BOLD}#{UNDERLINE}#{RED}#{entry[:relative_path]}#{RESET}\n"
+        cprint " #{BOLD}#{UNDERLINE}#{RED}#{entry[:relative_path]}#{RESET}\n"
       else
         unless @config.show_type == 'dirty'
           debug_print "No issues for #{entry}\n"
           print_status 'o', GREEN
-          cprint "#{BOLD}#{UNDERLINE}#{GREEN}#{entry[:relative_path]}#{RESET}\n"
+          cprint " #{BOLD}#{UNDERLINE}#{GREEN}#{entry[:relative_path]}#{RESET}\n"
           return true
         end
       end
@@ -129,8 +129,7 @@ module Watson::Formatters
 
       # Go through each issue in tag
       entry[tag].each do |issue|
-        cprint "#{WHITE}  line #{issue[:line_number]} - #{RESET}"
-        cprint "#{BOLD}#{issue[:title]}#{RESET}"
+        cprint "#{WHITE}  line #{issue[:line_number]} - #{RESET}#{BOLD}#{issue[:title]}#{RESET}"
 
         # Check to see if it has been resolved on GitHub/Bitbucket
         debug_print "Checking if issue has been resolved\n"
