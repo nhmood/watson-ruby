@@ -61,7 +61,7 @@ module Watson
       if ["yes", "y"].include?(_enterprise.downcase)
         print "\n\n"
         print BOLD + "GitHub API Endpoint: " + RESET
-        _endpoint = $stdin.gets.chomp
+        _endpoint = $stdin.gets.chomp.chomp('/')
         if _endpoint.empty?
           Printer.print_status "x", RED
           print BOLD + "Input blank. Please enter your API endpoint!\n\n" + RESET
