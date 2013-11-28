@@ -48,7 +48,7 @@ module Watson
     private
 
     def build_formatter
-      ::Watson::Formatters::DefaultFormatter.new(@config)
+      @formatter ||= @config.output_format.new(@config)
     end
   end
 end

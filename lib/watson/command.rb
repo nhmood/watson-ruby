@@ -23,18 +23,20 @@ module Watson
       debug_print "#{ self } : #{ __method__ }\n"
 
       # List of possible flags, used later in parsing and for user reference
-      _flag_list = ["-c", "--context-depth",
-                    "-d", "--dirs",
-                    "-f", "--files",
-                    "-h", "--help",
-                    "-i", "--ignore",
-                    "-p", "--parse-depth",
-                    "-r", "--remote",
-                    "-s", "--show",
-                    "-t", "--tags",
-                    "-u", "--update",
-                    "-v", "--version"
-                   ]
+      _flag_list = %w[
+        -c --context-depth
+        -d --dirs
+        -f --files
+        -h --help
+        -i --ignore
+        -p --parse-depth
+        -r --remote
+        -s --show
+        -t --tags
+        --format
+        -u --update
+        -v --version
+      ]
 
 
       # If we get the version or help flag, ignore all other flags
@@ -117,6 +119,10 @@ module Watson
         when "-i", "--ignore"
           debug_print "Found -i/--ignore argument\n"
           set_ignores(_flag_args)
+
+        when '--format'
+          debug_print "Found --format argument\n"
+          set_output_format(_flag_args)
 
         when "-p", "--parse-depth"
           debug_print "Found -r/--parse-depth argument\n"
@@ -470,6 +476,30 @@ module Watson
       end
     end
 
+    ###########################################################
+    # set_output_format
+    # Set format watson should output in
+    def set_output_format(args)
+      # Identify method entry
+      debug_print "#{ self } : #{ __method__ }\n"
+
+      # Need at least one file in args
+      unless args.length == 1
+        debug_print "Invalid argument passed\n"
+        return false
+      end
+
+      @config.output_format = begin
+        case args.pop.to_s
+        when 'j', 'json'
+          Watson::Formatters::JsonFormatter
+        else
+          Watson::Formatters::DefaultFormatter
+        end
+      end
+
+      debug_print "Updated output_format to: #{@config.output_format}\n"
+    end
 
     ###########################################################
     # set_show

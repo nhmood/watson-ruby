@@ -35,7 +35,7 @@ module Watson
 
     # Entries that watson should show
     attr_accessor :show_type
-    
+
     # Flag for whether less is avaliable to print results
     attr_reader   :use_less
     # Flag for where the temp file for printing is located
@@ -64,7 +64,8 @@ module Watson
     attr_accessor :bitbucket_repo
     # Hash to hold list of all Bitbucket issues associated with repo
     attr_accessor :bitbucket_issues
-
+    # Formatter
+    attr_accessor :output_format
 
     ###########################################################
     # Config initialization method to setup necessary parameters, states, and vars
@@ -119,6 +120,7 @@ module Watson
       @bitbucket_issues   = {:open   => Hash.new(),
                    :closed => Hash.new()
                   }
+      @output_format = Watson::Formatters::DefaultFormatter
     end
 
 
