@@ -397,6 +397,10 @@ module Watson
                '.go'      => ['//', '/*'],        # Go(lang)
                '.scala'   => ['//', '/*'],        # Scala
                '.erl'     => ['%%', '%'],         # Erlang
+               '.f'       => ['!'],               # Fortran
+               '.f90'     => ['!'],               # Fortran
+               '.F'       => ['!'],               # Fortran
+               '.F90'     => ['!'],               # Fortran
                '.hs'      => ['--'],              # Haskell
                '.sh'      => ['#'],               # Bash
                '.rb'      => ['#'],               # Ruby
