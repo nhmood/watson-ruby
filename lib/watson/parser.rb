@@ -406,7 +406,8 @@ module Watson
                '.py'      => ['#'],               # Python
                '.coffee'  => ['#'],               # CoffeeScript
                '.zsh'     => ['#'],               # Zsh
-               '.clj'     => [';;']               # Clojure
+               '.clj'     => [';;'] ,             # Clojure
+               '.sql'     => ['//', '#']          # SQL and PL types
              }
 
       loop do
