@@ -34,32 +34,17 @@ module Watson
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
 
-      # Go through all files added from CL (sort them first)
-      # If empty, sort and each will do nothing, no errors
-      _completed_dirs  = Array.new()
-      _completed_files = Array.new()
-      if @config.cl_entry_set
-        @config.file_list.sort.each do |_file|
-          _completed_files.push(parse_file(_file))
-        end
-      end
-
-      # Then go through all the specified directories
-      # Initial parse depth to parse_dir is 0 (unlimited)
-      @config.dir_list.sort.each do |_dir|
-        _completed_dirs.push(parse_dir(_dir, 0))
-      end
-
       # Create overall hash for parsed files
-      _structure           = Hash.new()
-      _structure[:files]   = _completed_files
-      _structure[:subdirs] = _completed_dirs
+      structure = {
+        files: get_completed_files,
+        dirs:  get_completed_dirs
+      }
 
-      debug_print "_structure dump\n\n"
-      debug_print PP.pp(_structure, '')
+      debug_print "structure dump\n\n"
+      debug_print PP.pp(structure, '')
       debug_print "\n\n"
 
-      _structure
+      structure
     end
 
 
@@ -432,6 +417,32 @@ module Watson
 
     end
 
+    private
+
+
+    # Private
+    # Used by #run to parse and return an array of completed files
+    def get_completed_files
+      # Go through all files added from CL (sort them first)
+      # If empty, sort and reduce will do nothing, no error
+      return [] unless @config.cl_entry_set
+      sorted_files = @config.file_list.sort
+      sorted_files.reduce([]) do |completed, file|
+                     completed << parse_file(file)
+                   end
+    end
+
+
+    # Private
+    # Used by #run to parse and return an array of completed dirs
+    def get_completed_dirs
+      # Go through all the specified directories
+      # Initial parse depth to parse_dir is 0 (unlimited)
+      sorted_dirs = @config.dir_list.sort
+      sorted_dirs.reduce([]) do |completed, dir|
+                    completed << parse_dir(dir, 0)
+                  end
+    end
 
   end
 end

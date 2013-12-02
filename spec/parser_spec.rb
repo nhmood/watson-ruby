@@ -15,7 +15,33 @@ describe Parser do
     enable_output
   end
 
+  describe "#get_completed_files" do
+    before(:each) do
+      config_msgs = {
+        cl_entry_set: true,
+        file_list: ["file1.rb"]
+      }
+      @parser = Parser.new(double(:config, config_msgs))
+      allow(@parser).to receive(:parse_file) { "file" }
+    end
+    it "returns only completed files" do
+      @parser.send(:get_completed_files).should eql ["file"]
+    end
+  end
 
+  describe "#get_completed_dirs" do
+    before(:each) do
+      config_msgs = {
+        dir_list: ["dir"]
+      }
+      @parser = Parser.new(double(:config, config_msgs))
+      allow(@parser).to receive(:parse_dir) { "dir" }
+    end
+    it "returns only completed dirs" do
+      @parser.send(:get_completed_dirs).should eql ["dir"]
+    end
+  end
+  
   describe '#get_comment_type' do
     context 'known extension' do
       it 'return correct extension for c++' do
