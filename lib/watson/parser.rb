@@ -215,13 +215,8 @@ module Watson
 
       # Open file and read in entire thing into an array
       # Use an array so we can look ahead when creating issues later
-      # [review] - Not sure if explicit file close is required here
       # [review] - Better var name than data for read in file?
-      _data = Array.new()
-      File.open(_absolute_path, 'r').read.each_line do |_line|
-        _data.push(_line)
-        _line.encode('UTF-8', :invalid => :replace)
-      end
+      _data = File.read(_absolute_path).encode('UTF-8', :invalid => :replace).lines
 
       # Initialize issue list hash
       _issue_list = Hash.new()
