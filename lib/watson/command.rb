@@ -489,15 +489,13 @@ module Watson
         return false
       end
 
-      @config.output_format = begin
-        case args.pop.to_s
+      @config.output_format = case args.pop.to_s
         when 'j', 'json'
           Watson::Formatters::JsonFormatter
         when 'unite'
           Watson::Formatters::UniteFormatter
         else
           Watson::Formatters::DefaultFormatter
-        end
       end
 
       debug_print "Updated output_format to: #{@config.output_format}\n"
