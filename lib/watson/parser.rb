@@ -212,6 +212,11 @@ module Watson
         _comment_type = '#'
       end
 
+      # [review] - It is possible to embed the valid tags in the regexp,
+      # with a ~5% performance gain, but this would loose the warning about
+      # unrecognized tags.
+      _comment_regex = /^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/
+
 
       # Open file and read in entire thing into an array
       # Use an array so we can look ahead when creating issues later
@@ -236,7 +241,7 @@ module Watson
         # Using if match to stay consistent (with config.rb) see there for
         # explanation of why I do this (not a good good one persay...)
         begin
-          _mtch = _line.match(/^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/)
+          _mtch = _line.match(_comment_regex)
         rescue ArgumentError
           debug_print "Could not encode to UTF-8, non-text\n"
         end
