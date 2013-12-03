@@ -429,14 +429,15 @@ module Watson
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
 
-      Printer.print_header
+      formatter = Printer.new(@config).build_formatter
+      formatter.print_header
 
       print BOLD + "Existing Remotes:\n" + RESET
 
       # Check the config for any remote entries (GitHub or Bitbucket) and print
       # We *should* always have a repo + API together, but API should be enough
       if @config.github_api.empty? && @config.bitbucket_api.empty?
-        Printer.print_status "!", YELLOW
+        formatter.print_status "!", YELLOW
         print BOLD + "No remotes currently exist\n\n" + RESET
       end
 
@@ -464,7 +465,7 @@ module Watson
           Watson::Remote::Bitbucket.setup(@config)
         end
       elsif args.length > 1
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         puts <<-SUMMERY.gsub(/^ {,8}/, '')
         #{BOLD}Incorrect arguments passed#{RESET}
         Please specify either Github or Bitbucket to setup remote

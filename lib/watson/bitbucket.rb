@@ -24,12 +24,13 @@ module Watson
       # Identify method entry
       debug_print "#{ self.class } : #{ __method__ }\n"
 
-      Printer.print_status "+", GREEN
+      formatter = formatter.new(config).build_formatter
+      formatter.print_status "+", GREEN
       print BOLD +  "Attempting to access Bitbucket...\n" + RESET
 
       # Check config to make sure no previous repo info exists
       unless config.bitbucket_api.empty? && config.bitbucket_repo.empty?
-        Printer.print_status "!", RED
+        formatter.print_status "!", RED
         print BOLD + "Previous Bitbucket API + Repo is in RC, are you sure you want to overwrite?\n" + RESET
         print "      (Y)es/(N)o: "
 
@@ -37,14 +38,14 @@ module Watson
         _overwrite = $stdin.gets.chomp
         if ["no", "n"].include?(_overwrite.downcase)
           print "\n"
-          Printer.print_status "x", RED
+          formatter.print_status "x", RED
           print BOLD + "Not overwriting current Bitbucket API + repo info\n" + RESET
           return false
         end
       end
 
 
-      Printer.print_status "!", YELLOW
+      formatter.print_status "!", YELLOW
       print BOLD + "Access to your Bitbucket account required to make/update issues\n" + RESET
       print "      See help or README for more details on GitHub/Bitbucket access\n\n"
 
@@ -52,7 +53,7 @@ module Watson
       # [todo] - Bitbucket OAuth not implemented yet so warn user about HTTP Auth
       # Bitbucket doesn't have nonOAuth flow that GitHub does :(
       # Even if I use OAuth lib, still need to validate from webview which is lame
-      Printer.print_status "!", RED
+      formatter.print_status "!", RED
       print BOLD + "Bitbucket OAuth not implemented yet.\n" + RESET;
       print "      Basic HTTP Auth in use, will request PW entry every time.\n\n"
 
@@ -62,7 +63,7 @@ module Watson
       print BOLD + "Username: " + RESET
       _username = $stdin.gets.chomp
       if _username.empty?
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         print BOLD + "Input blank. Please enter your username!\n\n" + RESET
         return false
       end
@@ -70,7 +71,7 @@ module Watson
       print "\n"
 
       # Get repo information, if blank give error
-      Printer.print_status "!", YELLOW
+      formatter.print_status "!", YELLOW
       print BOLD + "Repo information required\n" + RESET
       print "      Please provide owner that repo is under followed by repo name\n"
       print "      e.g. owner: nhmood, repo: watson (case sensitive)\n"
@@ -80,7 +81,7 @@ module Watson
       _owner = $stdin.gets.chomp
       if _owner.empty?
         print "\n"
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         print BOLD + "Input blank. Please enter the owner the repo is under!\n\n" + RESET
         return false
       end
@@ -89,7 +90,7 @@ module Watson
       _repo = $stdin.gets.chomp
       if _repo.empty?
         print "\n"
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         print BOLD + "Input blank. Please enter the repo name!\n\n" + RESET
         return false
       end
@@ -104,7 +105,7 @@ module Watson
       system "stty echo"
       print "\n"
       if _password.empty?
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         print BOLD + "Input is blank. Please enter your password!\n\n" + RESET
         return false
       end
@@ -127,11 +128,11 @@ module Watson
       # Check response to validate authorization
       if _resp.code == "200"
         print "\n"
-        Printer.print_status "o", GREEN
+        formatter.print_status "o", GREEN
         print BOLD + "Successfully accessed remote repo with given credentials\n" + RESET
       else
         print "\n"
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         print BOLD + "Unable to access /#{ _owner }/#{ _repo } with given credentials\n" + RESET
         print "      Check that credentials are correct and repository exists under user\n"
         print "      Status: #{ _resp.code } - #{ _resp.message }\n\n"
@@ -152,7 +153,7 @@ module Watson
       config.update_conf("bitbucket_api", "bitbucket_repo")
 
       print "\n"
-      Printer.print_status "o", GREEN
+      formatter.print_status "o", GREEN
       print BOLD + "Bitbucket successfully setup\n" + RESET
       print "      Issues will now automatically be retrieved from Bitbucket by default\n"
       print "      Use -p, --push to post issues to GitHub\n"
@@ -179,7 +180,7 @@ module Watson
       # If we haven't obtained the pw from user yet, do it
       if config.bitbucket_pw.empty?
         # No OAuth for Bitbucket yet, gotta get user password in order to make calls :(
-        Printer.print_status "!", YELLOW
+        formatter.print_status "!", YELLOW
         print BOLD + "Bitbucket password required for remote checking/posting.\n" + RESET
         print "      Password: "
 
@@ -213,7 +214,7 @@ module Watson
 
       # Check response to validate repo access
       if _resp.code != "200"
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         print BOLD + "Unable to access remote #{ config.bitbucket_repo }, Bitbucket API may be invalid\n" + RESET
         print "      Make sure you have created an issue tracker for your repository on the Bitbucket website\n"
         print "      Consider running --remote (-r) option to regenerate/validate settings\n"
@@ -244,7 +245,7 @@ module Watson
       # Check response to validate repo access
       # Shouldn't be necessary if we passed the last check but just to be safe
       if _resp.code != "200"
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         print BOLD + "Unable to get closed issues.\n" + RESET
         print "      Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n"
         print "      Status: #{ _resp.code } - #{ _resp.message }\n"
@@ -304,7 +305,7 @@ module Watson
       # If we haven't obtained the pw from user yet, do it
       if config.bitbucket_pw.empty?
         # No OAuth for Bitbucket yet, gotta get user password in order to make calls :(
-        Printer.print_status "!", YELLOW
+        formatter.print_status "!", YELLOW
         print BOLD + "Bitbucket password required for remote checking/posting.\n" + RESET
         print "      Password: "
 
@@ -354,7 +355,7 @@ module Watson
       # Check response to validate repo access
       # Shouldn't be necessary if we passed the last check but just to be safe
       if _resp.code != "200"
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         print BOLD + "Post unsuccessful. \n" + RESET
         print "      Since the open issues were obtained earlier, something is probably wrong and you should let someone know...\n"
         print "      Status: #{ _resp.code } - #{ _resp.message }\n"

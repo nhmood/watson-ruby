@@ -45,8 +45,6 @@ module Watson
       build_formatter.run(structure)
     end
 
-    private
-
     def build_formatter
       @formatter ||= @config.output_format.new(@config)
     end

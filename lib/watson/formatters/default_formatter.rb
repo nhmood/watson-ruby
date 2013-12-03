@@ -18,32 +18,6 @@ module Watson::Formatters
       end
     end
 
-    private
-
-    def output_result(&block)
-      debug_print "#{self} : #{__method__}\n"
-      @output ||= begin
-        if @config.use_less
-          debug_print "Unix less avaliable, setting output to #{@config.tmp_file}\n"
-          File.open(@config.tmp_file, 'w')
-        else
-          debug_print "Unix less is unavaliable, setting output to STDOUT\n"
-          STDOUT
-        end
-      end
-
-      yield
-
-      # If we are using less, close the output file, display with less, then delete
-      if @config.use_less
-        @output.close
-        # [review] - Way of calling a native Ruby less?
-        system("less -R #{@config.tmp_file}")
-        debug_print "File displayed with less, now deleting...\n"
-        File.delete(@config.tmp_file)
-      end
-    end
-
     ###########################################################
     # Standard header print for class call (uses member cprint)
     def print_header
@@ -59,6 +33,39 @@ module Watson::Formatters
       Run @ #{Time.now.asctime}
       #{BOLD}------------------------------\n#{RESET}
       MESSAGE
+    end
+
+    ###########################################################
+    # Status printer for member call (uses member cprint)
+    # Print status block in standard format
+    def print_status(msg, color)
+      cprint "#{RESET}#{BOLD}#{WHITE}[ "
+      cprint "#{msg} ", color
+      cprint "#{WHITE}]#{RESET}"
+    end
+
+    private
+
+    def output_result(&block)
+      debug_print "#{self} : #{__method__}\n"
+      @output = if @config.use_less
+        debug_print "Unix less avaliable, setting output to #{@config.tmp_file}\n"
+        File.open(@config.tmp_file, 'w')
+      else
+        debug_print "Unix less is unavaliable, setting output to STDOUT\n"
+        STDOUT
+      end
+
+      yield
+
+      # If we are using less, close the output file, display with less, then delete
+      if @config.use_less
+        @output.close
+        # [review] - Way of calling a native Ruby less?
+        system("less -R #{@config.tmp_file}")
+        debug_print "File displayed with less, now deleting...\n"
+        File.delete(@config.tmp_file)
+      end
     end
 
     ###########################################################
@@ -178,15 +185,6 @@ module Watson::Formatters
       end
 
       STDOUT.write(msg)
-    end
-
-    ###########################################################
-    # Status printer for member call (uses member cprint)
-    # Print status block in standard format
-    def print_status(msg, color)
-      cprint "#{RESET}#{BOLD}#{WHITE}[ "
-      cprint "#{msg} ", color
-      cprint "#{WHITE}]#{RESET}"
     end
   end
 end
