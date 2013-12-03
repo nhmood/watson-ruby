@@ -171,13 +171,13 @@ module Watson::Formatters
       # As well as a [0-256] value if specified
       if color.is_a?(String)
         debug_print "Custom color specified for cprint\n"
-        @output.write(color)
+        STDOUT.write(color)
       elsif color.between?(0, 256)
         debug_print "No or Default color specified for cprint\n"
-        @output.write("\e[38;5;#{color}m")
+        STDOUT.write("\e[38;5;#{color}m")
       end
 
-      @output.write(msg)
+      STDOUT.write(msg)
     end
 
     ###########################################################
