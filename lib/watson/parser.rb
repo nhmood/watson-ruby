@@ -242,7 +242,7 @@ module Watson
         end
 
         unless _mtch
-          debug_print "No valid tag found in line, skipping\n"
+          # debug_print "No valid tag found in line, skipping\n"
           next
         end
 
