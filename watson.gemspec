@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.0.0'
 
   # Runtime Dependencies
-  s.add_runtime_dependency 'json'
+  s.add_runtime_dependency (RUBY_PLATFORM == 'java' ? 'json_pure' : 'json')
 
   # Development Dependencies
   s.add_development_dependency 'rake'
