@@ -1,5 +1,11 @@
 module Watson::Formatters
   class DefaultFormatter < BaseFormatter
+    def initialize(config)
+      super
+
+      @output = STDOUT
+    end
+
     def run(structure)
       debug_print "#{self} : #{__method__}\n"
 
@@ -178,13 +184,13 @@ module Watson::Formatters
       # As well as a [0-256] value if specified
       if color.is_a?(String)
         debug_print "Custom color specified for cprint\n"
-        STDOUT.write(color)
+        @output.write(color)
       elsif color.between?(0, 256)
         debug_print "No or Default color specified for cprint\n"
-        STDOUT.write("\e[38;5;#{color}m")
+        @output.write("\e[38;5;#{color}m")
       end
 
-      STDOUT.write(msg)
+      @output.write(msg)
     end
   end
 end
