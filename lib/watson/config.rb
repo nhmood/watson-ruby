@@ -65,6 +65,17 @@ module Watson
     # Hash to hold list of all Bitbucket issues associated with repo
     attr_accessor :bitbucket_issues
 
+    # Flag for whether Asana access is avaliable
+    attr_accessor :asana_valid
+    # Asana API Key
+    attr_accessor :asana_api
+    # Asana workspace
+    attr_accessor :asana_workspace
+    # Asana project within the workspace to place issues
+    attr_accessor :asana_project
+    # Hash to hold list of all Asana issues associated with repo
+    attr_accessor :asana_issues
+
 
     ###########################################################
     # Config initialization method to setup necessary parameters, states, and vars
