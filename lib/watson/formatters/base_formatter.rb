@@ -1,6 +1,6 @@
 module Watson::Formatters
   class BaseFormatter
-    include ::Watson
+    include Watson
     DEBUG = false
 
     def initialize(config)
