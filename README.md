@@ -56,17 +56,17 @@ Usage: watson [OPTION]...
 Running watson with no arguments will parse with settings in RC file
 If no RC file exists, default RC file will be created
 
-   -c, --context-lines          number of lines of context to provide with posted issue
-   -d, --dirs                   list of directories to search in
-   -f, --files                  list of files to search in
-   -h, --help                   print help
-   -i, --ignore                 list of files, directories, or types to ignore
-   -p, --parse-depth            depth to recursively parse directories
-   -r, --remote                 list / create tokens for Bitbucket/Github
-   -s, --show                   whether to show [all, clean, dirty] files
-   -t, --tags                   list of tags to search for
-   -u, --update                 update remote repos with current issues
-   -v, --version                print watson version and info
+   -c, --context-depth   number of lines of context to provide with posted issue
+   -d, --dirs            list of directories to search in
+   -f, --files           list of files to search in
+   --format              set output format for watson [print, json, unite, silent]
+   -h, --help            print help
+   -i, --ignore          list of files, directories, or types to ignore
+   -p, --parse-depth     depth to recursively parse directories
+   -r, --remote          list / create tokens for Bitbucket/GitHub
+   -t, --tags            list of tags to search for
+   -u, --update          update remote repos with current issues
+   -v, --version         print watson version and info
 
 Any number of files, tags, dirs, and ignores can be listed after flag
 Ignored files should be space separated
@@ -94,6 +94,21 @@ If watson is run without this parameter, the current directory is parsed.
 ### -f, --files [FILES]
 This parameter specifies which files watson should parse through.  
 It should be followed by a space separated list of files that should be parsed.  
+
+
+### --format [PRINT, JSON, UNITE, SILENT]
+This parameter specifies how watson should output the issues that it finds.  
+If passed with `print`, the regular printing will occur, either to Unix less or STDOUT (depending on system).  
+If passed with `json`, the output will be in the form of JSON, and will be stored in `.watsonresults`.  
+
+- This particular option is useful if attempting to intergrate watson into other tools / platforms.
+
+If passed with `unite`, the output will be compatible with the vim unite plugin (more details soon)  
+
+If passed with `silent`, watson will have no output.  
+
+- This particular option is useful if remote posting to GitHub or Bitbucket is desired without the visual component of watson.  
+- For example, you could set up a **git commit hook** to post issues to GitHub/Bitbucket, but avoid the giant print out every time.
 
 
 ### -h, --help
