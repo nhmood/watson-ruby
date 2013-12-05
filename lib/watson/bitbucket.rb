@@ -24,7 +24,7 @@ module Watson
       # Identify method entry
       debug_print "#{ self.class } : #{ __method__ }\n"
 
-      formatter = formatter.new(config).build_formatter
+      formatter = Printer.new(config).build_formatter
       formatter.print_status "+", GREEN
       print BOLD +  "Attempting to access Bitbucket...\n" + RESET
 
@@ -171,6 +171,12 @@ module Watson
       # Identify method entry
       debug_print "#{ self.class } : #{ __method__ }\n"
 
+
+      # Set up formatter for printing errors
+      # config.output_format should be set based on less status by now
+      formatter = Printer.new(config).build_formatter
+
+
       # Only attempt to get issues if API is specified
       if config.bitbucket_api.empty?
         debug_print "No API found, this shouldn't be called...\n"
@@ -269,6 +275,11 @@ module Watson
 
       # Identify method entry
       debug_print "#{self.class} : #{__method__}\n"
+
+
+      # Set up formatter for printing errors
+      # config.output_format should be set based on less status by now
+      formatter = Printer.new(config).build_formatter
 
 
       # Only attempt to get issues if API is specified
