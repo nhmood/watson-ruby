@@ -390,6 +390,7 @@ module Watson
                '.java'    => ['//', '/*', '/**'], # Java
                '.class'   => ['//', '/*', '/**'],
                '.cs'      => ['//', '/*'],        # C#
+               '.scss'    => ['//', '/*'],        # SASS SCSS
                '.js'      => ['//', '/*'],        # JavaScript
                '.php'     => ['//', '/*', '#'],   # PHP
                '.m'       => ['//', '/*'],        # ObjectiveC
