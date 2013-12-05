@@ -411,7 +411,8 @@ module Watson
                '.coffee'  => ['#'],               # CoffeeScript
                '.zsh'     => ['#'],               # Zsh
                '.clj'     => [';;'],              # Clojure
-               '.sql'     => ['---', '//', '#' ]  # SQL and PL types
+               '.sql'     => ['---', '//', '#' ], # SQL and PL types
+               '.lua'     => ['--', '--[[']       # Lua
              }
 
       loop do
