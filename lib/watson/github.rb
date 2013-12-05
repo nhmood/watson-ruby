@@ -47,7 +47,6 @@ module Watson
         end
       end
 
-      print "\n\n"
 
       formatter.print_status "!", YELLOW
       print BOLD + "Access to your GitHub account required to make/update issues\n" + RESET

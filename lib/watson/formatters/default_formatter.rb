@@ -33,7 +33,7 @@ module Watson::Formatters
       # Header
       cprint <<-MESSAGE.gsub(/^ {6}/, '')
       #{BOLD}------------------------------#{RESET}
-      #{BOLD}watson#{RESET} - #{RESET} #{BOLD}#{YELLOW}inline issue manager#{RESET}
+      #{BOLD}watson#{RESET} - #{RESET}#{BOLD}#{YELLOW}inline issue manager#{RESET}
 
       Run in: #{Dir.pwd}
       Run @ #{Time.now.asctime}
@@ -47,7 +47,7 @@ module Watson::Formatters
     def print_status(msg, color)
       cprint "#{RESET}#{BOLD}#{WHITE}[ "
       cprint "#{msg} ", color
-      cprint "#{WHITE}]#{RESET}"
+      cprint "#{WHITE}] #{RESET}"
     end
 
     private
@@ -149,7 +149,7 @@ module Watson::Formatters
         @config.github_issues[:closed].each do | _closed |
           if _closed["body"].include?(issue[:md5])
             debug_print "Found in #{ _closed[:comment] }, not posting\n"
-            cprint <<-MESSAGE.gsub(/^ {13}/, '')
+            cprint <<-MESSAGE.gsub(/^(\s+)/, '')
             #{BOLD} [#{RESET}#{GREEN}#{BOLD}Resolved on GitHub#{RESET}#{BOLD}]#{RESET}
             MESSAGE
           end
@@ -160,7 +160,7 @@ module Watson::Formatters
         @config.bitbucket_issues[:closed].each do  |closed|
           if closed['content'].include?(issue[:md5])
             debug_print "Found in #{ closed["content"] }, not posting\n"
-            cprint <<-MESSAGE.gsub(/^ {13}/, '')
+            cprint <<-MESSAGE.gsub(/^(\s+)/, '')
             #{BOLD} [#{RESET}#{GREEN}#{BOLD}Resolved on Bitbucket#{RESET}#{BOLD}]#{RESET}
             MESSAGE
           end

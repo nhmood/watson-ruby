@@ -156,7 +156,7 @@ module Watson
       formatter.print_status "o", GREEN
       print BOLD + "Bitbucket successfully setup\n" + RESET
       print "      Issues will now automatically be retrieved from Bitbucket by default\n"
-      print "      Use -p, --push to post issues to GitHub\n"
+      print "      Use -u, --update to post issues to GitHub\n"
       print "      See help or README for more details on GitHub/Bitbucket access\n\n"
 
       return true
