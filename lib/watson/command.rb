@@ -23,18 +23,20 @@ module Watson
       debug_print "#{ self } : #{ __method__ }\n"
 
       # List of possible flags, used later in parsing and for user reference
-      _flag_list = ["-c", "--context-depth",
-                    "-d", "--dirs",
-                    "-f", "--files",
-                    "-h", "--help",
-                    "-i", "--ignore",
-                    "-p", "--parse-depth",
-                    "-r", "--remote",
-                    "-s", "--show",
-                    "-t", "--tags",
-                    "-u", "--update",
-                    "-v", "--version"
-                   ]
+      _flag_list = %w[
+        -c --context-depth
+        -d --dirs
+        -f --files
+        -h --help
+        -i --ignore
+        -p --parse-depth
+        -r --remote
+        -s --show
+        -t --tags
+        --format
+        -u --update
+        -v --version
+      ]
 
 
       # If we get the version or help flag, ignore all other flags
@@ -117,6 +119,10 @@ module Watson
         when "-i", "--ignore"
           debug_print "Found -i/--ignore argument\n"
           set_ignores(_flag_args)
+
+        when '--format'
+          debug_print "Found --format argument\n"
+          set_output_format(_flag_args)
 
         when "-p", "--parse-depth"
           debug_print "Found -r/--parse-depth argument\n"
@@ -423,14 +429,15 @@ module Watson
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
 
-      Printer.print_header
+      formatter = Printer.new(@config).build_formatter
+      formatter.print_header
 
       print BOLD + "Existing Remotes:\n" + RESET
 
       # Check the config for any remote entries (GitHub or Bitbucket) and print
       # We *should* always have a repo + API together, but API should be enough
       if @config.github_api.empty? && @config.bitbucket_api.empty?
-        Printer.print_status "!", YELLOW
+        formatter.print_status "!", YELLOW
         print BOLD + "No remotes currently exist\n\n" + RESET
       end
 
@@ -458,7 +465,7 @@ module Watson
           Watson::Remote::Bitbucket.setup(@config)
         end
       elsif args.length > 1
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         puts <<-SUMMERY.gsub(/^ {,8}/, '')
         #{BOLD}Incorrect arguments passed#{RESET}
         Please specify either Github or Bitbucket to setup remote
@@ -470,6 +477,30 @@ module Watson
       end
     end
 
+    ###########################################################
+    # set_output_format
+    # Set format watson should output in
+    def set_output_format(args)
+      # Identify method entry
+      debug_print "#{ self } : #{ __method__ }\n"
+
+      # Need at least one file in args
+      unless args.length == 1
+        debug_print "Invalid argument passed\n"
+        return false
+      end
+
+      @config.output_format = case args.pop.to_s
+        when 'j', 'json'
+          Watson::Formatters::JsonFormatter
+        when 'unite'
+          Watson::Formatters::UniteFormatter
+        else
+          Watson::Formatters::DefaultFormatter
+      end
+
+      debug_print "Updated output_format to: #{@config.output_format}\n"
+    end
 
     ###########################################################
     # set_show
