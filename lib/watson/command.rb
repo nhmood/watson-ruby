@@ -180,13 +180,14 @@ module Watson
          -c, --context-depth   number of lines of context to provide with posted issue
          -d, --dirs            list of directories to search in
          -f, --files           list of files to search in
+         --format              set output format for watson [print, json, unite, silent]
          -h, --help            print help
          -i, --ignore          list of files, directories, or types to ignore
          -p, --parse-depth     depth to recursively parse directories
          -r, --remote          list / create tokens for Bitbucket/GitHub
          -t, --tags            list of tags to search for
          -u, --update          update remote repos with current issues
-         -v, --version      print watson version and info
+         -v, --version         print watson version and info
 
       Any number of files, tags, dirs, and ignores can be listed after flag
       Ignored files should be space separated
@@ -495,6 +496,8 @@ module Watson
           Watson::Formatters::JsonFormatter
         when 'unite'
           Watson::Formatters::UniteFormatter
+        when 'silent'
+          Watson::Formatters::SilentFormatter
         else
           Watson::Formatters::DefaultFormatter
       end

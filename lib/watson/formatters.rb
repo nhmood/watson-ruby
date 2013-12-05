@@ -3,4 +3,5 @@ module Watson::Formatters
   autoload :DefaultFormatter, 'watson/formatters/default_formatter'
   autoload :JsonFormatter, 'watson/formatters/json_formatter'
   autoload :UniteFormatter, 'watson/formatters/unite_formatter'
+  autoload :SilentFormatter, 'watson/formatters/silent_formatter'
 end
