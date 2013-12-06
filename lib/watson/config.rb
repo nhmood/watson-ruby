@@ -384,6 +384,10 @@ module Watson
           @bitbucket_api = _line.chomp!
           debug_print "Bitbucket API: #{ @bitbucket_api }\n"
 
+        when "bitbucket_pw"
+          # Same as GitHub parse above
+          @bitbucket_pw = _line.chomp!
+          debug_print "Bitbucket PW: #{ @bitbucket_pw }\n"
 
         when "bitbucket_repo"
           # Same as GitHub repo parse above
