@@ -262,7 +262,8 @@ module Watson
         # Make sure that the tag that was found is something we accept
         # If not, skip it but tell user about an unrecognized tag
         unless @config.tag_list.include?(_tag)
-          Printer.print_status '!', RED
+          formatter = Printer.new(@config).build_formatter
+          formatter.print_status "+", GREEN
           print "Unknown tag [#{ _tag }] found, ignoring\n"
           print "      You might want to include it in your RC or with the -t/--tags flag\n"
           next
