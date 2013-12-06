@@ -209,13 +209,18 @@ module Watson
       _comment_type = get_comment_type(_relative_path)
       unless _comment_type
         debug_print "Using default (#) comment type\n"
-        _comment_type = '#'
+        _comment_type = ['#']
       end
+
+      # Escape out comment type for safety
+      # [review] - Is there a way to do inplace join?
+      _comment_type = _comment_type.map { |comment| Regexp.escape(comment) }.join("|")
+      debug_print "Comment type #{ _comment_type }\n"
 
       # [review] - It is possible to embed the valid tags in the regexp,
       # with a ~5% performance gain, but this would loose the warning about
       # unrecognized tags.
-      _comment_regex = /^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/
+      _comment_regex = /^[[#{ _comment_type }]+?\s+?]+\[(\w+)\]\s+-\s+(.+)/
 
 
       # Open file and read in entire thing into an array
