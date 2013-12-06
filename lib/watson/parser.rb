@@ -273,7 +273,13 @@ module Watson
         # Set flag for this issue_list (for file) to indicate that
         _issue_list[:has_issues] = true
 
-        _title = _mtch[2]
+        # [review] This could probably be done better, elsewhere!
+        # If it's a HTML comment, remove trailing -->
+        if _mtch[0].match(/<!--/)
+          _title = _mtch[2].gsub(/-->/, "")
+        else
+          _title = _mtch[2]
+        end
         debug_print "Issue found\n"
         debug_print "Tag: #{ _tag }\n"
         debug_print "Issue: #{ _title }\n"
@@ -419,7 +425,8 @@ module Watson
                '.zsh'     => ['#'],               # Zsh
                '.clj'     => [';;'],              # Clojure
                '.sql'     => ['---', '//', '#' ], # SQL and PL types
-               '.lua'     => ['--', '--[[']       # Lua
+               '.lua'     => ['--', '--[['],      # Lua
+               '.html'    => ['<!--']             # HTML
              }
 
       loop do
