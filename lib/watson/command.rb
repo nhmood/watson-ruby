@@ -177,14 +177,17 @@ module Watson
       Running watson with no arguments will parse with settings in RC file
       If no RC file exists, default RC file will be created
 
-         -c, --context-depth   number of lines of context to provide with posted issue
+         -c, --context-depth   lines of context to provide with posted issue
          -d, --dirs            list of directories to search in
          -f, --files           list of files to search in
-         --format              set output format for watson [print, json, unite, silent]
+         --format              set output format for watson
+                               [print, json, unite, silent]
          -h, --help            print help
          -i, --ignore          list of files, directories, or types to ignore
          -p, --parse-depth     depth to recursively parse directories
          -r, --remote          list / create tokens for Bitbucket/GitHub
+         -s, --show            filter results (files listed) based on issue status
+                               [all, clean, dirty]
          -t, --tags            list of tags to search for
          -u, --update          update remote repos with current issues
          -v, --version         print watson version and info
@@ -194,7 +197,7 @@ module Watson
       To use *.filetype identifier, encapsulate in \"\" to avoid shell substitutions
 
       Report bugs to: watson\@goosecode.com
-      watson home page: <http://goosecode.com/projects/watson>
+      watson home page: <http://goosecode.com/watson>
       [goosecode] labs | 2012-2013#{RESET}
       HELP
 
