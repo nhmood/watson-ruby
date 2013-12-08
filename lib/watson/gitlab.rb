@@ -96,7 +96,7 @@ module Watson
       opts = {:url        => "#{ _endpoint }/api/v3/projects/#{ _repo }",
               :method     => "GET",
               :headers    => [ { :field => "PRIVATE-TOKEN", :value => _token } ],
-              :verbose    => true 
+              :verbose    => false
              }
 
       _json, _resp  = Watson::Remote.http_call(opts)
@@ -168,7 +168,7 @@ module Watson
               :ssl        => false,
               :method     => "GET",
               :headers    => [ { :field => "PRIVATE-TOKEN", :value => config.gitlab_api } ],
-              :verbose    => false 
+              :verbose    => false
              }
 
       _json, _resp  = Watson::Remote.http_call(opts)
@@ -276,7 +276,7 @@ module Watson
               :data       => [{ "title"  => issue[:title] + " [#{ issue[:path] }]",
                                "labels" => "#{issue[:tag]}, watson",
                                "description" => _body }],
-              :verbose    => true 
+              :verbose    => false
              }
 
       _json, _resp  = Watson::Remote.http_call(opts)

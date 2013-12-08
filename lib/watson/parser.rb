@@ -356,10 +356,10 @@ module Watson
           end
 
           if @config.gitlab_valid
-            print "GitLab is valid, posting issue\n"
+            debug_print "GitLab is valid, posting issue\n"
             Remote::GitLab.post_issue(_issue, @config)
           else
-            print "GitLab invalid, not posting issue\n"
+            debug_print "GitLab invalid, not posting issue\n"
           end
         end
 
