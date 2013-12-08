@@ -67,6 +67,12 @@ module Watson
           print BOLD + "Input blank. Please enter your API endpoint!\n\n" + RESET
           return false
         end
+
+        # Make sure we have the http(s)://
+        if !_endpoint.match(/(http|https):\/\//)
+          _endpoint = "http://#{_endpoint}"
+        end
+
       else
         _endpoint = ''
       end
@@ -106,7 +112,7 @@ module Watson
       # Repo scope + notes for watson
       # Basic auth with user input
       opts = {:url        => "#{ _endpoint }/authorizations",
-              :ssl        => true,
+              :ssl        => _endpoint.match(/^https/) ? true : false,
               :method     => "POST",
               :basic_auth => [_username, _password],
               :data       => {"scopes" => ["repo"],
@@ -170,7 +176,7 @@ module Watson
       #
       # Auth token
       opts = {:url        => "#{ _endpoint }/repos/#{ _owner }/#{ _repo }/labels",
-              :ssl        => true,
+              :ssl        => _endpoint.match(/^https/) ? true : false,
               :method     => "POST",
               :auth       => config.github_api,
               :data       => {"name" => "watson",
@@ -258,7 +264,7 @@ module Watson
       # Create options hash to pass to Remote::http_call
       # Issues URL for GitHub + SSL
       opts = {:url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues?labels=watson&state=open",
-              :ssl        => true,
+              :ssl        => config.github_endpoint.match(/^https/) ? true : false,
               :method     => "GET",
               :auth       => config.github_api,
               :verbose    => false
@@ -286,7 +292,7 @@ module Watson
       # Create option hash to pass to Remote::http_call
       # Issues URL for GitHub + SSL
       opts = {:url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues?labels=watson&state=closed",
-              :ssl        => true,
+              :ssl        => config.github_endpoint.match(/^https/) ? true : false,
               :method     => "GET",
               :auth       => config.github_api,
               :verbose    => false
@@ -307,7 +313,7 @@ module Watson
         return false
       end
 
-      config.github_issues[:closed] = _json.empty? ? Hash.new : _json
+      config.github_issues[:closed] = _json.empty? ? Array.new : _json
       config.github_valid = true
       return true
     end
@@ -372,7 +378,7 @@ module Watson
       # Create option hash to pass to Remote::http_call
       # Issues URL for GitHub + SSL
       opts = {:url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues",
-              :ssl        => true,
+              :ssl        => config.github_endpoint.match(/^https/) ? true : false,
               :method     => "POST",
               :auth       => config.github_api,
               :data       => { "title" => issue[:title] + " [#{ issue[:path] }]",

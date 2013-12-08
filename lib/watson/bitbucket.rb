@@ -116,12 +116,12 @@ module Watson
       # Create options hash to pass to Remote::http_call
       # Endpoint for accessing Repo as User with SSL
       # Basic auth with user input
-      opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{_owner}/#{_repo}",
-          :ssl        => true,
-          :method     => "GET",
-          :basic_auth => [_username, _password],
-          :verbose    => false
-           }
+      opts = { :url        => "https://bitbucket.org/api/1.0/repositories/#{_owner}/#{_repo}",
+               :ssl        => true,
+               :method     => "GET",
+               :basic_auth => [_username, _password],
+               :verbose    => false
+             }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -208,12 +208,12 @@ module Watson
       # Get all open tickets (anything but resolved)
       # Create options hash to pass to Remote::http_call
       # Issues URL for Bitbucket + SSL
-      opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues?status=!resolved",
-          :ssl        => true,
-          :method     => "GET",
-          :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
-          :verbose    => false
-           }
+      opts = { :url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues?status=!resolved",
+               :ssl        => true,
+               :method     => "GET",
+               :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
+               :verbose    => false
+             }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -239,12 +239,12 @@ module Watson
       # Get all closed tickets
       # Create options hash to pass to Remote::http_call
       # Issues URL for Bitbucket + SSL
-      opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues?status=resolved",
-          :ssl        => true,
-          :method     => "GET",
-          :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
-          :verbose    => false
-           }
+      opts = { :url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues?status=resolved",
+               :ssl        => true,
+               :method     => "GET",
+               :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
+               :verbose    => false
+             }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -261,7 +261,7 @@ module Watson
         return false
       end
 
-      config.bitbucket_issues[:closed] = _json["issues"].empty? ? Hash.new : _json["issues"]
+      config.bitbucket_issues[:closed] = _json["issues"].empty? ? Array.new : _json["issues"]
       config.bitbucket_valid = true
       return true
     end
@@ -351,14 +351,14 @@ module Watson
       # Create option hash to pass to Remote::http_call
       # Issues URL for GitHub + SSL
       # No tag or label concept in Bitbucket unfortunately :(
-      opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues",
-          :ssl        => true,
-          :method     => "POST",
-          :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
-          :data   => [{"title" => issue[:title] + " [#{ issue[:path] }]",
-                  "content" => _body }],
-          :verbose    => false
-           }
+      opts = { :url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues",
+               :ssl        => true,
+               :method     => "POST",
+               :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
+               :data   => [{"title" => issue[:title] + " [#{ issue[:path] }]",
+                       "content" => _body }],
+               :verbose    => false
+             }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 

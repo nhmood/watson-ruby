@@ -94,6 +94,7 @@ module Watson
       # Project URL + SSL
       
       opts = {:url        => "#{ _endpoint }/api/v3/projects/#{ _repo }",
+              :ssl        =>  _endpoint.match(/^https/) ? true : false,
               :method     => "GET",
               :headers    => [ { :field => "PRIVATE-TOKEN", :value => _token } ],
               :verbose    => false
@@ -165,7 +166,7 @@ module Watson
       # Create options hash to pass to Remote::http_call
       # Use URI.escape so config file is readable
       opts = {:url        => "#{ config.gitlab_endpoint }/api/v3/projects/#{ URI.escape(config.gitlab_repo, "/") }/issues",
-              :ssl        => false,
+              :ssl        => config.gitlab_endpoint.match(/^https/) ? true : false,
               :method     => "GET",
               :headers    => [ { :field => "PRIVATE-TOKEN", :value => config.gitlab_api } ],
               :verbose    => false
@@ -270,7 +271,7 @@ module Watson
       # Create option hash to pass to Remote::http_call
       # Issues URL for GitLab
       opts = {:url        => "#{ config.gitlab_endpoint }/api/v3/projects/#{ URI.escape(config.gitlab_repo, "/") }/issues",
-              :ssl        => false,
+              :ssl        => config.gitlab_endpoint.match(/^https/) ? true : false,
               :method     => "POST",
               :headers    => [ { :field => "PRIVATE-TOKEN", :value => config.gitlab_api } ],
               :data       => [{ "title"  => issue[:title] + " [#{ issue[:path] }]",
