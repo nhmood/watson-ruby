@@ -67,6 +67,7 @@ module Watson
     # Hash to hold list of all Bitbucket issues associated with repo
     attr_accessor :bitbucket_issues
 
+
     # Flag for whether GitLab access is avaliable
     attr_accessor :gitlab_valid
     # GitLab API key generated from Remote::GitHub setup
@@ -123,8 +124,8 @@ module Watson
       @github_api      = ""
       @github_endpoint = ""
       @github_repo     = ""
-      @github_issues   = {:open   => Hash.new(),
-                          :closed => Hash.new()
+      @github_issues   = {:open   => Array.new(),
+                          :closed => Array.new()
                           }
 
       # Keep API param (and put username there) for OAuth update later
@@ -132,9 +133,9 @@ module Watson
       @bitbucket_api    = ""
       @bitbucket_pw     = ""
       @bitbucket_repo   = ""
-      @bitbucket_issues   = {:open   => Hash.new(),
-                   :closed => Hash.new()
-                  }
+      @bitbucket_issues   = {:open   => Array.new(),
+                             :closed => Array.new()
+                            }
 
 
       @gitlab_valid    = false
