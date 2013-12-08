@@ -66,6 +66,18 @@ module Watson
     attr_accessor :bitbucket_repo
     # Hash to hold list of all Bitbucket issues associated with repo
     attr_accessor :bitbucket_issues
+
+    # Flag for whether GitLab access is avaliable
+    attr_accessor :gitlab_valid
+    # GitLab API key generated from Remote::GitHub setup
+    attr_accessor :gitlab_api
+    # GitLab Endpoint (for GitHub Enterprise)
+    attr_accessor :gitlab_endpoint
+    # GitLab repo associated with current directory + watson config
+    attr_accessor :gitlab_repo
+    # Hash to hold list of all GitLab issues associated with repo
+    attr_accessor :gitlab_issues
+
     # Formatter
     attr_accessor :output_format
 
@@ -123,6 +135,18 @@ module Watson
       @bitbucket_issues   = {:open   => Hash.new(),
                    :closed => Hash.new()
                   }
+
+
+      @gitlab_valid    = false
+      @gitlab_api      = ""
+      @gitlab_endpoint = ""
+      @gitlab_repo     = ""
+      @gitlab_issues   = {:open   => Array.new(),
+                          :closed => Array.new()
+                         }
+
+
+
       @output_format = Watson::Formatters::DefaultFormatter
     end
 
@@ -138,12 +162,18 @@ module Watson
       exit if check_conf == false
       read_conf
 
+
+      # [review] - Theres gotta be a magic ruby way to trim this down
       unless @github_api.empty? && @github_repo.empty?
         Remote::GitHub.get_issues(self)
       end
 
       unless @bitbucket_api.empty? && @bitbucket_repo.empty?
         Remote::Bitbucket.get_issues(self)
+      end
+
+      unless @gitlab_api.empty? && @gitlab_repo.empty?
+        Remote::GitLab.get_issues(self)
       end
     end
 
@@ -394,6 +424,20 @@ module Watson
           @bitbucket_repo = _line.chomp!
           debug_print "Bitbucket Repo: #{ @bitbucket_repo }\n"
 
+        when "gitlab_api"
+          # Same as GitHub
+          @gitlab_api = _line.chomp!
+          debug_print "GitLab API: #{ @gitlab_api }\n"
+
+        when "gitlab_endpoint"
+        # Same as GitHub
+          @gitlab_endpoint = _line.chomp!
+          debug_print "GitLab Endpoint #{ @gitlab_endpoint }\n"
+
+        when "gitlab_repo"
+          # Same as GitHub
+          @gitlab_repo = _line.chomp!
+          debug_print "GitLab Repo: #{ @gitlab_repo }\n"
 
         else
           debug_print "Unknown tag found #{_section}\n"

@@ -19,14 +19,15 @@ module Watson
     # Default options hash for http_call
     # Will get merged with input argument hash to maintain defaults
     HTTP_opts = {
-        :url      => nil,     #--> URL of endpoint [String]
-        :ssl      => false,     #--> Use SSL in connection (HTTPS) (True/False]
-      :method     => nil,     #--> GET or POST for respective HTTP method [String]
+        :url        => nil,           #--> URL of endpoint [String]
+        :ssl        => false,         #--> Use SSL in connection (HTTPS) (True/False]
+        :method     => nil,           #--> GET or POST for respective HTTP method [String]
         :basic_auth => Array.new(0),  #--> Array of username and pw to use for basic authentication
-                                    #    If empty, assume no user authentication [Array]
-      :auth     => nil,     #--> Authentication token [String]
-      :data     => nil,     #--> Hash of data to be POST'd in HTTP request [Hash]
-      :verbose    => false      #--> Turn on verbose debug for this call [True/False]
+                                      #    If empty, assume no user authentication [Array]
+        :auth       => nil,           #--> Authentication token [String]
+        :headers    => Array.new(0),  #--> Array of headers, where headers are hash of key value
+        :data       => nil,           #--> Hash of data to be POST'd in HTTP request [Hash]
+        :verbose    => false          #--> Turn on verbose debug for this call [True/False]
     }
 
     ###########################################################
@@ -81,9 +82,17 @@ module Watson
 
       # Check for Authentication token key in hash to be used in header
       # I think this is pretty universal, but specifically works for GitHub
+      # This is standard for OAuth I think...
       if opts[:auth]
         _req["Authorization"] = "token #{ opts[:auth] }"
       end
+
+      # But sometimes we need we need other headers
+      # Set specific header (GitLab requires PRIVATE_TOKEN)
+      opts[:headers].each do |header|
+        _req["#{ header[:field] }"] = header[:value]
+      end
+
 
       # [review] - Add :data_format to use set_form_data vs json body?
       # For now, use Hash or Array, this is to differentiate between

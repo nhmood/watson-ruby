@@ -455,6 +455,11 @@ module Watson
         print BOLD + "Bitbucket Repo : " + RESET + "#{ @config.bitbucket_repo }\n\n" + RESET
       end
 
+      if !@config.gitlab_api.empty?
+        print BOLD + "GitLab User : " + RESET + "#{ @config.gitlab_api }\n" + RESET
+        print BOLD + "GitLab Repo : " + RESET + "#{ @config.gitlab_repo }\n\n" + RESET
+      end
+
       # If github or bitbucket passed, setup
       # If just -r (0 args) do nothing and only have above printed
       # If more than 1 arg is passed, unrecognized, warn user
@@ -467,6 +472,11 @@ module Watson
         when "bitbucket"
           debug_print "Bitbucket setup called from CL\n"
           Watson::Remote::Bitbucket.setup(@config)
+
+        when "gitlab"
+          debug_print "GitLab setup called from CL\n"
+          Watson::Remote::GitLab.setup(@config)
+
         end
       elsif args.length > 1
         formatter.print_status "x", RED

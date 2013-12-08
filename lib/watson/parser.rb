@@ -354,6 +354,13 @@ module Watson
           else
             debug_print "Bitbucket invalid, not posting issue\n"
           end
+
+          if @config.gitlab_valid
+            print "GitLab is valid, posting issue\n"
+            Remote::GitLab.post_issue(_issue, @config)
+          else
+            print "GitLab invalid, not posting issue\n"
+          end
         end
 
         # [review] - Use _tag string as symbol reference in hash or keep as string?
