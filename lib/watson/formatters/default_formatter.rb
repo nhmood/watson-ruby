@@ -31,9 +31,9 @@ module Watson::Formatters
       debug_print "#{ self } : #{ __method__ }\n"
 
       # Header
-      cprint <<-MESSAGE.gsub(/^ {6}/, '')
+      cprint <<-MESSAGE.gsub(/^(\s+)/, '')
       #{BOLD}------------------------------#{RESET}
-      #{BOLD}watson#{RESET} - #{RESET}#{BOLD}#{YELLOW}inline issue manager#{RESET}
+      #{BOLD}watson#{RESET} - #{RESET}#{BOLD}#{YELLOW}inline issue manager\n#{RESET}
 
       Run in: #{Dir.pwd}
       Run @ #{Time.now.asctime}
@@ -142,29 +142,51 @@ module Watson::Formatters
 
       # Go through each issue in tag
       entry[tag].each do |issue|
-        cprint "#{WHITE}  line #{issue[:line_number]} - #{RESET}#{BOLD}#{issue[:title]}#{RESET}"
+        cprint "#{WHITE}  line #{issue[:line_number]} - #{RESET}#{BOLD}#{issue[:title]} #{RESET}"
 
-        # Check to see if it has been resolved on GitHub/Bitbucket
-        debug_print "Checking if issue has been resolved\n"
-        @config.github_issues[:closed].each do | _closed |
-          if _closed["body"].include?(issue[:md5])
-            debug_print "Found in #{ _closed[:comment] }, not posting\n"
-            cprint <<-MESSAGE.gsub(/^(\s+)/, '')
-            #{BOLD} [#{RESET}#{GREEN}#{BOLD}Resolved on GitHub#{RESET}#{BOLD}]#{RESET}
+        # Print status for remote issues along with issue #
+        debug_print "Checking GitHub open issues\n"
+        @config.github_issues[:open].each do |_open|
+          if _open["body"].include?(issue[:md5])
+            debug_print "Found #{ issue[:title]} in open issues\n"
+            cprint <<-MESSAGE.gsub(/^(\s+)/, '').chomp
+            #{BOLD}[#{RESET}#{RED}#{BOLD}GH##{issue[:github_id]}#{RESET}#{BOLD}]#{RESET}
             MESSAGE
           end
-          debug_print "Did not find in #{ _closed[:comment] }\n"
+          debug_print "Did not find in #{ _open["body"] }\n"
         end
 
-        debug_print "Checking if issue has been resolved\n"
-        @config.bitbucket_issues[:closed].each do  |closed|
-          if closed['content'].include?(issue[:md5])
-            debug_print "Found in #{ closed["content"] }, not posting\n"
-            cprint <<-MESSAGE.gsub(/^(\s+)/, '')
-            #{BOLD} [#{RESET}#{GREEN}#{BOLD}Resolved on Bitbucket#{RESET}#{BOLD}]#{RESET}
+        debug_print "Checking GitHub closed issues\n"
+        @config.github_issues[:closed].each do |_closed|
+          if _closed["body"].include?(issue[:md5])
+            debug_print "Found #{ issue[:title]} in closed issues\n"
+            cprint <<-MESSAGE.gsub(/^(\s+)/, '').chomp
+            #{BOLD}[#{RESET}#{GREEN}#{BOLD}GH##{issue[:github_id]}#{RESET}#{BOLD}]#{RESET}
             MESSAGE
           end
-          debug_print "Did not find in #{ closed["title"] }\n"
+          debug_print "Did not find in #{ _closed["body"] }\n"
+        end
+
+        debug_print "Checking Bitbucket open issues\n"
+        @config.bitbucket_issues[:open].each do  |_open|
+          if _open["content"].include?(issue[:md5])
+            debug_print "Found #{ issue[:title]} in open issues\n"
+            cprint <<-MESSAGE.gsub(/^(\s+)/, '').chomp
+            #{BOLD}[#{RESET}#{RED}#{BOLD}BB##{issue[:bitbucket_id]}#{RESET}#{BOLD}]#{RESET}
+            MESSAGE
+          end
+          debug_print "Did not find in #{ _open["content"] }\n"
+        end
+
+        debug_print "Checking Bitbucket closed issues\n"
+        @config.bitbucket_issues[:closed].each do |_closed|
+          if _closed["content"].include?(issue[:md5])
+            debug_print "Found #{ issue[:title]} in closed issues\n"
+            cprint <<-MESSAGE.gsub(/^(\s+)/, '').chomp
+            #{BOLD}[#{RESET}#{GREEN}#{BOLD}BB##{issue[:bitbucket_id]}#{RESET}#{BOLD}]#{RESET}
+            MESSAGE
+          end
+          debug_print "Did not find in #{ _closed["content"] }\n"
         end
 
         cprint "\n"

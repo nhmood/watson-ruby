@@ -373,6 +373,7 @@ module Watson
         return false
       end
 
+      issue[:bitbucket_id] = _json["local_id"]
       return true
     end
 

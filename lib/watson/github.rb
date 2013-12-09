@@ -394,6 +394,8 @@ module Watson
         return false
       end
 
+      # Grab issue number from JSON return
+      issue[:github_id] = _json["number"]
       return true
     end
 

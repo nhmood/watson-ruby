@@ -332,6 +332,32 @@ module Watson
         debug_print "#{ _issue }\n"
 
 
+        # Go through all issues and grab the remote issue #
+        @config.github_issues[:open].each do |open|
+          if open["body"].include?(_issue[:md5])
+            _issue[:github_id] = open["number"]
+          end
+        end
+
+        @config.github_issues[:closed].each do |closed|
+          if closed["body"].include?(_issue[:md5])
+            _issue[:github_id] = closed["number"]
+          end
+        end
+
+        @config.bitbucket_issues[:open].each do |open|
+          if open["content"].include?(_issue[:md5])
+            _issue[:bitbucket_id] = open["local_id"]
+          end
+        end
+
+        @config.bitbucket_issues[:closed].each do |closed|
+          if closed["content"].include?(_issue[:md5])
+            _issue[:bitbucket_id] = closed["local_id"]
+          end
+        end
+
+
         # [todo] - Figure out a way to queue up posts so user has a progress bar?
         # That way user can tell that wait is because of http calls not app
 
