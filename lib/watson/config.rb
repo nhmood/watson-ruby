@@ -128,27 +128,23 @@ module Watson
       @github_api      = ""
       @github_endpoint = ""
       @github_repo     = ""
-      @github_issues   = {:open   => Array.new(),
-                          :closed => Array.new()
-                          }
+      @github_issues   = Hash.new()
+
+
 
       # Keep API param (and put username there) for OAuth update later
       @bitbucket_valid  = false
       @bitbucket_api    = ""
       @bitbucket_pw     = ""
       @bitbucket_repo   = ""
-      @bitbucket_issues   = {:open   => Array.new(),
-                             :closed => Array.new()
-                            }
+      @bitbucket_issues = Hash.new()
 
 
       @gitlab_valid    = false
       @gitlab_api      = ""
       @gitlab_endpoint = ""
       @gitlab_repo     = ""
-      @gitlab_issues   = {:open   => Array.new(),
-                          :closed => Array.new()
-                         }
+      @gitlab_issues   = Hash.new()
 
 
 

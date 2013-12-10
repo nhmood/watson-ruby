@@ -93,12 +93,13 @@ module Watson
       # Create options hash to pass to Remote::http_call
       # Project URL + SSL
       
-      opts = {:url        => "#{ _endpoint }/api/v3/projects/#{ _repo }",
-              :ssl        =>  _endpoint.match(/^https/) ? true : false,
-              :method     => "GET",
-              :headers    => [ { :field => "PRIVATE-TOKEN", :value => _token } ],
-              :verbose    => false
-             }
+      opts = {
+        :url        => "#{ _endpoint }/api/v3/projects/#{ _repo }",
+        :ssl        =>  _endpoint.match(/^https/) ? true : false,
+        :method     => "GET",
+        :headers    => [ { :field => "PRIVATE-TOKEN", :value => _token } ],
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -165,12 +166,13 @@ module Watson
       # Get all issues 
       # Create options hash to pass to Remote::http_call
       # Use URI.escape so config file is readable
-      opts = {:url        => "#{ config.gitlab_endpoint }/api/v3/projects/#{ URI.escape(config.gitlab_repo, "/") }/issues",
-              :ssl        => config.gitlab_endpoint.match(/^https/) ? true : false,
-              :method     => "GET",
-              :headers    => [ { :field => "PRIVATE-TOKEN", :value => config.gitlab_api } ],
-              :verbose    => false
-             }
+      opts = {
+        :url        => "#{ config.gitlab_endpoint }/api/v3/projects/#{ URI.escape(config.gitlab_repo, "/") }/issues",
+        :ssl        => config.gitlab_endpoint.match(/^https/) ? true : false,
+        :method     => "GET",
+        :headers    => [ { :field => "PRIVATE-TOKEN", :value => config.gitlab_api } ],
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -186,27 +188,23 @@ module Watson
         return false
       end
 
-     
-      ## If response is empty, make sure nothing is in the arrays  
-      #if _json.empty?
-      #  config.gitlab_issues[:open]   = Array.new
-      #  config.gitlab_issues[:closed] = Array.new
-      #  return false
-      #end
 
-      # Go through every issue and sort it into open/closed
+
+      # Create hash entry from each returned issue
+      # MD5 of issue serves as hash key
+      # Hash value is another hash of info we will use
       _json.each do |issue|
-        # GitLab uses 'nil' for blank description, change it to "" instead
-        # so that post issue can stay consistent between remotes
-        issue["description"] ||= "" 
-  
-        config.gitlab_issues[:open].push(issue)   if issue["state"] == "opened"
-        config.gitlab_issues[:closed].push(issue) if issue["state"] == "closed"
+
+        _md5 = issue["body"].match(/__md5__ : (\w+)/)[1]
+
+        config.gitlab_issues[_md5] = {
+          :title => issue["title"],
+          :id    => issue["iid"],
+          :state => issue["state"]
+        }
       end
     
       config.gitlab_valid = true
-      
-      return true
     end
 
 
@@ -231,54 +229,37 @@ module Watson
         return false
       end
 
-      # Check that issue hasn't been posted already by comparing md5s
-      # Go through all open issues, if there is a match in md5, return out of method
-      # [todo] - Play with idea of making body of GitHub issue hash format to be exec'd
-      #      Store pieces in text as :md5 => "whatever" so when we get issues we can
-      #      call exec and turn it into a real hash for parsing in watson
-      #      Makes watson code cleaner but not as readable comment on GitHub...?
-      debug_print "Checking open issues to see if already posted\n"
-      config.gitlab_issues[:open].each do | _open |
-        if _open["description"].include?(issue[:md5])
-          debug_print "Found in #{ _open["title"] }, not posting\n"
-          return false
-        end
-        debug_print "Did not find in #{ _open["title"] }\n"
-      end
 
 
-      debug_print "Checking closed issues to see if already posted\n"
-      config.gitlab_issues[:closed].each do  | _closed |
-        if _closed["description"].include?(issue[:md5])
-          debug_print "Found in #{ _closed["title"] }, not posting\n"
-          return false
-        end
-        debug_print "Did not find in #{ _closed["title"] }\n"
-      end
+      return false if config.gitlab_issues.key?(issue[:md5])
+      debug_print "#{issue[:md5]} not found in remote issues, posting\n"
+
 
       # We didn't find the md5 for this issue in the open or closed issues, so safe to post
 
       # Create the body text for the issue here, too long to fit nicely into opts hash
       # [review] - Only give relative path for privacy when posted
-      _body = "__filename__ : #{ issue[:path] }\n" +
-              "__line #__ : #{ issue[:line_number] }\n" +
-              "__tag__ : #{ issue[:tag] }\n" +
-              "__md5__ : #{ issue[:md5] }\n\n" +
-              "#{ issue[:context].join }\n"
+      _body =
+        "__filename__ : #{ issue[:path] }\n" +
+        "__line #__ : #{ issue[:line_number] }\n" +
+        "__tag__ : #{ issue[:tag] }\n" +
+        "__md5__ : #{ issue[:md5] }\n\n" +
+        "#{ issue[:context].join }\n"
 
 
 
       # Create option hash to pass to Remote::http_call
       # Issues URL for GitLab
-      opts = {:url        => "#{ config.gitlab_endpoint }/api/v3/projects/#{ URI.escape(config.gitlab_repo, "/") }/issues",
-              :ssl        => config.gitlab_endpoint.match(/^https/) ? true : false,
-              :method     => "POST",
-              :headers    => [ { :field => "PRIVATE-TOKEN", :value => config.gitlab_api } ],
-              :data       => [{ "title"  => issue[:title] + " [#{ issue[:path] }]",
-                               "labels" => "#{issue[:tag]}, watson",
-                               "description" => _body }],
-              :verbose    => false
-             }
+      opts = {
+        :url        => "#{ config.gitlab_endpoint }/api/v3/projects/#{ URI.escape(config.gitlab_repo, "/") }/issues",
+        :ssl        => config.gitlab_endpoint.match(/^https/) ? true : false,
+        :method     => "POST",
+        :headers    => [ { :field => "PRIVATE-TOKEN", :value => config.gitlab_api } ],
+        :data       => [{ "title"  => issue[:title] + " [#{ issue[:path] }]",
+                         "labels" => "#{issue[:tag]}, watson",
+                         "description" => _body }],
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -292,6 +273,14 @@ module Watson
         print "      Status: #{ _resp.code } - #{ _resp.message }\n"
         return false
       end
+
+      # Parse response and append issue hash so we are up to date
+      config.gitlab_issues[issue[:md5]] = {
+        :title => _json["title"],
+        :id    => _json["iid"],
+        :state => _json["state"]
+      }
+
 
       return true
     end

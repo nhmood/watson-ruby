@@ -129,7 +129,7 @@ module Watson
     def post_structure(structure, config, counter)
 
       # Return if remote isn't valid or both github and bitbucket aren't valid
-      return false if !config.remote_valid || (!config.github_valid && !config.bitbucket_valid)
+      return false if !config.remote_valid || (!config.github_valid && !config.bitbucket_valid && !config.gitlab_valid)
       formatter = Printer.new(config).build_formatter
 
       # Parse through entire structure and post issues to remote
@@ -139,6 +139,7 @@ module Watson
 
             Remote::GitHub.post_issue(issue, config)    if config.github_valid
             Remote::Bitbucket.post_issue(issue, config) if config.bitbucket_valid
+            Remote::GitLab.post_issue(issue, config)    if config.gitlab_valid
             formatter.print_status "!", GREEN
             print BOLD + "Remote Posting Status: #{counter += 1} / #{config.issue_count}"
             print "\r"
