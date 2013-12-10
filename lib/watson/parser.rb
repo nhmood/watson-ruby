@@ -103,23 +103,9 @@ module Watson
         # [review] - Warning to user when file is ignored? (outside of debug_print)
         # Check against ignore list, if match, set to "" which will be ignored
         @config.ignore_list.each do |_ignore|
-          # [review] - Better "Ruby" way to check for "*"?
-          # [review] - Probably cleaner way to perform multiple checks below
-          # Look for *.type on list, regex to match entry
-          if _ignore[0] == '*'
-            _cut = _ignore[1..-1]
-            if _entry.match(/#{ _cut }/)
-              debug_print "#{ _entry } is on the ignore list, setting to \"\"\n"
-              _entry = ''
-              break
-            end
-            # Else check for verbose ignore match
-          else
-            if  _entry == _ignore || File.absolute_path(_entry) == _ignore
-              debug_print "#{ _entry } is on the ignore list, setting to \"\"\n"
-              _entry = ''
-              break
-            end
+          if _mtch = _entry.match(_ignore)
+            _entry = ''
+            break
           end
         end
 
@@ -140,12 +126,14 @@ module Watson
 
         # Check if entry is in ignore list
         _skip = false
+
         @config.ignore_list.each do |_ignore|
-          if  _entry == _ignore || File.absolute_path(_entry) == _ignore
-            debug_print "#{ _entry } is on the ignore list, setting to \"\"\n"
+          if mtch = _entry.match(_ignore)
             _skip = true
           end
         end
+
+        debug_print "#{ _entry } was not on ignorelist, adding\n"
 
         # If directory is on the ignore list then skip
         next if _skip == true

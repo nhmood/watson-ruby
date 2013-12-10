@@ -243,9 +243,9 @@ module Watson
       # [review] - Keep *.swp in there?
       # [todo] - Add conditional to @rc_file such that if passed by -f we accept it
       # [todo] - Add current file (watson) to avoid accidentally printing app tags
-      @ignore_list.push("..")
-      @ignore_list.push(@rc_file)
-      @ignore_list.push(@tmp_file)
+      @ignore_list.push(Regexp.escape(".."))
+      @ignore_list.push(Regexp.escape(@rc_file))
+      @ignore_list.push(Regexp.escape(@tmp_file))
 
       # Open and read rc
       # [review] - Not sure if explicit file close is required here
@@ -352,11 +352,13 @@ module Watson
             next
           end
 
-          # Same as previous for ignores (regex same as dirs)
-          # Don't eliminate trailing / because not sure if dir can have
-          # same name as file (Linux it can't, but not sure about Win/Mac)
-          # [review] - Can Win/Mac have dir + file with same name in same dir?
-          _mtch = _line.match(/^(\*?)((\w+)?\.?\/?)+/)[0]
+          # Convert each ignore into a regex
+          # Grab ignore and remove leading ./ and trailing /
+          _mtch = _line.match(/^(\.\/)?(\S+)/)[0].gsub(/\/$/, '')
+
+          # Escape all characters then replace \* with \.+
+          _mtch = Regexp.escape(_mtch).gsub(/\*/, ".+")
+
           if !_mtch.empty?
             @ignore_list.push(_mtch)
             debug_print "#{ _mtch } added to @ignore_list\n"
