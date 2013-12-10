@@ -92,14 +92,14 @@ describe Config do
       @config.github_valid.should be_false
       @config.github_api.should == ''
       @config.github_repo.should == ''
-      @config.github_issues.should == {:open => Hash.new(),
-                       :closed => Hash.new() }
+      @config.github_issues.should == {:open => Array.new(),
+                                       :closed => Array.new() }
 
       @config.bitbucket_valid.should be_false
       @config.bitbucket_api.should == ''
       @config.bitbucket_repo.should == ''
-      @config.bitbucket_issues.should == {:open => Hash.new(),
-                       :closed => Hash.new() }
+      @config.bitbucket_issues.should == {:open => Array.new(),
+                                          :closed => Array.new() }
 
     end
   end

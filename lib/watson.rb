@@ -7,6 +7,7 @@ require_relative 'watson/formatters'
 require_relative 'watson/remote'
 require_relative 'watson/github'
 require_relative 'watson/bitbucket'
+require_relative 'watson/gitlab'
 require_relative 'watson/version'
 
 module Watson

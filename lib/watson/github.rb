@@ -67,6 +67,12 @@ module Watson
           print BOLD + "Input blank. Please enter your API endpoint!\n\n" + RESET
           return false
         end
+
+        # Make sure we have the http(s)://
+        if !_endpoint.match(/(http|https):\/\//)
+          _endpoint = "http://#{_endpoint}"
+        end
+
       else
         _endpoint = ''
       end
@@ -295,7 +301,6 @@ module Watson
           :state => issue["state"]
         }
       end
-
 
       config.github_valid = true
     end

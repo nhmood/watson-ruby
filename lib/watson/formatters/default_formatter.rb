@@ -162,6 +162,19 @@ module Watson::Formatters
             MESSAGE
         end
 
+
+        debug_print "Checking if issue has been resolved\n"
+        @config.gitlab_issues[:closed].each do  |closed|
+          if closed['description'].include?(issue[:md5])
+            debug_print "Found in #{ closed["description"] }, not posting\n"
+            cprint <<-MESSAGE.gsub(/^(\s+)/, '')
+            #{BOLD} [#{RESET}#{GREEN}#{BOLD}Resolved on GitLab#{RESET}#{BOLD}]#{RESET}
+            MESSAGE
+          end
+          debug_print "Did not find in #{ closed["title"] }\n"
+        end
+
+
         cprint "\n"
       end
 

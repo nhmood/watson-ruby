@@ -336,6 +336,7 @@ module Watson
         # [review] - Keep Remote as a static method and pass config every time?
         #			 Or convert to a regular class and make an instance with @config
 
+
         # [review] - Use _tag string as symbol reference in hash or keep as string?
         # Look into to_sym to keep format of all _issue params the same
         _issue_list[_tag].push(_issue)
