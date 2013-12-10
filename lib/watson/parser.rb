@@ -406,7 +406,7 @@ module Watson
              }
 
       loop do
-        _mtch = filename.match(/(\.(\w+))$/)
+        _mtch = filename.match(/(\.(\S+))$/)
         debug_print "Extension: #{ _mtch }\n"
 
         # Break if we don't find a match
@@ -415,7 +415,7 @@ module Watson
         return _ext[_mtch[0]] if _ext.has_key?(_mtch[0])
 
         # Can't recognize extension, keep looping in case of .bk, .#, ect
-        filename = filename.gsub(/(\.(\w+))$/, '')
+        filename = filename.gsub(/(\.(\S+))$/, '')
         debug_print "Didn't recognize, searching #{ filename }\n"
 
       end
