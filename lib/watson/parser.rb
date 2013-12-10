@@ -59,6 +59,9 @@ module Watson
       debug_print PP.pp(_structure, '')
       debug_print "\n\n"
 
+      # Pass structure to poster with count as 0
+      Remote.post_structure(_structure, @config, 0)
+
       _structure
     end
 
@@ -100,23 +103,9 @@ module Watson
         # [review] - Warning to user when file is ignored? (outside of debug_print)
         # Check against ignore list, if match, set to "" which will be ignored
         @config.ignore_list.each do |_ignore|
-          # [review] - Better "Ruby" way to check for "*"?
-          # [review] - Probably cleaner way to perform multiple checks below
-          # Look for *.type on list, regex to match entry
-          if _ignore[0] == '*'
-            _cut = _ignore[1..-1]
-            if _entry.match(/#{ _cut }/)
-              debug_print "#{ _entry } is on the ignore list, setting to \"\"\n"
-              _entry = ''
-              break
-            end
-            # Else check for verbose ignore match
-          else
-            if  _entry == _ignore || File.absolute_path(_entry) == _ignore
-              debug_print "#{ _entry } is on the ignore list, setting to \"\"\n"
-              _entry = ''
-              break
-            end
+          if _mtch = _entry.match(_ignore)
+            _entry = ''
+            break
           end
         end
 
@@ -135,6 +124,19 @@ module Watson
       Dir.glob("#{ _glob_dir }{*, .*}").select { |_fn| File.directory?(_fn) }.sort.each do |_entry|
         debug_print "Entry: #{ _entry } is a dir\n"
 
+        # Check if entry is in ignore list
+        _skip = false
+
+        @config.ignore_list.each do |_ignore|
+          if mtch = _entry.match(_ignore)
+            _skip = true
+          end
+        end
+
+        debug_print "#{ _entry } was not on ignorelist, adding\n"
+
+        # If directory is on the ignore list then skip
+        next if _skip == true
 
         ## Depth limit logic
         # Current depth is depth of previous parse_dir (passed in as second param) + 1
@@ -145,11 +147,13 @@ module Watson
         if @config.parse_depth == 0
           debug_print "No max depth, parsing directory\n"
           _completed_dirs.push(parse_dir("#{ _entry }/", _cur_depth))
-          # If current depth is less than limit (set in config), parse directory and pass depth
+        
+        # If current depth is less than limit (set in config), parse directory and pass depth
         elsif _cur_depth < @config.parse_depth.to_i + 1
           debug_print "Depth less than max dept (from config), parsing directory\n"
           _completed_dirs.push(parse_dir("#{ _entry }/", _cur_depth))
-          # Else, depth is greater than limit, ignore the directory
+       
+        # Else, depth is greater than limit, ignore the directory
         else
           debug_print "Depth greater than max depth, ignoring\n"
         end
@@ -196,19 +200,24 @@ module Watson
       _comment_type = get_comment_type(_relative_path)
       unless _comment_type
         debug_print "Using default (#) comment type\n"
-        _comment_type = '#'
+        _comment_type = ['#']
       end
+
+      # Escape out comment type for safety
+      # [review] - Is there a way to do inplace join?
+      _comment_type = _comment_type.map { |comment| Regexp.escape(comment) }.join("|")
+      debug_print "Comment type #{ _comment_type }\n"
+
+      # [review] - It is possible to embed the valid tags in the regexp,
+      # with a ~5% performance gain, but this would loose the warning about
+      # unrecognized tags.
+      _comment_regex = /^[[#{ _comment_type }]+?\s+?]+\[(\w+)\]\s+-\s+(.+)/
 
 
       # Open file and read in entire thing into an array
       # Use an array so we can look ahead when creating issues later
-      # [review] - Not sure if explicit file close is required here
       # [review] - Better var name than data for read in file?
-      _data = Array.new()
-      File.open(_absolute_path, 'r').read.each_line do |_line|
-        _data.push(_line)
-        _line.encode('UTF-8', :invalid => :replace)
-      end
+      _data = File.read(_absolute_path).encode('UTF-8', :invalid => :replace).lines
 
       # Initialize issue list hash
       _issue_list = Hash.new()
@@ -228,13 +237,13 @@ module Watson
         # Using if match to stay consistent (with config.rb) see there for
         # explanation of why I do this (not a good good one persay...)
         begin
-          _mtch = _line.match(/^[#{ _comment_type }+?\s+?]+\[(\w+)\]\s+-\s+(.+)/)
+          _mtch = _line.match(_comment_regex)
         rescue ArgumentError
           debug_print "Could not encode to UTF-8, non-text\n"
         end
 
         unless _mtch
-          debug_print "No valid tag found in line, skipping\n"
+          # debug_print "No valid tag found in line, skipping\n"
           next
         end
 
@@ -244,7 +253,8 @@ module Watson
         # Make sure that the tag that was found is something we accept
         # If not, skip it but tell user about an unrecognized tag
         unless @config.tag_list.include?(_tag)
-          Printer.print_status '!', RED
+          formatter = Printer.new(@config).build_formatter
+          formatter.print_status "+", GREEN
           print "Unknown tag [#{ _tag }] found, ignoring\n"
           print "      You might want to include it in your RC or with the -t/--tags flag\n"
           next
@@ -254,7 +264,13 @@ module Watson
         # Set flag for this issue_list (for file) to indicate that
         _issue_list[:has_issues] = true
 
-        _title = _mtch[2]
+        # [review] - This could probably be done better, elsewhere!
+        # If it's a HTML comment, remove trailing -->
+        if _mtch[0].match(/<!--/)
+          _title = _mtch[2].gsub(/-->/, "")
+        else
+          _title = _mtch[2]
+        end
         debug_print "Issue found\n"
         debug_print "Tag: #{ _tag }\n"
         debug_print "Issue: #{ _title }\n"
@@ -320,27 +336,13 @@ module Watson
         # [review] - Keep Remote as a static method and pass config every time?
         #			 Or convert to a regular class and make an instance with @config
 
-        if @config.remote_valid
-          if @config.github_valid
-            debug_print "GitHub is valid, posting issue\n"
-            Remote::GitHub.post_issue(_issue, @config)
-          else
-            debug_print "GitHub invalid, not posting issue\n"
-          end
-
-
-          if @config.bitbucket_valid
-            debug_print "Bitbucket is valid, posting issue\n"
-            Remote::Bitbucket.post_issue(_issue, @config)
-          else
-            debug_print "Bitbucket invalid, not posting issue\n"
-          end
-        end
 
         # [review] - Use _tag string as symbol reference in hash or keep as string?
         # Look into to_sym to keep format of all _issue params the same
         _issue_list[_tag].push(_issue)
 
+        # Increment issue counter for posting status
+        @config.issue_count = @config.issue_count.next
       end
 
       # [review] - Return of parse_file is different than watson-perl
@@ -377,6 +379,7 @@ module Watson
                '.java'    => ['//', '/*', '/**'], # Java
                '.class'   => ['//', '/*', '/**'],
                '.cs'      => ['//', '/*'],        # C#
+               '.scss'    => ['//', '/*'],        # SASS SCSS
                '.js'      => ['//', '/*'],        # JavaScript
                '.php'     => ['//', '/*', '#'],   # PHP
                '.m'       => ['//', '/*'],        # ObjectiveC
@@ -384,6 +387,10 @@ module Watson
                '.go'      => ['//', '/*'],        # Go(lang)
                '.scala'   => ['//', '/*'],        # Scala
                '.erl'     => ['%%', '%'],         # Erlang
+               '.f'       => ['!'],               # Fortran
+               '.f90'     => ['!'],               # Fortran
+               '.F'       => ['!'],               # Fortran
+               '.F90'     => ['!'],               # Fortran
                '.hs'      => ['--'],              # Haskell
                '.sh'      => ['#'],               # Bash
                '.rb'      => ['#'],               # Ruby
@@ -393,11 +400,14 @@ module Watson
                '.py'      => ['#'],               # Python
                '.coffee'  => ['#'],               # CoffeeScript
                '.zsh'     => ['#'],               # Zsh
-               '.clj'     => [';;']               # Clojure
+               '.clj'     => [';;'],              # Clojure
+               '.sql'     => ['---', '//', '#' ], # SQL and PL types
+               '.lua'     => ['--', '--[['],      # Lua
+               '.html'    => ['<!--']             # HTML
              }
 
       loop do
-        _mtch = filename.match(/(\.(\w+))$/)
+        _mtch = filename.match(/(\.(\S+))$/)
         debug_print "Extension: #{ _mtch }\n"
 
         # Break if we don't find a match
@@ -406,7 +416,7 @@ module Watson
         return _ext[_mtch[0]] if _ext.has_key?(_mtch[0])
 
         # Can't recognize extension, keep looping in case of .bk, .#, ect
-        filename = filename.gsub(/(\.(\w+))$/, '')
+        filename = filename.gsub(/(\.(\S+))$/, '')
         debug_print "Didn't recognize, searching #{ filename }\n"
 
       end

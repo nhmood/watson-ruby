@@ -3,9 +3,11 @@ require_relative 'watson/config'
 require_relative 'watson/fs'
 require_relative 'watson/parser'
 require_relative 'watson/printer'
+require_relative 'watson/formatters'
 require_relative 'watson/remote'
 require_relative 'watson/github'
 require_relative 'watson/bitbucket'
+require_relative 'watson/gitlab'
 require_relative 'watson/version'
 
 module Watson

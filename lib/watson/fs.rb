@@ -28,8 +28,8 @@ module Watson
         return false
       end
 
-      # Check if file can be opened
-      if File.readable?(file)
+      # Check if file is actually a file and can be opened
+      if File.file?(file) && File.readable?(file)
         debug_print "#{ file } exists and opened successfully\n"
         return true
       else

@@ -52,7 +52,6 @@ describe Config do
         @config.read_conf.should be_true
         @config.dir_list.should include('.')
         @config.tag_list.should include('fix', 'review', 'todo')
-        @config.ignore_list.should include('.git', '*.swp')
 
       end
     end
@@ -92,14 +91,12 @@ describe Config do
       @config.github_valid.should be_false
       @config.github_api.should == ''
       @config.github_repo.should == ''
-      @config.github_issues.should == {:open => Hash.new(),
-                       :closed => Hash.new() }
+      @config.github_issues.should == Hash.new()
 
       @config.bitbucket_valid.should be_false
       @config.bitbucket_api.should == ''
       @config.bitbucket_repo.should == ''
-      @config.bitbucket_issues.should == {:open => Hash.new(),
-                       :closed => Hash.new() }
+      @config.bitbucket_issues.should == Hash.new()
 
     end
   end
@@ -107,7 +104,6 @@ describe Config do
   describe '#run' do
     it 'should populate all member vars' do
       @config.run
-      @config.ignore_list.should include('.git', '*.swp')
       @config.tag_list.should include('fix', 'review', 'todo')
       @config.dir_list.should include('.')
     end

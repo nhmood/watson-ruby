@@ -35,11 +35,14 @@ module Watson
 
     # Entries that watson should show
     attr_accessor :show_type
-    
+
     # Flag for whether less is avaliable to print results
     attr_reader   :use_less
     # Flag for where the temp file for printing is located
     attr_reader   :tmp_file
+
+    # Count of number of issues found
+    attr_accessor :issue_count
 
     # Flag for whether remote access is avaliable
     attr_accessor :remote_valid
@@ -48,6 +51,8 @@ module Watson
     attr_accessor :github_valid
     # GitHub API key generated from Remote::GitHub setup
     attr_accessor :github_api
+    # GitHub Endpoint (for GitHub Enterprise)
+    attr_accessor :github_endpoint
     # GitHub repo associated with current directory + watson config
     attr_accessor :github_repo
     # Hash to hold list of all GitHub issues associated with repo
@@ -76,6 +81,20 @@ module Watson
     # Hash to hold list of all Asana issues associated with repo
     attr_accessor :asana_issues
 
+
+    # Flag for whether GitLab access is avaliable
+    attr_accessor :gitlab_valid
+    # GitLab API key generated from Remote::GitHub setup
+    attr_accessor :gitlab_api
+    # GitLab Endpoint (for GitHub Enterprise)
+    attr_accessor :gitlab_endpoint
+    # GitLab repo associated with current directory + watson config
+    attr_accessor :gitlab_repo
+    # Hash to hold list of all GitLab issues associated with repo
+    attr_accessor :gitlab_issues
+
+    # Formatter
+    attr_accessor :output_format
 
     ###########################################################
     # Config initialization method to setup necessary parameters, states, and vars
@@ -111,25 +130,36 @@ module Watson
       @dir_list     = Array.new()
       @file_list    = Array.new()
       @tag_list     = Array.new()
+      @issue_count  = 0
 
       # Remote options
       @remote_valid   = false
 
-      @github_valid   = false
-      @github_api   = ""
-      @github_repo  = ""
-      @github_issues  = {:open   => Hash.new(),
-                :closed => Hash.new()
-                }
+      @github_valid    = false
+      @github_api      = ""
+      @github_endpoint = ""
+      @github_repo     = ""
+      @github_issues   = Hash.new()
+
+
 
       # Keep API param (and put username there) for OAuth update later
       @bitbucket_valid  = false
       @bitbucket_api    = ""
       @bitbucket_pw     = ""
       @bitbucket_repo   = ""
-      @bitbucket_issues   = {:open   => Hash.new(),
-                   :closed => Hash.new()
-                  }
+      @bitbucket_issues = Hash.new()
+
+
+      @gitlab_valid    = false
+      @gitlab_api      = ""
+      @gitlab_endpoint = ""
+      @gitlab_repo     = ""
+      @gitlab_issues   = Hash.new()
+
+
+
+      @output_format = Watson::Formatters::DefaultFormatter
     end
 
 
@@ -144,12 +174,18 @@ module Watson
       exit if check_conf == false
       read_conf
 
+
+      # [review] - Theres gotta be a magic ruby way to trim this down
       unless @github_api.empty? && @github_repo.empty?
         Remote::GitHub.get_issues(self)
       end
 
       unless @bitbucket_api.empty? && @bitbucket_repo.empty?
         Remote::Bitbucket.get_issues(self)
+      end
+
+      unless @gitlab_api.empty? && @gitlab_repo.empty?
+        Remote::GitLab.get_issues(self)
       end
     end
 
@@ -245,11 +281,9 @@ module Watson
       # [review] - Keep *.swp in there?
       # [todo] - Add conditional to @rc_file such that if passed by -f we accept it
       # [todo] - Add current file (watson) to avoid accidentally printing app tags
-      @ignore_list.push(".")
-      @ignore_list.push("..")
-      @ignore_list.push("*.swp")
-      @ignore_list.push(@rc_file)
-      @ignore_list.push(@tmp_file)
+      @ignore_list.push(Regexp.escape(".."))
+      @ignore_list.push(Regexp.escape(@rc_file))
+      @ignore_list.push(Regexp.escape(@tmp_file))
 
       # Open and read rc
       # [review] - Not sure if explicit file close is required here
@@ -356,11 +390,12 @@ module Watson
             next
           end
 
-          # Same as previous for ignores (regex same as dirs)
-          # Don't eliminate trailing / because not sure if dir can have
-          # same name as file (Linux it can't, but not sure about Win/Mac)
-          # [review] - Can Win/Mac have dir + file with same name in same dir?
-          _mtch = _line.match(/^(\*?)((\w+)?\.?\/?)+/)[0]
+          # Convert each ignore into a regex
+          # Grab ignore and remove leading ./ and trailing /
+          _mtch = _line.match(/^(\.\/)?(\S+)/)[0].gsub(/\/$/, '')
+
+          # Escape all characters then replace \* with \.+
+          _mtch = Regexp.escape(_mtch).gsub(/\\\*/, ".+")
           if !_mtch.empty?
             @ignore_list.push(_mtch)
             debug_print "#{ _mtch } added to @ignore_list\n"
@@ -375,6 +410,12 @@ module Watson
           debug_print "GitHub API: #{ @github_api }\n"
 
 
+        when "github_endpoint"
+          # Same as above
+          @github_endpoint = _line.chomp!
+          debug_print "GitHub Endpoint #{ @github_endpoint }\n"
+
+
         when "github_repo"
           # Same as above
           @github_repo = _line.chomp!
@@ -386,12 +427,30 @@ module Watson
           @bitbucket_api = _line.chomp!
           debug_print "Bitbucket API: #{ @bitbucket_api }\n"
 
+        when "bitbucket_pw"
+          # Same as GitHub parse above
+          @bitbucket_pw = _line.chomp!
+          debug_print "Bitbucket PW: #{ @bitbucket_pw }\n"
 
         when "bitbucket_repo"
           # Same as GitHub repo parse above
           @bitbucket_repo = _line.chomp!
           debug_print "Bitbucket Repo: #{ @bitbucket_repo }\n"
 
+        when "gitlab_api"
+          # Same as GitHub
+          @gitlab_api = _line.chomp!
+          debug_print "GitLab API: #{ @gitlab_api }\n"
+
+        when "gitlab_endpoint"
+        # Same as GitHub
+          @gitlab_endpoint = _line.chomp!
+          debug_print "GitLab Endpoint #{ @gitlab_endpoint }\n"
+
+        when "gitlab_repo"
+          # Same as GitHub
+          @gitlab_repo = _line.chomp!
+          debug_print "GitLab Repo: #{ @gitlab_repo }\n"
 
         else
           debug_print "Unknown tag found #{_section}\n"

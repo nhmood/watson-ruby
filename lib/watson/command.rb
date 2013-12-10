@@ -23,18 +23,20 @@ module Watson
       debug_print "#{ self } : #{ __method__ }\n"
 
       # List of possible flags, used later in parsing and for user reference
-      _flag_list = ["-c", "--context-depth",
-                    "-d", "--dirs",
-                    "-f", "--files",
-                    "-h", "--help",
-                    "-i", "--ignore",
-                    "-p", "--parse-depth",
-                    "-r", "--remote",
-                    "-s", "--show",
-                    "-t", "--tags",
-                    "-u", "--update",
-                    "-v", "--version"
-                   ]
+      _flag_list = %w[
+        -c --context-depth
+        -d --dirs
+        -f --files
+        -h --help
+        -i --ignore
+        -p --parse-depth
+        -r --remote
+        -s --show
+        -t --tags
+        --format
+        -u --update
+        -v --version
+      ]
 
 
       # If we get the version or help flag, ignore all other flags
@@ -118,6 +120,10 @@ module Watson
           debug_print "Found -i/--ignore argument\n"
           set_ignores(_flag_args)
 
+        when '--format'
+          debug_print "Found --format argument\n"
+          set_output_format(_flag_args)
+
         when "-p", "--parse-depth"
           debug_print "Found -r/--parse-depth argument\n"
           set_parse_depth(_flag_args)
@@ -171,23 +177,27 @@ module Watson
       Running watson with no arguments will parse with settings in RC file
       If no RC file exists, default RC file will be created
 
-         -c, --context-depth   number of lines of context to provide with posted issue
+         -c, --context-depth   lines of context to provide with posted issue
          -d, --dirs            list of directories to search in
          -f, --files           list of files to search in
+         --format              set output format for watson
+                               [print, json, unite, silent]
          -h, --help            print help
          -i, --ignore          list of files, directories, or types to ignore
          -p, --parse-depth     depth to recursively parse directories
          -r, --remote          list / create tokens for Bitbucket/GitHub
+         -s, --show            filter results (files listed) based on issue status
+                               [all, clean, dirty]
          -t, --tags            list of tags to search for
          -u, --update          update remote repos with current issues
-         -v, --version      print watson version and info
+         -v, --version         print watson version and info
 
       Any number of files, tags, dirs, and ignores can be listed after flag
       Ignored files should be space separated
       To use *.filetype identifier, encapsulate in \"\" to avoid shell substitutions
 
       Report bugs to: watson\@goosecode.com
-      watson home page: <http://goosecode.com/projects/watson>
+      watson home page: <http://goosecode.com/watson>
       [goosecode] labs | 2012-2013#{RESET}
       HELP
 
@@ -275,8 +285,8 @@ module Watson
         if !Watson::FS.check_dir(_dir)
           print "Unable to open #{ _dir }\n"
         else
-          # Clean up directory path
-          _dir = _dir.match(/^((\w+)?\.?\/?)+/)[0].gsub(/(\/)+$/, "")
+          # Clean up path, remove trailing forward slashes
+          _dir = _dir.gsub(/(\/)+$/, "")
           if !_dir.empty?
             debug_print "Adding #{ _dir } to config dir_list\n"
             @config.dir_list.push(_dir)
@@ -346,6 +356,7 @@ module Watson
       # For each argument passed, add to @config.ignore_list
       args.each do | _ignore |
         debug_print "Adding #{ _ignore } to config ignore_list\n"
+        _ignore = Regexp.escape(_ignore).gsub(/\\\*/, ".+")
         @config.ignore_list.push(_ignore)
       end
 
@@ -423,14 +434,15 @@ module Watson
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
 
-      Printer.print_header
+      formatter = Printer.new(@config).build_formatter
+      formatter.print_header
 
       print BOLD + "Existing Remotes:\n" + RESET
 
       # Check the config for any remote entries (GitHub or Bitbucket) and print
       # We *should* always have a repo + API together, but API should be enough
       if @config.github_api.empty? && @config.bitbucket_api.empty?
-        Printer.print_status "!", YELLOW
+        formatter.print_status "!", YELLOW
         print BOLD + "No remotes currently exist\n\n" + RESET
       end
 
@@ -442,6 +454,11 @@ module Watson
       if !@config.bitbucket_api.empty?
         print BOLD + "Bitbucket User : " + RESET + "#{ @config.bitbucket_api }\n" + RESET
         print BOLD + "Bitbucket Repo : " + RESET + "#{ @config.bitbucket_repo }\n\n" + RESET
+      end
+
+      if !@config.gitlab_api.empty?
+        print BOLD + "GitLab User : " + RESET + "#{ @config.gitlab_api }\n" + RESET
+        print BOLD + "GitLab Repo : " + RESET + "#{ @config.gitlab_repo }\n\n" + RESET
       end
 
       # If github or bitbucket passed, setup
@@ -456,9 +473,14 @@ module Watson
         when "bitbucket"
           debug_print "Bitbucket setup called from CL\n"
           Watson::Remote::Bitbucket.setup(@config)
+
+        when "gitlab"
+          debug_print "GitLab setup called from CL\n"
+          Watson::Remote::GitLab.setup(@config)
+
         end
       elsif args.length > 1
-        Printer.print_status "x", RED
+        formatter.print_status "x", RED
         puts <<-SUMMERY.gsub(/^ {,8}/, '')
         #{BOLD}Incorrect arguments passed#{RESET}
         Please specify either Github or Bitbucket to setup remote
@@ -470,6 +492,32 @@ module Watson
       end
     end
 
+    ###########################################################
+    # set_output_format
+    # Set format watson should output in
+    def set_output_format(args)
+      # Identify method entry
+      debug_print "#{ self } : #{ __method__ }\n"
+
+      # Need at least one file in args
+      unless args.length == 1
+        debug_print "Invalid argument passed\n"
+        return false
+      end
+
+      @config.output_format = case args.pop.to_s
+        when 'j', 'json'
+          Watson::Formatters::JsonFormatter
+        when 'unite'
+          Watson::Formatters::UniteFormatter
+        when 'silent'
+          Watson::Formatters::SilentFormatter
+        else
+          Watson::Formatters::DefaultFormatter
+      end
+
+      debug_print "Updated output_format to: #{@config.output_format}\n"
+    end
 
     ###########################################################
     # set_show
