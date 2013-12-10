@@ -41,6 +41,9 @@ module Watson
     # Flag for where the temp file for printing is located
     attr_reader   :tmp_file
 
+    # Count of number of issues found
+    attr_accessor :issue_count
+
     # Flag for whether remote access is avaliable
     attr_accessor :remote_valid
 
@@ -103,6 +106,7 @@ module Watson
       @dir_list     = Array.new()
       @file_list    = Array.new()
       @tag_list     = Array.new()
+      @issue_count  = 0
 
       # Remote options
       @remote_valid   = false

@@ -59,6 +59,9 @@ module Watson
       debug_print PP.pp(_structure, '')
       debug_print "\n\n"
 
+      # Pass structure to poster with count as 0
+      Remote.post_structure(_structure, @config, 0)
+
       _structure
     end
 
@@ -345,27 +348,12 @@ module Watson
         # [review] - Keep Remote as a static method and pass config every time?
         #			 Or convert to a regular class and make an instance with @config
 
-        if @config.remote_valid
-          if @config.github_valid
-            debug_print "GitHub is valid, posting issue\n"
-            Remote::GitHub.post_issue(_issue, @config)
-          else
-            debug_print "GitHub invalid, not posting issue\n"
-          end
-
-
-          if @config.bitbucket_valid
-            debug_print "Bitbucket is valid, posting issue\n"
-            Remote::Bitbucket.post_issue(_issue, @config)
-          else
-            debug_print "Bitbucket invalid, not posting issue\n"
-          end
-        end
-
         # [review] - Use _tag string as symbol reference in hash or keep as string?
         # Look into to_sym to keep format of all _issue params the same
         _issue_list[_tag].push(_issue)
 
+        # Increment issue counter for posting status
+        @config.issue_count = @config.issue_count.next
       end
 
       # [review] - Return of parse_file is different than watson-perl

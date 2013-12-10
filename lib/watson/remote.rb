@@ -115,6 +115,37 @@ module Watson
       # return {:json => _json, :resp => _resp}
       return _json, _resp
     end
+
+
+    def post_structure(structure, config, counter)
+
+      # Return if remote isn't valid or both github and bitbucket aren't valid
+      return false if !config.remote_valid || (!config.github_valid && !config.bitbucket_valid)
+      formatter = Printer.new(config).build_formatter
+
+      # Parse through entire structure and post issues to remote
+      structure[:files].each do |file|
+        config.tag_list.each do |tag|
+          file[tag].each do |issue|
+
+            Remote::GitHub.post_issue(issue, config)    if config.github_valid
+            Remote::Bitbucket.post_issue(issue, config) if config.bitbucket_valid
+            formatter.print_status "!", GREEN
+            print BOLD + "Remote Posting Status: #{counter += 1} / #{config.issue_count}"
+            print "\r"
+          end
+        end
+      end
+
+      # Pass any dirs we find back to this structure printer and repeat
+      structure[:subdirs].each do |dir|
+        counter = Remote::post_structure(dir, config, counter)
+      end
+
+      # Return counter becaused FixNums are wierd
+      counter
+    end
+
   end
   end
 end
