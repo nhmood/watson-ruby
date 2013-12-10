@@ -273,7 +273,7 @@ module Watson
         # Set flag for this issue_list (for file) to indicate that
         _issue_list[:has_issues] = true
 
-        # [review] This could probably be done better, elsewhere!
+        # [review] - This could probably be done better, elsewhere!
         # If it's a HTML comment, remove trailing -->
         if _mtch[0].match(/<!--/)
           _title = _mtch[2].gsub(/-->/, "")
@@ -336,32 +336,6 @@ module Watson
         # Generate md5 hash for each specific issue (for bookkeeping)
         _issue[:md5]     = ::Digest::MD5.hexdigest("#{ _tag }, #{ _relative_path }, #{ _title }")
         debug_print "#{ _issue }\n"
-
-
-        # Go through all issues and grab the remote issue #
-        @config.github_issues[:open].each do |open|
-          if open["body"].include?(_issue[:md5])
-            _issue[:github_id] = open["number"]
-          end
-        end
-
-        @config.github_issues[:closed].each do |closed|
-          if closed["body"].include?(_issue[:md5])
-            _issue[:github_id] = closed["number"]
-          end
-        end
-
-        @config.bitbucket_issues[:open].each do |open|
-          if open["content"].include?(_issue[:md5])
-            _issue[:bitbucket_id] = open["local_id"]
-          end
-        end
-
-        @config.bitbucket_issues[:closed].each do |closed|
-          if closed["content"].include?(_issue[:md5])
-            _issue[:bitbucket_id] = closed["local_id"]
-          end
-        end
 
 
         # [todo] - Figure out a way to queue up posts so user has a progress bar?

@@ -116,12 +116,13 @@ module Watson
       # Create options hash to pass to Remote::http_call
       # Endpoint for accessing Repo as User with SSL
       # Basic auth with user input
-      opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{_owner}/#{_repo}",
-          :ssl        => true,
-          :method     => "GET",
-          :basic_auth => [_username, _password],
-          :verbose    => false
-           }
+      opts = {
+        :url        => "https://bitbucket.org/api/1.0/repositories/#{_owner}/#{_repo}",
+        :ssl        => true,
+        :method     => "GET",
+        :basic_auth => [_username, _password],
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -208,12 +209,13 @@ module Watson
       # Get all open tickets (anything but resolved)
       # Create options hash to pass to Remote::http_call
       # Issues URL for Bitbucket + SSL
-      opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues?status=!resolved",
-          :ssl        => true,
-          :method     => "GET",
-          :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
-          :verbose    => false
-           }
+      opts = {
+        :url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues",
+        :ssl        => true,
+        :method     => "GET",
+        :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -232,38 +234,20 @@ module Watson
       end
 
 
+      # Create hash entry from each returned issue
+      # MD5 of issue serves as hash key
+      # Hash value is another hash of info we will use
+      _json["issues"].each do |issue|
+        _md5 = issue["content"].match(/__md5__ : (\w+)/)[1]
 
-      config.bitbucket_issues[:open] = _json["issues"].empty? ? Hash.new : _json["issues"]
-      config.bitbucket_valid = true
-
-      # Get all closed tickets
-      # Create options hash to pass to Remote::http_call
-      # Issues URL for Bitbucket + SSL
-      opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues?status=resolved",
-          :ssl        => true,
-          :method     => "GET",
-          :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
-          :verbose    => false
-           }
-
-      _json, _resp  = Watson::Remote.http_call(opts)
-
-      # Check response to validate repo access
-      # Shouldn't be necessary if we passed the last check but just to be safe
-      if _resp.code != "200"
-        formatter.print_status "x", RED
-        print BOLD + "Unable to get closed issues.\n" + RESET
-        print "      Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n"
-        print "      Status: #{ _resp.code } - #{ _resp.message }\n"
-
-        debug_print "Bitbucket invalid, setting config var\n"
-        config.bitbucket_valid = false
-        return false
+        config.bitbucket_issues[_md5] = {
+          :title => issue["title"],
+          :id    => issue["local_id"],
+          :state => issue["status"]
+        }
       end
 
-      config.bitbucket_issues[:closed] = _json["issues"].empty? ? Hash.new : _json["issues"]
       config.bitbucket_valid = true
-      return true
     end
 
 
@@ -288,29 +272,10 @@ module Watson
         return false
       end
 
-      # Check that issue hasn't been posted already by comparing md5s
-      # Go through all open issues, if there is a match in md5, return out of method
-      # [todo] - Play with idea of making body of GitHub issue hash format to be exec'd
-      #      Store pieces in text as :md5 => "whatever" so when we get issues we can
-      #      call exec and turn it into a real hash for parsing in watson
-      #      Makes watson code cleaner but not as readable comment on GitHub...?
-      debug_print "Checking open issues to see if already posted\n"
-      config.bitbucket_issues[:open].each do | _open |
-        if _open["content"].include?(issue[:md5])
-          debug_print "Found in #{ _open["title"] }, not posting\n"
-          return false
-        end
-        debug_print "Did not find in #{_open["title"]}\n"
-      end
 
-      debug_print "Checking closed issues to see if already posted\n"
-      config.bitbucket_issues[:closed].each do  | _closed |
-        if _closed["content"].include?(issue[:md5])
-          debug_print "Found in #{ _closed["title"] }, not posting\n"
-          return false
-        end
-        debug_print "Did not find in #{ _closed["title"] }\n"
-      end
+      # If issue exists in list we already obtained, skip posting
+      return false if config.bitbucket_issues.key?(issue[:md5])
+      debug_print "#{issue[:md5]} not found in remote issues, posting\n"
 
 
       # If we haven't obtained the pw from user yet, do it
@@ -342,7 +307,8 @@ module Watson
 
       # Create the body text for the issue here, too long to fit nicely into opts hash
       # [review] - Only give relative path for privacy when posted
-      _body = "__filename__ : #{ issue[:path] }  \n" +
+      _body =
+          "__filename__ : #{ issue[:path] }  \n" +
           "__line #__ : #{ issue[:line_number] }  \n" +
           "__tag__ : #{ issue[:tag] }  \n" +
           "__md5__ : #{ issue[:md5] }  \n\n" +
@@ -351,14 +317,15 @@ module Watson
       # Create option hash to pass to Remote::http_call
       # Issues URL for GitHub + SSL
       # No tag or label concept in Bitbucket unfortunately :(
-      opts = {:url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues",
-          :ssl        => true,
-          :method     => "POST",
-          :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
-          :data   => [{"title" => issue[:title] + " [#{ issue[:path] }]",
-                  "content" => _body }],
-          :verbose    => false
-           }
+      opts = {
+        :url        => "https://bitbucket.org/api/1.0/repositories/#{ config.bitbucket_repo }/issues",
+        :ssl        => true,
+        :method     => "POST",
+        :basic_auth => [config.bitbucket_api, config.bitbucket_pw],
+        :data       => [{"title" => issue[:title] + " [#{ issue[:path] }]",
+                         "content" => _body }],
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -373,7 +340,14 @@ module Watson
         return false
       end
 
-      issue[:bitbucket_id] = _json["local_id"]
+
+      # Parse response and append issue hash so we are up to date
+      config.bitbucket_issues[issue[:md5]] = {
+        :title => _json["title"],
+        :id    => _json["local_id"],
+        :state => _json["state"]
+      }
+
       return true
     end
 

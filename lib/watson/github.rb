@@ -105,15 +105,16 @@ module Watson
       # Auth URL for GitHub + SSL
       # Repo scope + notes for watson
       # Basic auth with user input
-      opts = {:url        => "#{ _endpoint }/authorizations",
-              :ssl        => true,
-              :method     => "POST",
-              :basic_auth => [_username, _password],
-              :data       => {"scopes" => ["repo"],
-                              "note" => "watson",
-                              "note_url" => "http://watson.goosecode.com/" },
-              :verbose    => false
-             }
+      opts = {
+        :url        => "#{ _endpoint }/authorizations",
+        :ssl        => true,
+        :method     => "POST",
+        :basic_auth => [_username, _password],
+        :data       => {"scopes" => ["repo"],
+                        "note" => "watson",
+                        "note_url" => "http://watson.goosecode.com/" },
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -169,14 +170,15 @@ module Watson
       # Label URL for GitHub + SSL
       #
       # Auth token
-      opts = {:url        => "#{ _endpoint }/repos/#{ _owner }/#{ _repo }/labels",
-              :ssl        => true,
-              :method     => "POST",
-              :auth       => config.github_api,
-              :data       => {"name" => "watson",
-                              "color" => "00AEEF" },
-              :verbose    => false
-             }
+      opts = {
+        :url        => "#{ _endpoint }/repos/#{ _owner }/#{ _repo }/labels",
+        :ssl        => true,
+        :method     => "POST",
+        :auth       => config.github_api,
+        :data       => {"name" => "watson",
+                        "color" => "00AEEF" },
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -254,15 +256,16 @@ module Watson
       end
 
 
-      # Get all open tickets
+      # Get all issues
       # Create options hash to pass to Remote::http_call
       # Issues URL for GitHub + SSL
-      opts = {:url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues?labels=watson&state=open",
-              :ssl        => true,
-              :method     => "GET",
-              :auth       => config.github_api,
-              :verbose    => false
-             }
+      opts = {
+        :url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues?labels=watson",
+        :ssl        => true,
+        :method     => "GET",
+        :auth       => config.github_api,
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -279,37 +282,22 @@ module Watson
         return false
       end
 
-      config.github_issues[:open] = _json.empty? ? Hash.new : _json
-      config.github_valid = true
 
-      # Get all closed tickets
-      # Create option hash to pass to Remote::http_call
-      # Issues URL for GitHub + SSL
-      opts = {:url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues?labels=watson&state=closed",
-              :ssl        => true,
-              :method     => "GET",
-              :auth       => config.github_api,
-              :verbose    => false
-           }
+      # Create hash entry from each returned issue
+      # MD5 of issue serves as hash key
+      # Hash value is another hash of info we will use
+      _json.each do |issue|
+        _md5 = issue["body"].match(/__md5__ : (\w+)/)[1]
 
-      _json, _resp  = Watson::Remote.http_call(opts)
-
-      # Check response to validate repo access
-      # Shouldn't be necessary if we passed the last check but just to be safe
-      if _resp.code != "200"
-        formatter.print_status "x", RED
-        print BOLD + "Unable to get closed issues.\n" + RESET
-        print "      Since the open issues were obtained, something is probably wrong and you should file a bug report or something...\n"
-        print "      Status: #{ _resp.code } - #{ _resp.message }\n"
-
-        debug_print "GitHub invalid, setting config var\n"
-        config.github_valid = false
-        return false
+        config.github_issues[_md5] = {
+          :title => issue["title"],
+          :id    => issue["number"],
+          :state => issue["state"]
+        }
       end
 
-      config.github_issues[:closed] = _json.empty? ? Hash.new : _json
+
       config.github_valid = true
-      return true
     end
 
 
@@ -334,52 +322,33 @@ module Watson
         return false
       end
 
-      # Check that issue hasn't been posted already by comparing md5s
-      # Go through all open issues, if there is a match in md5, return out of method
-      # [todo] - Play with idea of making body of GitHub issue hash format to be exec'd
-      #      Store pieces in text as :md5 => "whatever" so when we get issues we can
-      #      call exec and turn it into a real hash for parsing in watson
-      #      Makes watson code cleaner but not as readable comment on GitHub...?
-      debug_print "Checking open issues to see if already posted\n"
-      config.github_issues[:open].each do | _open |
-        if _open["body"].include?(issue[:md5])
-          debug_print "Found in #{ _open["title"] }, not posting\n"
-          return false
-        end
-        debug_print "Did not find in #{ _open["title"] }\n"
-      end
 
-
-      debug_print "Checking closed issues to see if already posted\n"
-      config.github_issues[:closed].each do  | _closed |
-        if _closed["body"].include?(issue[:md5])
-          debug_print "Found in #{ _closed["title"] }, not posting\n"
-          return false
-        end
-        debug_print "Did not find in #{ _closed["title"] }\n"
-      end
+      return false if config.github_issues.key?(issue[:md5])
+      debug_print "#{issue[:md5]} not found in remote issues, posting\n"
 
       # We didn't find the md5 for this issue in the open or closed issues, so safe to post
 
       # Create the body text for the issue here, too long to fit nicely into opts hash
       # [review] - Only give relative path for privacy when posted
-      _body = "__filename__ : #{ issue[:path] }\n" +
-              "__line #__ : #{ issue[:line_number] }\n" +
-              "__tag__ : #{ issue[:tag] }\n" +
-              "__md5__ : #{ issue[:md5] }\n\n" +
-              "#{ issue[:context].join }\n"
+      _body =
+        "__filename__ : #{ issue[:path] }\n" +
+        "__line #__ : #{ issue[:line_number] }\n" +
+        "__tag__ : #{ issue[:tag] }\n" +
+        "__md5__ : #{ issue[:md5] }\n\n" +
+        "#{ issue[:context].join }\n"
 
       # Create option hash to pass to Remote::http_call
       # Issues URL for GitHub + SSL
-      opts = {:url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues",
-              :ssl        => true,
-              :method     => "POST",
-              :auth       => config.github_api,
-              :data       => { "title" => issue[:title] + " [#{ issue[:path] }]",
-                               "labels" => [issue[:tag], "watson"],
-                               "body" => _body },
-              :verbose    => false
-             }
+      opts = {
+        :url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues",
+        :ssl        => true,
+        :method     => "POST",
+        :auth       => config.github_api,
+        :data       => { "title" => issue[:title] + " [#{ issue[:path] }]",
+                         "labels" => [issue[:tag], "watson"],
+                         "body" => _body },
+        :verbose    => false
+      }
 
       _json, _resp  = Watson::Remote.http_call(opts)
 
@@ -394,8 +363,12 @@ module Watson
         return false
       end
 
-      # Grab issue number from JSON return
-      issue[:github_id] = _json["number"]
+      # Parse response and append issue hash so we are up to date
+      config.github_issues[issue[:md5]] = {
+        :title => _json["title"],
+        :id    => _json["number"],
+        :state => _json["state"]
+      }
       return true
     end
 
