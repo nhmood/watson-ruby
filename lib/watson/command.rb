@@ -356,6 +356,7 @@ module Watson
       # For each argument passed, add to @config.ignore_list
       args.each do | _ignore |
         debug_print "Adding #{ _ignore } to config ignore_list\n"
+        _ignore = Regexp.escape(_ignore).gsub(/\\\*/, ".+")
         @config.ignore_list.push(_ignore)
       end
 

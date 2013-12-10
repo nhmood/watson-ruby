@@ -384,8 +384,7 @@ module Watson
           _mtch = _line.match(/^(\.\/)?(\S+)/)[0].gsub(/\/$/, '')
 
           # Escape all characters then replace \* with \.+
-          _mtch = Regexp.escape(_mtch).gsub(/\*/, ".+")
-
+          _mtch = Regexp.escape(_mtch).gsub(/\\\*/, ".+")
           if !_mtch.empty?
             @ignore_list.push(_mtch)
             debug_print "#{ _mtch } added to @ignore_list\n"
