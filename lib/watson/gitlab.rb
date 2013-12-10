@@ -195,9 +195,11 @@ module Watson
       # Hash value is another hash of info we will use
       _json.each do |issue|
 
-        _md5 = issue["body"].match(/__md5__ : (\w+)/)[1]
+        # Skip this issue if it doesn't have watson md5 tag
+        next if (_md5 = issue["description"].match(/__md5__ : (\w+)/)).nil?
 
-        config.gitlab_issues[_md5] = {
+        # If it does, use md5 as hash key and populate values with our info
+        config.gitlab_issues[_md5[1]] = {
           :title => issue["title"],
           :id    => issue["iid"],
           :state => issue["state"]
