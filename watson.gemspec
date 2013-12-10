@@ -10,13 +10,13 @@ Gem::Specification.new do |s|
 
   s.authors   = ["nhmood"]
   s.email     = 'nhmood@goosecode.com'
-  s.homepage    = 'http://goosecode.com/watson'
+  s.homepage  = 'http://goosecode.com/watson'
 
-  s.summary   = "an inline issue manager"
+  s.summary     = "an inline issue manager"
   s.description = "an inline issue manager with GitHub and Bitbucket support"
 
-  s.license   = 'MIT'
-  s.files     = `git ls-files`.split("\n").delete_if { |file| file.include?("assets/examples") }
+  s.license     = 'MIT'
+  s.files       = `git ls-files`.split("\n").delete_if { |file| file.include?("assets/examples") }
   s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables = `git ls-files -- bin/*`.split("\n").map { |f| File.basename(f) }
 

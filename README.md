@@ -25,6 +25,15 @@ bundle install
 bundle exec rake
 ```
 
+
+## Recent Updates
+  - watson now supports [GitLab](http://gitlab.com)
+  - [vim-unite-watson.vim](https://github.com/alpaca-tc/vim-unite-watson.vim) integrates watson right into vim!
+  - watson now supports multiple export modes
+      - JSON output allows you to integrate watson parse data into your own apps
+      - Silent output allows you to use watson without a printout; tie it to git hooks for streamlined issue posting
+
+
 ## Usage
 For a quick idea of how to use watson, check out the [app demo](http://goosecode.com/watson)! ([mirror](http://nhmood.github.io/watson-ruby))  
 See below for a description of what all the command line arguments do.  
@@ -42,6 +51,11 @@ submit a pull request (comment parsing happens in **lib/watson/paser.rb**)
 - **Go**
 - **Scala**
 - **Erlang**
+- **Fortran**
+- **SQL / PL**
+- **Lua**
+- **HTML**
+- **SASS SCSS**
 - **Haskell**
 - **Bash / Zsh**
 - **Ruby**
@@ -50,23 +64,29 @@ submit a pull request (comment parsing happens in **lib/watson/paser.rb**)
 - **Coffeescript**
 - **Clojure**
 
+
 ## Command line arguments
 ```
 Usage: watson [OPTION]...
 Running watson with no arguments will parse with settings in RC file
 If no RC file exists, default RC file will be created
 
-   -c, --context-depth   number of lines of context to provide with posted issue
+   -c, --context-depth   lines of context to provide with posted issue
    -d, --dirs            list of directories to search in
    -f, --files           list of files to search in
-   --format              set output format for watson [print, json, unite, silent]
+   --format              set output format for watson
+                         [print, json, unite, silent]
    -h, --help            print help
    -i, --ignore          list of files, directories, or types to ignore
    -p, --parse-depth     depth to recursively parse directories
-   -r, --remote          list / create tokens for Bitbucket/GitHub
+   -r, --remote          list / create tokens for remote posting
+                         [github, bitbucket, gitlab]
+   -s, --show            filter results (files listed) based on issue status
+                         [all, clean, dirty]
    -t, --tags            list of tags to search for
    -u, --update          update remote repos with current issues
    -v, --version         print watson version and info
+
 
 Any number of files, tags, dirs, and ignores can be listed after flag
 Ignored files should be space separated
@@ -103,12 +123,13 @@ If passed with `json`, the output will be in the form of JSON, and will be store
 
 - This particular option is useful if attempting to intergrate watson into other tools / platforms.
 
-If passed with `unite`, the output will be compatible with the vim unite plugin (more details soon)  
+If passed with `unite`, the output will be compatible with the unite.vim plugin  
+(see the **Unite** section below or visit [alpaca-tc/vim-unite-watson](https://github.com/alpaca-tc/vim-unite-watson.vim)
 
 If passed with `silent`, watson will have no output.  
 
-- This particular option is useful if remote posting to GitHub or Bitbucket is desired without the visual component of watson.  
-- For example, you could set up a **git commit hook** to post issues to GitHub/Bitbucket, but avoid the giant print out every time.
+- This particular option is useful if remote posting to GitHub, Bitbucket, or GitLab is desired without the visual component of watson.  
+- For example, you could set up a **git commit hook** to post issues to GitHub/Bitbucket/GitLab, but avoid the giant print out every time.
 
 
 ### -h, --help
@@ -128,10 +149,10 @@ If individual directories are passed with the -d (--dirs) flag, each will be par
 If watson is run without this parameter, the parsing depth is unlimited and will search through all subdirectories found.  
 
 
-### -r, --remote [GITHUB, BITBUCKET]
+### -r, --remote [GITHUB, BITBUCKET, GITLAB]
 This parameter is used to both list currently established remotes as well as setup new ones.  
 If passed without any options, the currently established remotes will be listed.  
-If passed with a github or bitbucket argument, watson will proceed to ask some questions to set up the corresponding remote.  
+If passed with a github, bitbucket, gitlab argument, watson will proceed to ask some questions to set up the corresponding remote.  
 
 
 ### -s, --show [ALL, CLEAN, DIRTY]
@@ -149,7 +170,7 @@ The tag currently supports any regular character and number combination, no spec
 
 ### -u, --update
 This parameter is used to update remote repos with new issues.  
-watson **does not** post new issues by default therefore this parameter is required to push up to GitHub/Bitbucket.  
+watson **does not** post new issues by default therefore this parameter is required to push up to GitHub/Bitbucket/GitLab.  
 watson **does** pull issue status by default, therefore you will always be notified of resolved issues on GitHub/Bitbucket.  
 
 ### -v, --version
@@ -172,12 +193,28 @@ This supports wildcard type selecting by providing .filename (no * required)
 
 **[context_depth]** - This value determines how many lines of context should be grabbed for each issue when posting to a remote.  
 
-**[(github/bitbucket)]** - If a remote is established, the API key for the corresponding remote is stored here.  
+**[(github/bitbucket/gitlab)_api]** - If a remote is established, the API key for the corresponding remote is stored here.  
 Currently, OAuth has yet to be implemented for Bitbucket so the Bitbucket username is stored here.  
 
-**[(github/bitbucket)_repo]** - The repo name / path is stored here.  
+**[(github/bitbucket/gitlab)_repo]** - The repo name / path is stored here.  
+
+**[(github/gitlab)_endpoint]** - The endpoint in case of GitHub Enterprise of GitLab configuration.
 
 The remote related .watsonrc options shouldn't need to be edited manually, as they are automatically populated when the -r, --remote setup is called.  
+
+## unite.vim
+### [vim-unite-watson.vim](https://github.com/alpaca-tc/vim-unite-watson.vim) by [alpaca-tc](http://github.com/alpaca-tc)
+**alpaca-tc** was kind enough to create a [unite.vim](https://github.com/Shougo/unite.vim) plugin to integrate with watson!  
+**unite.vim** allows you to create user interfaces within vim and lets you search and display any kind of information.  
+The **unite-vim-watson.vim** plugin allows you to:
+
+  - Generate a list of issues directly inside vim
+  - Search and select files displayed in the watson output
+  - Jump directly to the line where the issue is located (!!)
+
+If you use vim I ***definitely*** recommend using **vim-unite-watson.vim**, it works wonders for productivity!
+
+### See it in action [here (GIF demo)](https://github.com/alpaca-tc/vim-unite-watson.vim)
 
 ## Special Thanks
 Special thanks to [@samirahmed](http://github.com/samirahmed) for his super Ruby help and encouraging the Ruby port!  
@@ -185,6 +222,9 @@ Special thanks to [@eugenekolo](http://twitter.com/eugenekolo) [[email](eugenek@
 Special thanks to [@crowell](http://github.com/crowell) for testing out watson-ruby!  
 
 ## FAQ
+- ** Will inline issues get deleted if I close them on GitHub/Bitbucket/GitLab?**
+  No, watson won't touch your source code, it will only inform you that issues have been closed remotely.
+
 - **Why Ruby?**  
   I wanted to learn Ruby and this seemed like a pretty decent project.
 
