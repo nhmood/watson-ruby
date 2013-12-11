@@ -321,7 +321,7 @@ module Watson
         when "context_depth"
           # No need for regex on context value, command should read this in only as a #
           # Chomp to get rid of any nonsense
-          @context_depth = _line.chomp!
+          @context_depth = _line.chomp!.to_i
 
 
         when "parse_depth"
