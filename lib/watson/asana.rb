@@ -131,228 +131,8 @@ module Watson
           print "      Use -u, --update to post issues to Asana\n"
           print "      See help or README for more details on GitHub/Bitbucket/Asana access\n\n"
 
-          return true
+          true
 
-          # uzJXN8D.fsisV23hG7C3HF9bz4QuMsdh
-
-
-        end
-
-        ###########################################################
-        # Return all projects under the given api_key/workspace
-        def get_projects(_api_key, workspace_id)
-
-          debug_print "#{ self.class } : #{ __method__ }\n"
-
-          projects_url = "#{ @end_point }/workspaces/#{ workspace_id}/projects"
-
-          opts = {
-              :url => projects_url,
-              :ssl => true,
-              :method => "GET",
-              :basic_auth => [_api_key, ""],
-              :verbose => false
-          }
-
-          _json, _resp = Watson::Remote.http_call(opts)
-
-          if _resp.code != "200"
-            print "\n"
-            @formatter.print_status "x", RED
-            print BOLD + "Unable to access project list\n" + RESET
-            print "       Status: #{ _resp.code } - #{ _resp.message }\n\n"
-            return false
-          else
-            print "\n"
-            @formatter.print_status "o", GREEN
-            print BOLD + "Successfully obtained project list\n\n" + RESET
-          end
-
-          project_list = _json["data"]
-          project_dict = {}
-          project_list.each { |x| project_dict[x["name"]] = x["id"] }
-          project_dict
-        end
-
-        ###########################################################
-        # Return all workspaces under the given API key
-        def get_workspaces(_api_key)
-
-          debug_print "#{ self.class } : #{ __method__ }\n"
-
-          workspaces_url = "#{ @end_point }/workspaces"
-
-          opts = {
-              :url => workspaces_url,
-              :ssl => true,
-              :method => "GET",
-              :basic_auth => [_api_key, ""],
-              :verbose => false
-          }
-
-          _json, _resp = Watson::Remote.http_call(opts)
-
-          if _resp.code != "200"
-            print "\n"
-            @formatter.print_status "x", RED
-            print BOLD + "Unable to access workspace list with given credentials\n" + RESET
-            print "       Check that API key is correct\n"
-            print "       Status: #{ _resp.code } - #{ _resp.message }\n\n"
-            return false
-          else
-            print "\n"
-            @formatter.print_status "o", GREEN
-            print BOLD + "Successfully obtained workspace list\n\n" + RESET
-          end
-
-          workspace_list = _json["data"]
-          workspace_dict = {}
-          workspace_list.each { |x| workspace_dict[x["name"]] = x["id"] }
-          workspace_dict
-        end
-
-        ###########################################################
-        # Get all remote Asana issues and store into Config container class
-        def get_issues(config)
-
-          # Identify method entry
-          debug_print "#{ self.class } : #{ __method__ }\n"
-
-          # Set up formatter for printing errors
-          # config.output_format should be set based on less status by now
-          @formatter = Printer.new(config).build_formatter
-
-          # Only attempt to get issues if API is specified
-          if config.asana_api.empty?
-            debug_print "No asana API found, this shouldn't be called...\n"
-            return false
-          end
-
-          _api_key = config.asana_api
-          _workspace = config.asana_workspace
-          _project = config.asana_project
-
-          task_records = get_tasks(_api_key, _project, _workspace)
-
-          unless task_records
-            config.asana_valid = false
-            return false
-          end
-
-          task_records.each do |issue|
-            # Skip this issue if it doesn't have watson md5 tag
-            _md5 = issue["notes"].match(/.*__md5__ : (\w+)\s.*/)
-            next if (_md5).nil?
-
-            # If it does, use md5 as hash key and populate values with our info
-            config.asana_issues[_md5[1]] = {
-                :title => issue["name"],
-                :id    => issue["id"],
-                :state => issue["completed"] # TODO: How to check status?
-            }
-          end
-
-          config.asana_valid = true
-
-        end
-
-        ###########################################################
-        # Return all tasks in given project/workspace
-        def get_tasks(_api_key, _project, _workspace)
-
-          debug_print "#{ self.class } : #{ __method__ }\n"
-
-          workspace_id = get_workspace_id(_api_key, _workspace)
-
-          unless workspace_id
-            @formatter.print_status "x", RED
-            print BOLD + "Unable to get workspace info from Asana API\n" + RESET
-            return false          end
-
-          project_id = get_project_identifier(_api_key, _project, workspace_id)
-
-          unless project_id
-            @formatter.print_status "x", RED
-            print BOLD + "Unable to get project info from Asana API\n" + RESET
-            return false
-          end
-
-          tasks_url = "#{ @end_point }/projects/#{ project_id }/tasks?opt_fields=name,notes,completed&include_archived=true"
-
-          opts = {
-              :url => tasks_url,
-              :ssl => true,
-              :method => "GET",
-              :basic_auth => [_api_key, ""],
-              :verbose => false
-          }
-
-          _json, _resp = Watson::Remote.http_call(opts)
-
-          # Check response to validate repo access
-          if _resp.code != "200"
-            @formatter.print_status "x", RED
-            print BOLD + "Unable to access Asana API, key may be invalid\n" + RESET
-            print "      Consider running --remote (-r) option to regenerate key\n\n"
-            print "      Status: #{ _resp.code } - #{ _resp.message }\n"
-
-            debug_print "Asana invalid, setting config var\n"
-            #return false
-          end
-
-          _json["data"]
-
-        end
-
-        ###########################################################
-        # Return full record for a particular task
-        def get_task_record(_api_key, task_id)
-
-          debug_print "#{ self.class } : #{ __method__ }\n"
-
-          task_url = "#{ @end_point }/tasks/#{ task_id }"
-
-          opts = {
-              :url => task_url,
-              :ssl => true,
-              :method => "GET",
-              :basic_auth => [_api_key, ""],
-              :verbose => false
-          }
-
-          _json, _resp = Watson::Remote.http_call(opts)
-
-          if _resp.code != "200"
-            @formatter.print_status "x", RED
-            print BOLD + "Unable to get task, API key may be invalid\n" + RESET
-            print "      Consider running --remote (-r) option to regenerate key\n\n"
-            print "      Status: #{ _resp.code } - #{ _resp.message }\n"
-            return false
-          end
-
-          _json["data"]
-        end
-
-        ###########################################################
-        # Get project id given project and work space name
-        def get_project_identifier(_api_key, _project, workspace_id)
-          debug_print "#{ self.class } : #{ __method__ }\n"
-          projects_dict = get_projects(_api_key, workspace_id)
-          unless projects_dict
-            return false
-          end
-          projects_dict[_project]
-        end
-
-        ###########################################################
-        # Get workspace id given workspace name
-        def get_workspace_id(_api_key, _workspace)
-          debug_print "#{ self.class } : #{ __method__ }\n"
-          workspace_dict = get_workspaces(_api_key)
-          unless workspace_dict
-            return false
-          end
-          workspace_dict[_workspace]
         end
 
         ###########################################################
@@ -408,10 +188,10 @@ module Watson
           # Create the body text for the issue here, too long to fit nicely into opts hash
           _body =
               "__filename__ : #{ issue[:path] }\n" +
-              "__line #__ : #{ issue[:line_number] }\n" +
-              "__tag__ : #{ issue[:tag] }\n" +
-              "__md5__ : #{ issue[:md5] }\n\n" +
-              "#{ issue[:context].join }\n"
+                  "__line #__ : #{ issue[:line_number] }\n" +
+                  "__tag__ : #{ issue[:tag] }\n" +
+                  "__md5__ : #{ issue[:md5] }\n\n" +
+                  "#{ issue[:context].join }\n"
 
           opts = {
               :url => tasks_url,
@@ -419,8 +199,8 @@ module Watson
               :method => "POST",
               :basic_auth => [_api_key, ""],
               :data => [{"name" => issue[:title],
-                        "notes" => _body,
-                        "projects" => project_id}],
+                         "notes" => _body,
+                         "projects" => project_id}],
               :verbose => false
           }
 
@@ -434,8 +214,8 @@ module Watson
             return false
           end
 
-          data = _json["data"]
-          new_task_id = data["id"]
+          _data = _json["data"]
+          new_task_id = _data["id"]
 
           debug_print "creating file tag"
           file_tag = create_or_get_tag(_api_key,workspace_id,issue[:path])
@@ -468,9 +248,9 @@ module Watson
 
           # Parse response and append issue hash so we are up to date
           config.asana_issues[issue[:md5]] = {
-              :title => data["name"],
-              :id    => data["id"],
-              :state => data["completed"]
+              :title => _data["name"],
+              :id    => _data["id"],
+              :state => _data["completed"]
           }
 
           true
@@ -478,143 +258,357 @@ module Watson
         end
 
         ###########################################################
-        # Tags task with task_id with the tag specified by tag_id
-        def tag_task(_api_key, task_id, tag_id)
+        # Get all remote Asana issues and store into Config container class
+        def get_issues(config)
+
+          # Identify method entry
           debug_print "#{ self.class } : #{ __method__ }\n"
 
-          tags_url = "#{ @end_point }/tasks/#{ task_id }/addTag"
+          # Set up formatter for printing errors
+          # config.output_format should be set based on less status by now
+          @formatter = Printer.new(config).build_formatter
 
-          opts = {
-              :url => tags_url,
-              :ssl => true,
-              :method => "POST",
-              :basic_auth => [_api_key, ""],
-              :data => [{"tag" => tag_id}],
-              :verbose => false
-          }
-
-          _json, _resp = Watson::Remote.http_call(opts)
-
-          unless _resp.code == "200"
-            @formatter.print_status "x", RED
-            print BOLD + "Unable to access Asana API, key may be invalid\n" + RESET
-            print "      Consider running --remote (-r) option to regenerate key\n\n"
-            print "      Status: #{ _resp.code } - #{ _resp.message }\n"
+          # Only attempt to get issues if API is specified
+          if config.asana_api.empty?
+            debug_print "No asana API found, this shouldn't be called...\n"
             return false
           end
 
-          _json['data']
+          _api_key = config.asana_api
+          _workspace = config.asana_workspace
+          _project = config.asana_project
 
-        end
+          task_records = get_tasks(_api_key, _project, _workspace)
 
-        ###########################################################
-        # Returns hash, tag name => tag
-        def get_tags(_api_key, _workspace_id)
-          debug_print "#{ self.class } : #{ __method__ }\n"
-
-          tags_url = "#{ @end_point }/workspaces/#{ _workspace_id }/tags"
-
-          opts = {
-              :url => tags_url,
-              :ssl => true,
-              :method => "GET",
-              :basic_auth => [_api_key, ""],
-              :verbose => false
-          }
-
-          _json, _resp = Watson::Remote.http_call(opts)
-
-          unless _resp.code == "200"
-            @formatter.print_status "x", RED
-            print BOLD + "Unable to access Asana API, key may be invalid\n" + RESET
-            print "      Consider running --remote (-r) option to regenerate key\n\n"
-            print "      Status: #{ _resp.code } - #{ _resp.message }\n"
+          unless task_records
+            config.asana_valid = false
             return false
           end
 
-          # [review] - fancy ruby way of generating this hash?
+          task_records.each do |issue|
+            # Skip this issue if it doesn't have watson md5 tag
+            _md5 = issue["notes"].match(/.*__md5__ : (\w+)\s.*/)
+            next if (_md5).nil?
 
-          _tags_dict = {}
-          _json['data'].each { |x| _tags_dict[x['name']] = x }
-          _tags_dict
+            # If it does, use md5 as hash key and populate values with our info
+            config.asana_issues[_md5[1]] = {
+                :title => issue["name"],
+                :id    => issue["id"],
+                :state => issue["completed"] # TODO: How to check status?
+            }
+          end
+
+          config.asana_valid = true
 
         end
 
-        ###########################################################
-        # Make sure base tags exist (tag_list + the watson tag), add them if not
-        def init_tags(config, _api_key, _workspace_id)
-          debug_print "#{ self.class } : #{ __method__ }\n"
-          tags_to_check = config.tag_list.dup << 'watson'
-          create_and_get_tags(_api_key, _workspace_id, tags_to_check)
-        end
+        private
 
-        ###########################################################
-        # Adds 'tags_to_add' and returns full list of tags.
-        # The reason that this is combined into one method is that
-        # Asana do not actually 'create' the tag properly until
-        # it has been used to tag a task
-        def create_and_get_tags(_api_key, _workspace_id, tags_to_add)
-          debug_print "#{ self.class } : #{ __method__ }\n"
+          ###########################################################
+          # Return all projects under the given api_key/workspace
+          def get_projects(_api_key, workspace_id)
 
-          tags = get_tags(_api_key, _workspace_id)
+            debug_print "#{ self.class } : #{ __method__ }\n"
 
-          unless tags
-            return false
-          end
+            projects_url = "#{ @end_point }/workspaces/#{ workspace_id}/projects"
 
-          debug_print "Checking that tags #{ tags_to_add } exist\n"
-          tags_to_create = tags_to_add - tags.keys
-          if tags_to_create
-            debug_print "Need to create tags #{ tags_to_create }\n"
-          end
-          tags_to_create.each do |tag_name|
-            tag = create_tag(_api_key, _workspace_id, tag_name)
-            unless tag
+            opts = {
+                :url => projects_url,
+                :ssl => true,
+                :method => "GET",
+                :basic_auth => [_api_key, ""],
+                :verbose => false
+            }
+
+            _json, _resp = Watson::Remote.http_call(opts)
+
+            if _resp.code != "200"
+              print "\n"
+              @formatter.print_status "x", RED
+              print BOLD + "Unable to access project list\n" + RESET
+              print "       Status: #{ _resp.code } - #{ _resp.message }\n\n"
               return false
             end
-            tags[tag['name']] = tag
+
+            project_list = _json["data"]
+            project_dict = {}
+            project_list.each { |x| project_dict[x["name"]] = x["id"] }
+            project_dict
           end
 
-          tags
-        end
+          ###########################################################
+          # Return all workspaces under the given API key
+          def get_workspaces(_api_key)
 
-        ###########################################################
-        # Creates a tag in the given workspace
-        def create_tag(_api_key, _workspace_id, tag)
-          debug_print "#{ self.class } : #{ __method__ }\n"
+            debug_print "#{ self.class } : #{ __method__ }\n"
 
-          opts = {
-              :url => "#{ @end_point }/workspaces/#{ _workspace_id }/tags",
-              :ssl => true,
-              :method => "POST",
-              :basic_auth => [_api_key, ""],
-              :data => [{'name'=>tag}],
-              :verbose => false
-          }
+            workspaces_url = "#{ @end_point }/workspaces"
 
-          _json, _resp = Watson::Remote.http_call(opts)
+            opts = {
+                :url => workspaces_url,
+                :ssl => true,
+                :method => "GET",
+                :basic_auth => [_api_key, ""],
+                :verbose => false
+            }
 
-          unless _resp.code == "201"
-            @formatter.print_status "x", RED
-            print BOLD + "Unable to access Asana API, key may be invalid\n" + RESET
-            print "      Consider running --remote (-r) option to regenerate key\n\n"
-            print "      Status: #{ _resp.code } - #{ _resp.message }\n"
-            return false
+            _json, _resp = Watson::Remote.http_call(opts)
+
+            if _resp.code != "200"
+              print "\n"
+              @formatter.print_status "x", RED
+              print BOLD + "Unable to access workspace list with given credentials\n" + RESET
+              print "       Check that API key is correct\n"
+              print "       Status: #{ _resp.code } - #{ _resp.message }\n\n"
+              return false
+            end
+
+            workspace_list = _json["data"]
+            workspace_dict = {}
+            workspace_list.each { |x| workspace_dict[x["name"]] = x["id"] }
+            workspace_dict
           end
 
-          data = _json['data']
+          ###########################################################
+          # Return all tasks in given project/workspace
+          def get_tasks(_api_key, _project, _workspace)
 
-          debug_print "Created tag '#{ tag }' with id #{ data['id'] } \n"
+            debug_print "#{ self.class } : #{ __method__ }\n"
 
-          data
+            workspace_id = get_workspace_id(_api_key, _workspace)
 
-        end
+            unless workspace_id
+              @formatter.print_status "x", RED
+              print BOLD + "Unable to get workspace info from Asana API\n" + RESET
+              return false          end
 
-        def create_or_get_tag(_api_key, _workspace_id, tag_name)
-          debug_print "#{ self.class } : #{ __method__ }\n"
-          tags = create_and_get_tags(_api_key, _workspace_id, [tag_name])
-          tags ? tags[tag_name] : false
-        end
+            project_id = get_project_identifier(_api_key, _project, workspace_id)
+
+            unless project_id
+              @formatter.print_status "x", RED
+              print BOLD + "Unable to get project info from Asana API\n" + RESET
+              return false
+            end
+
+            tasks_url = "#{ @end_point }/projects/#{ project_id }/tasks?opt_fields=name,notes,completed&include_archived=true"
+
+            opts = {
+                :url => tasks_url,
+                :ssl => true,
+                :method => "GET",
+                :basic_auth => [_api_key, ""],
+                :verbose => false
+            }
+
+            _json, _resp = Watson::Remote.http_call(opts)
+
+            # Check response to validate repo access
+            if _resp.code != "200"
+              @formatter.print_status "x", RED
+              print BOLD + "Unable to access Asana API, key may be invalid\n" + RESET
+              print "      Consider running --remote (-r) option to regenerate key\n\n"
+              print "      Status: #{ _resp.code } - #{ _resp.message }\n"
+
+              debug_print "Asana invalid, setting config var\n"
+              #return false
+            end
+
+            _json["data"]
+
+          end
+
+          ###########################################################
+          # Return full record for a particular task
+          def get_task_record(_api_key, task_id)
+
+            debug_print "#{ self.class } : #{ __method__ }\n"
+
+            task_url = "#{ @end_point }/tasks/#{ task_id }"
+
+            opts = {
+                :url => task_url,
+                :ssl => true,
+                :method => "GET",
+                :basic_auth => [_api_key, ""],
+                :verbose => false
+            }
+
+            _json, _resp = Watson::Remote.http_call(opts)
+
+            if _resp.code != "200"
+              @formatter.print_status "x", RED
+              print BOLD + "Unable to get task, API key may be invalid\n" + RESET
+              print "      Consider running --remote (-r) option to regenerate key\n\n"
+              print "      Status: #{ _resp.code } - #{ _resp.message }\n"
+              return false
+            end
+
+            _json["data"]
+          end
+
+          ###########################################################
+          # Get project id given project and work space name
+          def get_project_identifier(_api_key, _project, workspace_id)
+            debug_print "#{ self.class } : #{ __method__ }\n"
+            projects_dict = get_projects(_api_key, workspace_id)
+            unless projects_dict
+              return false
+            end
+            projects_dict[_project]
+          end
+
+          ###########################################################
+          # Get workspace id given workspace name
+          def get_workspace_id(_api_key, _workspace)
+            debug_print "#{ self.class } : #{ __method__ }\n"
+            workspace_dict = get_workspaces(_api_key)
+            unless workspace_dict
+              return false
+            end
+            workspace_dict[_workspace]
+          end
+
+          ###########################################################
+          # Tags task with task_id with the tag specified by tag_id
+          def tag_task(_api_key, task_id, tag_id)
+            debug_print "#{ self.class } : #{ __method__ }\n"
+
+            tags_url = "#{ @end_point }/tasks/#{ task_id }/addTag"
+
+            opts = {
+                :url => tags_url,
+                :ssl => true,
+                :method => "POST",
+                :basic_auth => [_api_key, ""],
+                :data => [{"tag" => tag_id}],
+                :verbose => false
+            }
+
+            _json, _resp = Watson::Remote.http_call(opts)
+
+            unless _resp.code == "200"
+              @formatter.print_status "x", RED
+              print BOLD + "Unable to access Asana API, key may be invalid\n" + RESET
+              print "      Consider running --remote (-r) option to regenerate key\n\n"
+              print "      Status: #{ _resp.code } - #{ _resp.message }\n"
+              return false
+            end
+
+            _json['data']
+
+          end
+
+          ###########################################################
+          # Returns hash, tag name => tag
+          def get_tags(_api_key, _workspace_id)
+            debug_print "#{ self.class } : #{ __method__ }\n"
+
+            tags_url = "#{ @end_point }/workspaces/#{ _workspace_id }/tags"
+
+            opts = {
+                :url => tags_url,
+                :ssl => true,
+                :method => "GET",
+                :basic_auth => [_api_key, ""],
+                :verbose => false
+            }
+
+            _json, _resp = Watson::Remote.http_call(opts)
+
+            unless _resp.code == "200"
+              @formatter.print_status "x", RED
+              print BOLD + "Unable to access Asana API, key may be invalid\n" + RESET
+              print "      Consider running --remote (-r) option to regenerate key\n\n"
+              print "      Status: #{ _resp.code } - #{ _resp.message }\n"
+              return false
+            end
+
+            # [review] - fancy ruby way of generating this hash?
+
+            _tags_dict = {}
+            _json['data'].each { |x| _tags_dict[x['name']] = x }
+            _tags_dict
+
+          end
+
+          ###########################################################
+          # Make sure base tags exist (tag_list + the watson tag), add them if not
+          def init_tags(config, _api_key, _workspace_id)
+            debug_print "#{ self.class } : #{ __method__ }\n"
+            tags_to_check = config.tag_list.dup << 'watson'
+            create_and_get_tags(_api_key, _workspace_id, tags_to_check)
+          end
+
+          ###########################################################
+          # Adds 'tags_to_add' and returns full list of tags.
+          # The reason that this is combined into one method is that
+          # Asana do not actually 'create' the tag properly until
+          # it has been used to tag a task
+          def create_and_get_tags(_api_key, _workspace_id, tags_to_add)
+            debug_print "#{ self.class } : #{ __method__ }\n"
+
+            _tags = get_tags(_api_key, _workspace_id)
+
+            unless _tags
+              return false
+            end
+
+            debug_print "Checking that tags #{ tags_to_add } exist\n"
+            tags_to_create = tags_to_add - _tags.keys
+            if tags_to_create
+              debug_print "Need to create tags #{ tags_to_create }\n"
+            end
+            tags_to_create.each do |tag_name|
+              _tag = create_tag(_api_key, _workspace_id, tag_name)
+              unless _tag
+                return false
+              end
+              _tags[_tag['name']] = _tag
+            end
+
+            _tags
+          end
+
+          ###########################################################
+          # Creates a tag in the given workspace
+          def create_tag(_api_key, _workspace_id, tag)
+            debug_print "#{ self.class } : #{ __method__ }\n"
+
+            opts = {
+                :url => "#{ @end_point }/workspaces/#{ _workspace_id }/tags",
+                :ssl => true,
+                :method => "POST",
+                :basic_auth => [_api_key, ""],
+                :data => [{'name'=>tag}],
+                :verbose => false
+            }
+
+            _json, _resp = Watson::Remote.http_call(opts)
+
+            unless _resp.code == "201"
+              @formatter.print_status "x", RED
+              print BOLD + "Unable to access Asana API, key may be invalid\n" + RESET
+              print "      Consider running --remote (-r) option to regenerate key\n\n"
+              print "      Status: #{ _resp.code } - #{ _resp.message }\n"
+              return false
+            end
+
+            _data = _json['data']
+
+            debug_print "Created tag '#{ tag }' with id #{ _data['id'] } \n"
+
+            _data
+
+          end
+
+          ###########################################################
+          # Creates a tag in the given workspace or else if already
+          # exists, returns that tag
+          def create_or_get_tag(_api_key, _workspace_id, tag_name)
+            debug_print "#{ self.class } : #{ __method__ }\n"
+            _tags = create_and_get_tags(_api_key, _workspace_id, [tag_name])
+            _tags ? _tags[tag_name] : false
+          end
 
       end
 
