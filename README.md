@@ -27,6 +27,7 @@ bundle exec rake
 
 
 ## Recent Updates
+  - watson now supports [Asana](http://asana.com)
   - watson now supports [GitLab](http://gitlab.com)
   - [vim-unite-watson.vim](https://github.com/alpaca-tc/vim-unite-watson.vim) integrates watson right into vim!
   - watson now supports multiple export modes
