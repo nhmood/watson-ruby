@@ -98,6 +98,12 @@ describe Config do
       @config.bitbucket_repo.should == ''
       @config.bitbucket_issues.should == Hash.new()
 
+      @config.asana_valid.should be_false
+      @config.asana_api.should == ''
+      @config.asana_workspace.should == ''
+      @config.asana_project.should == ''
+      @config.asana_issues.should == Hash.new()
+
     end
   end
 
