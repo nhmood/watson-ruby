@@ -84,8 +84,8 @@ module Watson
       debug_print "Parsing through all files/directories in #{ dir }\n"
 
       # [review] - Shifted away from single Dir.glob loop to separate for dir/file
-      # 			 This duplicates code but is much better for readability
-      # 			 Not sure which is preferred?
+      #        This duplicates code but is much better for readability
+      #        Not sure which is preferred?
 
 
       # Remove leading . or ./
@@ -147,12 +147,12 @@ module Watson
         if @config.parse_depth == 0
           debug_print "No max depth, parsing directory\n"
           _completed_dirs.push(parse_dir("#{ _entry }/", _cur_depth))
-        
+
         # If current depth is less than limit (set in config), parse directory and pass depth
         elsif _cur_depth < @config.parse_depth.to_i + 1
           debug_print "Depth less than max dept (from config), parsing directory\n"
           _completed_dirs.push(parse_dir("#{ _entry }/", _cur_depth))
-       
+
         # Else, depth is greater than limit, ignore the directory
         else
           debug_print "Depth greater than max depth, ignoring\n"
@@ -334,7 +334,7 @@ module Watson
 
         # If GitHub is valid, pass _issue to GitHub poster function
         # [review] - Keep Remote as a static method and pass config every time?
-        #			 Or convert to a regular class and make an instance with @config
+        #       Or convert to a regular class and make an instance with @config
 
 
         # [review] - Use _tag string as symbol reference in hash or keep as string?
@@ -380,6 +380,7 @@ module Watson
                '.class'   => ['//', '/*', '/**'],
                '.cs'      => ['//', '/*'],        # C#
                '.scss'    => ['//', '/*'],        # SASS SCSS
+               '.sass'    => ['//', '/*'],        # SASS SCSS
                '.js'      => ['//', '/*'],        # JavaScript
                '.php'     => ['//', '/*', '#'],   # PHP
                '.m'       => ['//', '/*'],        # ObjectiveC
