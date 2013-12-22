@@ -128,6 +128,14 @@ module Watson
       if _resp.code == "201"
         formatter.print_status "o", GREEN
         print BOLD + "Obtained OAuth Token\n\n" + RESET
+
+      elsif _resp.code == "401"
+        begin
+          # [todo] - Refactor all
+          _json, _resp = two_factor_authentication(opts, formatter)
+        rescue => e
+          return false
+        end
       else
         formatter.print_status "x", RED
         print BOLD + "Unable to obtain OAuth Token\n" + RESET
@@ -381,6 +389,39 @@ module Watson
       return true
     end
 
+    private
+
+    def two_factor_authentication(opts, formatter)
+      print "\n"
+      print "Two Factor Authentication has been enabled for this account.\n"
+      print BOLD + "Code: " + RESET
+      system "stty -echo"
+      _authcode = $stdin.gets.chomp
+      system "stty echo"
+      print "\n\n"
+      if _authcode.empty?
+        formatter.print_status "x", RED
+        print BOLD + "Input is blank. Please enter your Two Factor Authentication Code!\n\n" + RESET
+        return false
+      end
+      opts[:headers] = [ { :field => "X-GitHub-OTP", :value => _authcode } ]
+      _json, _resp  = Remote.http_call(opts)
+      if _resp.code == "201"
+        formatter.print_status "o", GREEN
+        print BOLD + "Obtained OAuth Token\n\n" + RESET
+        return [_json, _resp]
+      elsif _resp.code == "401"
+        formatter.print_status "x", RED
+        print BOLD + "Unable to obtain OAuth Token\n" + RESET
+        print "      Authentication Code Incorrect!\n\n"
+        false
+      else
+        formatter.print_status "x", RED
+        print BOLD + "Unable to obtain OAuth Token\n" + RESET
+        print "      Status: #{ _resp.code } - #{ _resp.message }\n\n"
+        false
+      end
+    end
     end
     end
   end
