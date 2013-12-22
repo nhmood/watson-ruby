@@ -405,6 +405,7 @@ module Watson
                '.sql'     => ['---', '//', '#' ], # SQL and PL types
                '.lua'     => ['--', '--[['],      # Lua
                '.vim'     => ['"'],               # VimL
+               '.md'      => ['<!--'],            # Markdown
                '.html'    => ['<!--']             # HTML
              }
 
