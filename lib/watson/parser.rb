@@ -404,6 +404,7 @@ module Watson
                '.clj'     => [';;'],              # Clojure
                '.sql'     => ['---', '//', '#' ], # SQL and PL types
                '.lua'     => ['--', '--[['],      # Lua
+               '.vim'     => ['"'],               # VimL
                '.html'    => ['<!--']             # HTML
              }
 
