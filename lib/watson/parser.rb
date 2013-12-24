@@ -406,7 +406,8 @@ module Watson
                '.lua'     => ['--', '--[['],      # Lua
                '.vim'     => ['"'],               # VimL
                '.md'      => ['<!--'],            # Markdown
-               '.html'    => ['<!--']             # HTML
+               '.html'    => ['<!--'],            # HTML
+               '.el'      => [';']                # Emacslisp
              }
 
       loop do
