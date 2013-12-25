@@ -207,40 +207,41 @@ module Watson
 
     ###########################################################
     # Watson config creater
-    # Copies default config from /assets/defaultConf to the current directory
+    # Attempts to create config based on $HOME/.watsonrc
+    # If this doesn't exist, copies default config from /assets/defaultConf to $HOME and current directory
     def create_conf
     # [review] - Not sure if I should use the open/read/write or Fileutils.cp
 
       # Identify method entry
       debug_print "#{ self.class } : #{ __method__ }\n"
 
-
-      # Generate full path since File doesn't care about the LOAD_PATH
+      # Full path to assets/defaultConf (File class doesn't look at LOAD_PATH)
       # [review] - gsub uses (.?)+ to grab anything after lib (optional), better regex?
       _full_path = __dir__.gsub(%r!/lib/watson(.?)+!, '') + "/assets/defaultConf"
       debug_print "Full path to defaultConf (in gem): #{ _full_path }\n"
 
-      # Check to make sure we can access the default file
-      if !Watson::FS.check_file(_full_path)
-        print "Unable to open #{ _full_path }\n"
-        print "Cannot create default, exiting...\n"
-        return false
+      # $HOME/.watsonrc exists, '~' should be crossplatform with File.expand_path
+      _home_path = File.expand_path('~') + '/.watsonrc'
+
+      # Obtain default config to write to current directory
+      if Watson::FS.check_file(_home_path)
+        _default = File.open(_home_path, 'r') { |file| file.read }
+        debug_print ".watsonrc found in $HOME, using as base\n"
+      elsif Watson::FS.check_file(_full_path)
+        _default = File.open(_full_path, 'r') { |file| file.read }
+        # Write default to $HOME
+        File.open(_home_path, 'w') { |file| file.write(_default) }
+        debug_print ".watsonrc not found in $HOME, using assets\n"
       else
-        # Open default config file in read mode and read into temp
-        _input = File.open(_full_path, 'r')
-        _default = _input.read
-
-        # Open rc file in current directory in write mode and write default
-        _output = File.open(@rc_file, 'w')
-        _output.write(_default)
-
-        # Close both default and new rc files
-        _input.close
-        _output.close
-
-        debug_print "Successfully wrote defaultConf to current directory\n"
-        return true
+        print "Unable to find .watsonrc in $HOME or #{ _full_path}\n"
+        print "Cannot create a default config, exiting...\n"
+        return false
       end
+
+      # Open @rc_file and write the default contents to it
+      File.open(@rc_file, 'w') { |file| file.write(_default) }
+      debug_print "Successfully wrote defaultConf to current directory\n"
+      true
     end
 
 
