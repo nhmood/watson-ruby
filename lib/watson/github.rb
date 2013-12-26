@@ -102,6 +102,10 @@ module Watson
         return false
       end
 
+      # Label for Auth Token
+      print BOLD + "Auth Token Label (leave blank to ignore): " + RESET
+      _label = $stdin.gets.chomp
+
       _endpoint = "https://api.github.com" if _endpoint.empty?
 
       # HTTP Request to get OAuth Token
@@ -117,7 +121,7 @@ module Watson
         :method     => "POST",
         :basic_auth => [_username, _password],
         :data       => {"scopes" => ["repo"],
-                        "note" => "watson",
+                        "note" => "watson - #{_label}",
                         "note_url" => "http://watson.goosecode.com/" },
         :verbose    => false
       }
