@@ -28,13 +28,14 @@ module Watson
   # [todo] - Replace Identify line in each method with method_added call
   #      http://ruby-doc.org/core-2.0.0/Module.html#method-i-method_added
 
-  # Separate ON and OFF so we can force state and still let
-  # individual classes have some control over their prints
 
-  # Global flag to turn ON debugging across all files
-  GLOBAL_DEBUG_ON = false
-  # Gllobal flag to turn OFF debugging across all files
-  GLOBAL_DEBUG_OFF = false
+  # Module container for debug mode (which classes to debug print)
+  # [review] - This doesn't seem like the right place to put this
+  class << self
+    attr_accessor :debug_mode
+    @@debug_mode = Array.new()
+  end
+
 
   # [review] - Not sure if module_function is proper way to scope
   # I want to be able to call debug_print without having to use the scope
@@ -46,18 +47,24 @@ module Watson
   ###########################################################
   # Global debug print that prints based on local file DEBUG flag as well as GLOBAL debug flag
   def debug_print(msg)
-  # [todo] - If input msg is a Hash, use pp to dump it
 
-    # Print only if DEBUG flag of calling class is true OR
-    # GLOBAL_DEBUG_ON of Watson module (defined above) is true
-    # AND GLOBAL_DEBUG_OFF of Watson module (Defined above) is false
+    # If nothing set from CLI, debug_mode will be nil
+    return if Watson.debug_mode.nil?
 
-    # Sometimes we call debug_print from a static method (class << self)
-    # and other times from a class method, and ::DEBUG is accessed differently
-    # from a class vs object, so lets take care of that
-    _DEBUG = (self.is_a? Class) ? self::DEBUG : self.class::DEBUG
+    # If empty, just --debug passed, print ALL, else selective print
+    _enabled = false
+    if !Watson.debug_mode.empty?
+      _debug = (self.is_a? Class) ? self.name.downcase : self.class.name.downcase
+      Watson.debug_mode.each do |dbg|
+        _enabled = true if _debug.include?(dbg)
+      end
+    else
+      _enabled = true
+    end
 
-    print "=> #{msg}" if ( (_DEBUG == true || GLOBAL_DEBUG_ON == true) && (GLOBAL_DEBUG_OFF == false))
+    return if !_enabled
+    (msg.is_a? Hash) ? (pp msg) : (print "=> #{msg}")
+
   end
 
 

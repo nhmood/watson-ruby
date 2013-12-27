@@ -25,9 +25,6 @@ module Watson
     # Include for debug_print (for class methods)
     include Watson
 
-    # Debug printing for this class
-    DEBUG = false
-
     ###########################################################
     # Printer initialization method to setup necessary parameters, states, and vars
     def initialize(config)
