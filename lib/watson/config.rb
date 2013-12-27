@@ -18,6 +18,8 @@ module Watson
     attr_accessor :file_list
     # List of tags to look for when parsing
     attr_accessor :tag_list
+    # List of custom filetypes to accept
+    attr_accessor :type_list
     # Number of directories to parse recursively
     attr_accessor :parse_depth
     # Number of lines of issue context to grab
@@ -116,6 +118,7 @@ module Watson
       @dir_list     = Array.new()
       @file_list    = Array.new()
       @tag_list     = Array.new()
+      @type_list    = Hash.new()
       @issue_count  = 0
 
       # Remote options
@@ -366,6 +369,17 @@ module Watson
             debug_print "#{ _mtch } added to @tag_list\n"
           end
           debug_print "@tag_list --> #{ @tag_list }\n"
+
+
+        when "type"
+          # Regex to grab ".type" => ["param1", "param2"]
+          _mtch = _line.match(/(\"\S+\")\s+=>\s+(\[(\".+\")+\])/)
+          if !_mtch.nil?
+            # [review] - Not sure if eval is the safest thing to do here...
+            _ext = _mtch[1].gsub(/\"/, '')
+            _type = JSON.parse(_mtch[2])
+            @type_list[_ext] = _type
+          end
 
 
         when "ignore"
