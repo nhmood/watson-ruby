@@ -407,7 +407,11 @@ module Watson
                '.el'      => [';']                # Emacslisp
              }
 
-      loop do
+      # Merge config file type list with defaults
+      _ext.merge!(@config.type_list)
+      
+
+       loop do
         _mtch = filename.match(/(\.(\S+))$/)
         debug_print "Extension: #{ _mtch }\n"
 
