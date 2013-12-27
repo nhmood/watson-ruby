@@ -3,9 +3,6 @@ module Watson
   # Controls program flow and parses options given by command line
   class Command
 
-    # Debug printing for this class
-    DEBUG = false
-
     class << self
 
     # Include for debug_print

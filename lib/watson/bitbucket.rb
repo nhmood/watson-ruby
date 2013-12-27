@@ -5,9 +5,6 @@ module Watson
     # and post issues to Bitbucket
     class Bitbucket
 
-    # Debug printing for this class
-    DEBUG = false
-
     class << self
 
     # [todo] - Allow closing of issues from watson? Don't like that idea but maybe

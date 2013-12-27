@@ -5,9 +5,6 @@ module Watson
     # and post issues to GitLab
     class GitLab
 
-    # Debug printing for this class
-    DEBUG = false
-
     class << self
 
     # [todo] - Keep asking for user data until valid instead of leaving app

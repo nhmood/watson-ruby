@@ -12,9 +12,6 @@ module Watson
     require 'digest'
     require 'pp'
 
-    # Debug printing for this class
-    DEBUG = false
-
     ###########################################################
     # Initialize the parser with the current watson config
     def initialize(config)

@@ -3,9 +3,6 @@ module Watson
   # Contains all methods for file access in watson
   class FS
 
-    # Debug printing for this class
-    DEBUG = false
-
     class << self
     # [todo] - Not sure whether to make check* methods return FP
     #      Makes it nice to get it returned and use it but

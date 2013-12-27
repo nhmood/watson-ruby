@@ -7,9 +7,6 @@ module Watson
     # Include for debug_print
     include Watson
 
-    # Debug printing for this class
-    DEBUG = false
-
     # [review] - Combine into single statement (for performance or something?)
     # [todo] - Add config options (rc file) for default max depth and context lines
 

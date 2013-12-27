@@ -2,9 +2,6 @@ module Watson
   # Remote class that handles all remote HTTP calls to Bitbucket and GitHub
   class Remote
 
-    # Debug printing for this class
-    DEBUG = false
-
     class << self
 
     # Include for debug_print
