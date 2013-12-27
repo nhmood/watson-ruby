@@ -26,17 +26,32 @@ module Watson
       _flag_list = %w[
         -c --context-depth
         -d --dirs
+        --debug
         -f --files
+        --format
         -h --help
         -i --ignore
         -p --parse-depth
         -r --remote
         -s --show
         -t --tags
-        --format
         -u --update
         -v --version
       ]
+
+      # Add debug prints based on --debug flag
+      if (_index = args.index('--debug')) != nil
+        _debug_mode = Array.new
+        _index += 1
+        until _flag_list.include?(args[_index]) ||  _index > (args.length - 1)
+          _debug_mode.push(args[_index].downcase)
+          _index += 1
+        end
+        # Slice out so we can ignore in regular CLI parsing
+        args.slice!(args.index('--debug') ... _index)
+
+        Watson.debug_mode = _debug_mode
+      end
 
 
       # If we get the version or help flag, ignore all other flags
@@ -44,7 +59,6 @@ module Watson
       # Using .index instead of .include? to stay consistent with other checks
       return help         if args.index('-h') != nil  || args.index('--help')    != nil
       return version      if args.index('-v') != nil  || args.index('--version') != nil
-
 
 
       # If not one of the above then we are performing actual watson stuff
