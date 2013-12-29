@@ -604,8 +604,4 @@ module Watson
   end
 end
 
-if __FILE__ == $0
-    @config = Watson::Config.new
-end
-
 

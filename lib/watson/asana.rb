@@ -417,34 +417,35 @@ module Watson
 
           end
 
-          ###########################################################
-          # Return full record for a particular task
-          def get_task_record(_api_key, task_id)
+          # Unused method, however, could be useful in the future
+          ############################################################
+          ## Return full record for a particular task
+          #def get_task_record(_api_key, task_id)
 
-            debug_print "#{ self.class } : #{ __method__ }\n"
+          #  debug_print "#{ self.class } : #{ __method__ }\n"
 
-            task_url = "#{ @end_point }/tasks/#{ task_id }"
+          #  task_url = "#{ @end_point }/tasks/#{ task_id }"
 
-            opts = {
-                :url => task_url,
-                :ssl => true,
-                :method => "GET",
-                :basic_auth => [_api_key, ""],
-                :verbose => false
-            }
+          #  opts = {
+          #      :url => task_url,
+          #      :ssl => true,
+          #      :method => "GET",
+          #      :basic_auth => [_api_key, ""],
+          #      :verbose => false
+          #  }
 
-            _json, _resp = Watson::Remote.http_call(opts)
+          #  _json, _resp = Watson::Remote.http_call(opts)
 
-            if _resp.code != "200"
-              @formatter.print_status "x", RED
-              print BOLD + "Unable to get task, API key may be invalid\n" + RESET
-              print "      Consider running --remote (-r) option to regenerate key\n\n"
-              print "      Status: #{ _resp.code } - #{ _resp.message }\n"
-              return false
-            end
+          #  if _resp.code != "200"
+          #    @formatter.print_status "x", RED
+          #    print BOLD + "Unable to get task, API key may be invalid\n" + RESET
+          #    print "      Consider running --remote (-r) option to regenerate key\n\n"
+          #    print "      Status: #{ _resp.code } - #{ _resp.message }\n"
+          #    return false
+          #  end
 
-            _json["data"]
-          end
+          #  _json["data"]
+          #end
 
           ###########################################################
           # Get project id given project and work space name
