@@ -369,8 +369,10 @@ module Watson
 
 
       _ext = { '.cpp'     => ['//', '/*'],        # C++
+               '.cxx'     => ['//', '/*'],
                '.cc'      => ['//', '/*'],
                '.hpp'     => ['//', '/*'],
+               '.hxx'     => ['//', '/*'],
                '.c'       => ['//', '/*'],        # C
                '.h'       => ['//', '/*'],
                '.java'    => ['//', '/*', '/**'], # Java
@@ -404,7 +406,10 @@ module Watson
                '.vim'     => ['"'],               # VimL
                '.md'      => ['<!--'],            # Markdown
                '.html'    => ['<!--'],            # HTML
-               '.el'      => [';']                # Emacslisp
+               '.el'      => [';'],               # Emacslisp
+               '.sqf'     => ['//','/*'],         # SQF
+               '.sqs'     => [';'],               # SQS
+               '.d'       => ['//','/*']          # D
              }
 
       # Merge config file type list with defaults
