@@ -171,6 +171,15 @@ module Watson::Formatters
             MESSAGE
         end
 
+        if _AS = @config.asana_issues[issue[:md5]]
+          debug_print "Found #{ issue[:title]} in remote issues\n"
+          completed = _AS[:state]
+
+          cprint <<-MESSAGE.gsub(/^(\s+)/, '').chomp
+          #{BOLD}[#{RESET}#{completed ? GREEN : RED}#{BOLD}AS##{_AS[:id]}#{RESET}#{BOLD}]#{RESET}
+          MESSAGE
+        end
+
 
         cprint "\n"
       end

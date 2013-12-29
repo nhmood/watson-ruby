@@ -27,6 +27,7 @@ bundle exec rake
 
 
 ## Recent Updates
+  - watson now supports [Asana](http://asana.com)
   - watson now supports [GitLab](http://gitlab.com)
   - [vim-unite-watson.vim](https://github.com/alpaca-tc/vim-unite-watson.vim) integrates watson right into vim!
   - watson now supports multiple export modes
@@ -149,10 +150,10 @@ If individual directories are passed with the -d (--dirs) flag, each will be par
 If watson is run without this parameter, the parsing depth is unlimited and will search through all subdirectories found.  
 
 
-### -r, --remote [GITHUB, BITBUCKET, GITLAB]
+### -r, --remote [GITHUB, BITBUCKET, GITLAB, ASANA]
 This parameter is used to both list currently established remotes as well as setup new ones.  
 If passed without any options, the currently established remotes will be listed.  
-If passed with a github, bitbucket, gitlab argument, watson will proceed to ask some questions to set up the corresponding remote.  
+If passed with a github, bitbucket, gitlab, asana argument, watson will proceed to ask some questions to set up the corresponding remote.
 
 
 ### -s, --show [ALL, CLEAN, DIRTY]
@@ -193,12 +194,16 @@ This supports wildcard type selecting by providing .filename (no * required)
 
 **[context_depth]** - This value determines how many lines of context should be grabbed for each issue when posting to a remote.  
 
-**[(github/bitbucket/gitlab)_api]** - If a remote is established, the API key for the corresponding remote is stored here.  
+**[(github/bitbucket/gitlab/asana)_api]** - If a remote is established, the API key for the corresponding remote is stored here.
 Currently, OAuth has yet to be implemented for Bitbucket so the Bitbucket username is stored here.  
 
 **[(github/bitbucket/gitlab)_repo]** - The repo name / path is stored here.  
 
 **[(github/gitlab)_endpoint]** - The endpoint in case of GitHub Enterprise of GitLab configuration.
+
+**[asana_project]** - The Asana project in case of Asana integration is stored here.
+
+**[asana_workspace]** - The Asana workspace in case of Asana integration is stored here.
 
 The remote related .watsonrc options shouldn't need to be edited manually, as they are automatically populated when the -r, --remote setup is called.  
 

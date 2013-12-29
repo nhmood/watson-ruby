@@ -69,6 +69,17 @@ module Watson
     # Hash to hold list of all Bitbucket issues associated with repo
     attr_accessor :bitbucket_issues
 
+    # Flag for whether Asana access is avaliable
+    attr_accessor :asana_valid
+    # Asana API Key
+    attr_accessor :asana_api
+    # Asana workspace
+    attr_accessor :asana_workspace
+    # Asana project within the workspace to place issues
+    attr_accessor :asana_project
+    # Hash to hold list of all Asana issues associated with repo
+    attr_accessor :asana_issues
+
 
     # Flag for whether GitLab access is avaliable
     attr_accessor :gitlab_valid
@@ -147,8 +158,16 @@ module Watson
       @gitlab_issues   = Hash.new()
 
 
+      @asana_valid     = false
+      @asana_api       = ""
+      @asana_workspace = ""
+      @asana_project   = ""
+      @asana_issues    = Hash.new()
+
 
       @output_format = Watson::Formatters::DefaultFormatter
+
+
     end
 
 
@@ -176,6 +195,11 @@ module Watson
       unless @gitlab_api.empty? && @gitlab_repo.empty?
         Remote::GitLab.get_issues(self)
       end
+
+      unless @asana_api.empty? && @asana_project.empty? && @asana_workspace.empty?
+        Remote::Asana.get_issues(self)
+      end
+
     end
 
 
@@ -453,6 +477,20 @@ module Watson
           @gitlab_repo = _line.chomp!
           debug_print "GitLab Repo: #{ @gitlab_repo }\n"
 
+        when "asana_project"
+          @asana_project = _line.chomp!
+          debug_print "Asana Project: #{ @asana_project }\n"
+
+        when "asana_api"
+          @asana_api = _line.chomp!
+          debug_print "Asana API: #{ @asana_api }\n"
+
+        when "asana_workspace"
+          @asana_workspace = _line.chomp!
+          debug_print "Asana Workspace: #{ @asana_workspace }\n"
+
+
+
         else
           debug_print "Unknown tag found #{_section}\n"
         end
@@ -566,4 +604,9 @@ module Watson
 
   end
 end
+
+if __FILE__ == $0
+    @config = Watson::Config.new
+end
+
 

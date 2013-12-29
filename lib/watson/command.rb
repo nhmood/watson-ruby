@@ -452,7 +452,7 @@ module Watson
 
       # Check the config for any remote entries (GitHub or Bitbucket) and print
       # We *should* always have a repo + API together, but API should be enough
-      if @config.github_api.empty? && @config.bitbucket_api.empty?
+      if @config.github_api.empty? && @config.bitbucket_api.empty? && @config.asana_api.empty?
         formatter.print_status "!", YELLOW
         print BOLD + "No remotes currently exist\n\n" + RESET
       end
@@ -472,6 +472,12 @@ module Watson
         print BOLD + "GitLab Repo : " + RESET + "#{ @config.gitlab_repo }\n\n" + RESET
       end
 
+      if !@config.asana_api.empty?
+        print BOLD + "Asana API Key : " + RESET + "#{ @config.asana_api }\n" + RESET
+        print BOLD + "Asana Workspace : " + RESET + "#{ @config.asana_workspace }\n" + RESET
+        print BOLD + "Asana Project : " + RESET + "#{ @config.asana_project }\n\n" + RESET
+      end
+
       # If github or bitbucket passed, setup
       # If just -r (0 args) do nothing and only have above printed
       # If more than 1 arg is passed, unrecognized, warn user
@@ -488,6 +494,10 @@ module Watson
         when "gitlab"
           debug_print "GitLab setup called from CL\n"
           Watson::Remote::GitLab.setup(@config)
+
+        when "asana"
+          debug_print "Asana setup called from CL\n"
+          Watson::Remote::Asana.setup(@config)
 
         end
       elsif args.length > 1
