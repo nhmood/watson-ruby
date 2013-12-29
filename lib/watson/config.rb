@@ -399,7 +399,6 @@ module Watson
           # Regex to grab ".type" => ["param1", "param2"]
           _mtch = _line.match(/(\"\S+\")\s+=>\s+(\[(\".+\")+\])/)
           if !_mtch.nil?
-            # [review] - Not sure if eval is the safest thing to do here...
             _ext = _mtch[1].gsub(/\"/, '')
             _type = JSON.parse(_mtch[2])
             @type_list[_ext] = _type

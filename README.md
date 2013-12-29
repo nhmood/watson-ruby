@@ -1,4 +1,5 @@
-# watson-ruby [![Build Status](https://travis-ci.org/nhmood/watson-ruby.png?branch=master)](https://travis-ci.org/nhmood/watson-ruby)
+# watson-ruby [![Gem Version](https://badge.fury.io/rb/watson-ruby.png)](http://badge.fury.io/rb/watson-ruby) [![Build Status](https://travis-ci.org/nhmood/watson-ruby.png?branch=master)](https://travis-ci.org/nhmood/watson-ruby) 
+
 ### an inline issue manager
 [watson](http://goosecode.com/watson) ([mirror](http://nhmood.github.io/watson-ruby)) is a tool for creating and tracking bug reports, issues, and internal notes in code.  
 It is avaliable in two flavors, [watson-ruby](http://github.com/nhmood/watson-ruby) and [watson-perl](http://github.com/nhmood/watson-perl)
@@ -64,6 +65,10 @@ submit a pull request (comment parsing happens in **lib/watson/paser.rb**)
 - **Python**
 - **Coffeescript**
 - **Clojure**
+- **VimL**
+- **Markdown**
+- **HTML**
+- **Emacslisp**
 
 
 ## Command line arguments
@@ -81,7 +86,7 @@ If no RC file exists, default RC file will be created
    -i, --ignore          list of files, directories, or types to ignore
    -p, --parse-depth     depth to recursively parse directories
    -r, --remote          list / create tokens for remote posting
-                         [github, bitbucket, gitlab]
+                         [github, bitbucket, gitlab, asana]
    -s, --show            filter results (files listed) based on issue status
                          [all, clean, dirty]
    -t, --tags            list of tags to search for
@@ -110,6 +115,13 @@ The default value is set to 15 (and can be found in the lib/watson/command.rb fi
 This parameter specifies which directories watson should parse through.  
 It should be followed by a space separated list of directories that should be parsed.  
 If watson is run without this parameter, the current directory is parsed.  
+
+
+### --debug [CLASS]
+This parameter enables debug prints for the specified class.  
+It should be followed by a space separated list of classes that should print debug messages.  
+The list of classes are found in `lib/watson`.
+If passed without arguments, debug prints in **ALL** classes of watson will be enabled.  
 
 
 ### -f, --files [FILES]
@@ -181,8 +193,12 @@ This parameter displays the current version of watson you are running.
 ## .watsonrc
 watson supports an RC file that allows for reusing commong settings without repeating command line arguments every time.  
 
-The .watsonrc is placed in every directory that watson is run from as opposed to a unified file (in ~/.watsonrc for example). The thinking behind this is that each project may have a different set of folders to ignore, directories to search through, and tags to look for.  
+The .watsonrc is placed in every directory that watson is run from as opposed to a unified file (in ~/.watsonrc for example). The thought process behind this is that each project may have a different set of folders to ignore, directories to search through, and tags to look for.  
 For example, a C/C++ project might want to look in src/ and ignore obj/ whereas a Ruby project might want to look in lib/ and ignore assets/.  
+
+A base `.watsonrc` is created in the users `$HOME` directory and used as the template for creating all subsequent config files.  
+Any changes made in the `$HOME/.watsonrc` will carry on towards new configs, but will **not** update previously created configs.  
+The `$HOME/.watsonrc` is directly copied, not merged, as to avoid confusion as to the source of config parameters.  
 
 The .watsonrc file is fairly straightforward...  
 **[dirs]** - This is a newline separated list of directories to look in while parsing.  
@@ -192,7 +208,15 @@ The .watsonrc file is fairly straightforward...
 **[ignore]** - This is a newline separated list of files / folders to ignore while parsing.    
 This supports wildcard type selecting by providing .filename (no * required)  
 
-**[context_depth]** - This value determines how many lines of context should be grabbed for each issue when posting to a remote.  
+**[context_depth]** - This value determines how many lines of context should be grabbed for each issue when posting to a remote.
+
+**[type]** - This field allows for custom filetype/comment associations without having to edit the gem itself.  
+The format of filetype entries should be
+```
+".type"   => ["comment1", "comment2"]
+".nhmood" => ["@@", "***"]
+".cc"     => ["//"]
+```  
 
 **[(github/bitbucket/gitlab/asana)_api]** - If a remote is established, the API key for the corresponding remote is stored here.
 Currently, OAuth has yet to be implemented for Bitbucket so the Bitbucket username is stored here.  
@@ -227,7 +251,7 @@ Special thanks to [@eugenekolo](http://twitter.com/eugenekolo) [[email](eugenek@
 Special thanks to [@crowell](http://github.com/crowell) for testing out watson-ruby!  
 
 ## FAQ
-- ** Will inline issues get deleted if I close them on GitHub/Bitbucket/GitLab?**
+- **Will inline issues get deleted if I close them on GitHub/Bitbucket/GitLab?**
   No, watson won't touch your source code, it will only inform you that issues have been closed remotely.
 
 - **Why Ruby?**  

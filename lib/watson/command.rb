@@ -190,6 +190,8 @@ module Watson
 
          -c, --context-depth   lines of context to provide with posted issue
          -d, --dirs            list of directories to search in
+         --debug               enable debug prints from specified class
+                               all debug prints enabled if no arguments passed
          -f, --files           list of files to search in
          --format              set output format for watson
                                [print, json, unite, silent]
