@@ -208,8 +208,12 @@ module Watson
       # [review] - It is possible to embed the valid tags in the regexp,
       # with a ~5% performance gain, but this would loose the warning about
       # unrecognized tags.
-      _comment_regex = /^[[#{ _comment_type }]+?\s+?]+\[(\w+)\]\s+-\s+(.+)/
-
+      _comment_regex = /
+        ^[[#{ _comment_type }]+?\s+?]+     # comment type
+        \[?(\w+)\]?                        # [tag], tag, or TAG syntax
+        \s*[-:]                            # hyphen or colon
+        \s+(.+)$                           # tag comment
+      /x
 
       # Open file and read in entire thing into an array
       # Use an array so we can look ahead when creating issues later
@@ -245,7 +249,7 @@ module Watson
         end
 
         # Set tag
-        _tag = _mtch[1]
+        _tag = _mtch[1].downcase
 
         # Make sure that the tag that was found is something we accept
         # If not, skip it but tell user about an unrecognized tag
