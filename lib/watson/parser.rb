@@ -257,6 +257,7 @@ module Watson
           formatter = Printer.new(@config).build_formatter
           formatter.print_status "+", GREEN
           print "Unknown tag [#{ _tag }] found, ignoring\n"
+          print "      In #{_absolute_path}:#{_i}\n"
           print "      You might want to include it in your RC or with the -t/--tags flag\n"
           next
         end
