@@ -98,7 +98,7 @@ describe Parser do
         @parser.get_comment_type('lib/watson.hbs').should eql ['{{!--']
       end
 
-      it 'return correct extension handlebars' do
+      it 'return correct extension jst handlebars' do
         @parser.get_comment_type('lib/watson.jst.hbs').should eql ['{{!--']
       end
     end
