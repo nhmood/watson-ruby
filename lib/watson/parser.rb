@@ -209,7 +209,7 @@ module Watson
       # with a ~5% performance gain, but this would loose the warning about
       # unrecognized tags.
       _comment_regex = /
-        ^[[#{ _comment_type }]+?\s+?]+     # comment type
+        ^(?:\s*[#{ _comment_type }]+\s*)+  # comment type supports starting whitespace
         \[?(\w+)\]?                        # [tag], tag, or TAG syntax
         \s*[-:]                            # hyphen or colon
         \s+(.+)$                           # tag comment
