@@ -262,9 +262,9 @@ module Watson
         _issue_list[:has_issues] = true
 
         # [review] - This could probably be done better, elsewhere!
-        # If it's a HTML comment, remove trailing -->
-        if _mtch[0].match(/<!--/)
-          _title = _mtch[2].gsub(/-->/, "")
+        # If it's a HTML or Handlebars comment, remove trailing -->, --}}
+        if _mtch[0].match(/[<{]+!--/)
+          _title = _mtch[2].gsub(/--[>}]+/, "")
         else
           _title = _mtch[2]
         end
@@ -409,7 +409,8 @@ module Watson
                '.el'      => [';'],               # Emacslisp
                '.sqf'     => ['//','/*'],         # SQF
                '.sqs'     => [';'],               # SQS
-               '.d'       => ['//','/*']          # D
+               '.d'       => ['//','/*'],         # D
+               '.hbs'     => ['{{!--']            # Handlebars
              }
 
       # Merge config file type list with defaults
@@ -417,7 +418,8 @@ module Watson
       
 
        loop do
-        _mtch = filename.match(/(\.(\S+))$/)
+        # [review] - Updated to match formats such as ".jst.hbs"
+        _mtch = filename.match(/(\.(\w+))$/)
         debug_print "Extension: #{ _mtch }\n"
 
         # Break if we don't find a match
