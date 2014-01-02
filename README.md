@@ -216,7 +216,9 @@ The format of filetype entries should be
 ".type"   => ["comment1", "comment2"]
 ".nhmood" => ["@@", "***"]
 ".cc"     => ["//"]
-```  
+```
+
+**[tag_format]** - Customize the tag format for your project. Defaults to `[TAG] - COMMENT`. "TAG" and "COMMENT" are required keywords.
 
 **[(github/bitbucket/gitlab/asana)_api]** - If a remote is established, the API key for the corresponding remote is stored here.
 Currently, OAuth has yet to be implemented for Bitbucket so the Bitbucket username is stored here.  
