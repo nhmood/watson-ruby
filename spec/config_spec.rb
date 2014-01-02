@@ -86,6 +86,8 @@ describe Config do
       @config.file_list.should == []
       @config.tag_list.should == []
 
+      @config.tag_format.should == "[TAG] - COMMENT"
+
       @config.remote_valid.should be_false
 
       @config.github_valid.should be_false
