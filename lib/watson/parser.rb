@@ -409,7 +409,8 @@ module Watson
                '.el'      => [';'],               # Emacslisp
                '.sqf'     => ['//','/*'],         # SQF
                '.sqs'     => [';'],               # SQS
-               '.d'       => ['//','/*']          # D
+               '.d'       => ['//','/*'],         # D
+               '.tex'     => ['%']                # LaTex
              }
 
       # Merge config file type list with defaults
