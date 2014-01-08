@@ -183,8 +183,15 @@ module Watson
 
       # Store endpoint and API key obtained from POST to @config.github_api
       config.github_endpoint = _endpoint
-      config.github_api = {_username => _json["token"]}
-      config.update_conf("github_api", "github_endpoint")
+
+      # If we are currently in $HOME then don't touch the .watsonrc
+      # [todo] - Better way of selecting API if in $HOME, or just don't use in $HOME...
+      unless Dir.pwd.eql?(File.expand_path('~'))
+        config.github_api = {_username => _json["token"]}
+        config.update_conf("github_api", "github_endpoint")
+      end
+
+
       debug_print "Config GitHub API Endpoint updated to: #{ config.github_endpoint }\n"
       debug_print "Config GitHub API Key updated to:      #{ config.github_api }\n"
 
