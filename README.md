@@ -69,6 +69,7 @@ submit a pull request (comment parsing happens in **lib/watson/paser.rb**)
 - **Markdown**
 - **HTML**
 - **Emacslisp**
+- **LaTex**
 
 
 ## Command line arguments
