@@ -448,6 +448,25 @@ module Watson
           debug_print "@ignore_list --> #{ @ignore_list }\n"
 
 
+        when "show_type"
+          # No need for parsing, just check case
+
+          case _line.chomp.downcase
+          when "clean"
+            @show_type = "clean"
+            debug_print "@show_type set to \"clean\" from config\n"
+
+          when "dirty"
+            @show_type = "dirty"
+            debug_print "@show_type set to \"dirty\" from config\n"
+
+          else
+            @show_type = "all"
+            debug_print "@show_type set to \"all\" from config\n"
+
+          end
+
+
         # Project directories reference $HOME/.watsonrc for GitHub API token
         # If we don't find a username=token format string, use username
         # as Hash reference to $HOME/.watsonrc --> github_api
