@@ -32,6 +32,8 @@ module Watson
     attr_accessor :file_list
     # List of tags to look for when parsing
     attr_accessor :tag_list
+    # Tag format for look for
+    attr_accessor :tag_format
     # List of custom filetypes to accept
     attr_accessor :type_list
     # Number of directories to parse recursively
@@ -145,6 +147,8 @@ module Watson
       @tag_list     = Array.new()
       @type_list    = Hash.new()
       @issue_count  = 0
+
+      @tag_format = "[TAG] - COMMENT"
 
       # Remote options
       @remote_valid   = false
@@ -408,6 +412,9 @@ module Watson
           end
           debug_print "@tag_list --> #{ @tag_list }\n"
 
+        when "tag_format"
+          @tag_format = _line.chomp!
+          debug_print @tag_format
 
         when "type"
           # Regex to grab ".type" => ["param1", "param2"]
