@@ -89,7 +89,7 @@ describe Config do
       @config.remote_valid.should be_false
 
       @config.github_valid.should be_false
-      @config.github_api.should == ''
+      @config.github_api.should == Hash.new()
       @config.github_repo.should == ''
       @config.github_issues.should == Hash.new()
 

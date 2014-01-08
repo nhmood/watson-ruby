@@ -450,19 +450,30 @@ module Watson
       formatter = Printer.new(@config).build_formatter
       formatter.print_header
 
+      # Get $HOME/.watsonrc to check for remotes
+      _home_conf = Watson::Config.home_conf
+
       print BOLD + "Existing Remotes:\n" + RESET
 
       # Check the config for any remote entries (GitHub or Bitbucket) and print
       # We *should* always have a repo + API together, but API should be enough
-      if @config.github_api.empty? && @config.bitbucket_api.empty? && @config.asana_api.empty?
+      if _home_conf.github_api.empty? && @config.bitbucket_api.empty? && @config.asana_api.empty?
         formatter.print_status "!", YELLOW
         print BOLD + "No remotes currently exist\n\n" + RESET
       end
 
-      if !@config.github_api.empty?
-        print BOLD + "GitHub User : " + RESET + "#{ @config.github_api }\n"
+      unless _home_conf.github_api.empty?
+        print BOLD + "- GitHub APIs -\n" + RESET
+        _home_conf.github_api.each_with_index do |_api, _i|
+          print BOLD + "#{_i+1}. #{_api[0]}" + RESET + " : #{_api[1]}\n"
+        end
+        print "\n\n"
+      end
+
+      unless @config.github_repo.empty?
         print BOLD + "GitHub Repo : " + RESET + "#{ @config.github_repo }\n\n"
       end
+
 
       if !@config.bitbucket_api.empty?
         print BOLD + "Bitbucket User : " + RESET + "#{ @config.bitbucket_api }\n" + RESET
