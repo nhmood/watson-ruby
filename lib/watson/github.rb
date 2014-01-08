@@ -16,6 +16,7 @@ module Watson
     # Include for debug_print
     include Watson
 
+
     #############################################################################
     # Setup remote access to GitHub
     # Get Username, Repo, and PW and perform necessary HTTP calls to check validity
@@ -25,24 +26,52 @@ module Watson
       debug_print "#{ self.class } : #{ __method__ }\n"
 
       formatter = Printer.new(config).build_formatter
-      formatter.print_status "+", GREEN
-      print BOLD + "Obtaining OAuth Token for GitHub...\n" + RESET
-
+      
       # Create new RC for $HOME/.watsonrc and check for existing remotes there
       _home_conf = Watson::Config.home_conf
 
-      # Check config to make sure no previous API exists
-      unless _home_conf.github_api.empty? && config.github_repo.empty? && config.github_endpoint.empty?
-        formatter.print_status "!", RED
-        print BOLD + "Previous GitHub API + Repo is in RC, are you sure you want to overwrite?\n" + RESET
-        print "      (Y)es/(N)o: "
+      return false if !get_token(config, _home_conf, formatter)
+      return false if !get_repo(config, formatter)
+
+      # Give user some info
+      print "\n"
+      formatter.print_status "o", GREEN
+      print BOLD + "GitHub successfully setup\n" + RESET
+      print "      Issues will now automatically be retrieved from GitHub by default\n"
+      print "      Use -u, --update to post issues to GitHub\n"
+      print "      See help or README for more details on GitHub/Bitbucket access\n\n"
+
+      true
+    end
+
+
+    #############################################################################
+    # Obtain API token fom GitHub
+    # Either generate new Auth Token or use existing for current dir/project 
+    def get_token(config, home_conf, formatter)
+
+      # Avaliable GitHub APIs
+      _github = home_conf.github_api
+      
+      formatter.print_status "+", GREEN
+      print BOLD + "Obtaining OAuth Token for GitHub...\n" + RESET
+
+      unless _github.empty?
+        formatter.print_status "!", YELLOW
+        print BOLD + "Previous GitHub APIs found do you want to use one that is listed?\n" + RESET
+        print "      Enter # of API key (blank will create new): "
 
         # Get user input
-        _overwrite = $stdin.gets.chomp
-        if ["no", "n"].include?(_overwrite.downcase)
-          print "\n\n"
+        unless (_api = $stdin.gets.chomp).empty?
+          print "\n"
+          _api = _api.to_i - 1
+          
+          # Return specified API token if # selected is valid
+          return _github[_github.keys[_api]] if _api >= 0 && _api < _github.length
+
           formatter.print_status "x", RED
-          print BOLD + "Not overwriting current GitHub API + repo info\n" + RESET
+          print BOLD + "Invalid API selected\n" + RESET
+          print "      Make sure the correct # was selected from the list!\n" + RESET
           return false
         end
       end
@@ -55,6 +84,7 @@ module Watson
       formatter.print_status "!", GREEN
       print BOLD + "Is this a GitHub Enterprise account?\n" + RESET
       print "      (Y)es/(N)o: "
+
 
       # Get user input
       _enterprise = $stdin.gets.chomp
@@ -148,16 +178,24 @@ module Watson
       end
 
       # Add to $HOME/.watsonrc and current .watsonrc
-      _home_conf.github_api[_username] = _json["token"]
-      _home_conf.update_conf("github_api")
+      home_conf.github_api[_username] = _json["token"]
+      home_conf.update_conf("github_api")
 
       # Store endpoint and API key obtained from POST to @config.github_api
       config.github_endpoint = _endpoint
       config.github_api = {_username => _json["token"]}
+      config.update_conf("github_api", "github_endpoint")
       debug_print "Config GitHub API Endpoint updated to: #{ config.github_endpoint }\n"
       debug_print "Config GitHub API Key updated to:      #{ config.github_api }\n"
 
+      true
+    end
 
+
+    #############################################################################
+    # Obtain repo info for GitHub
+    # Set repo for current dir/project
+    def get_repo(config, formatter)
       # Get repo information, if blank give error
       formatter.print_status "!", YELLOW
       print BOLD + "Repo information required\n" + RESET
@@ -193,10 +231,10 @@ module Watson
       #
       # Auth token
       opts = {
-        :url        => "#{ _endpoint }/repos/#{ _owner }/#{ _repo }/labels",
+        :url        => "#{ config.github_endpoint }/repos/#{ _owner }/#{ _repo }/labels",
         :ssl        => true,
         :method     => "POST",
-        :auth       => config.github_api,
+        :auth       => config.github_token,
         :data       => {"name" => "watson",
                         "color" => "00AEEF" },
         :verbose    => false
@@ -224,6 +262,7 @@ module Watson
 
       # Store owner/repo obtained from POST to @config.github_repo
       config.github_repo = "#{ _owner }/#{ _repo }"
+      config.update_conf("github_repo")
       debug_print "Config GitHub API Key updated to: #{ config.github_repo }\n"
 
       # Inform user of label creation status (created above)
@@ -241,21 +280,7 @@ module Watson
         print "      Status: #{ _resp.code } - #{ _resp.message }\n"
       end
 
-      # All setup has been completed, need to update RC
-      # Call config updater/writer from @config to write config
-      debug_print "Updating config with new GitHub info\n"
-      config.update_conf("github_api", "github_repo", "github_endpoint")
-
-      # Give user some info
-      print "\n"
-      formatter.print_status "o", GREEN
-      print BOLD + "GitHub successfully setup\n" + RESET
-      print "      Issues will now automatically be retrieved from GitHub by default\n"
-      print "      Use -u, --update to post issues to GitHub\n"
-      print "      See help or README for more details on GitHub/Bitbucket access\n\n"
-
-      return true
-
+      true
     end
 
 
@@ -285,7 +310,7 @@ module Watson
         :url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues?labels=watson",
         :ssl        => true,
         :method     => "GET",
-        :auth       => config.github_api,
+        :auth       => config.github_token,
         :verbose    => false
       }
 
@@ -368,7 +393,7 @@ module Watson
         :url        => "#{ config.github_endpoint }/repos/#{ config.github_repo }/issues",
         :ssl        => true,
         :method     => "POST",
-        :auth       => config.github_api,
+        :auth       => config.github_token,
         :data       => { "title" => issue[:title] + " [#{ issue[:path] }]",
                          "labels" => [issue[:tag], "watson"],
                          "body" => _body },

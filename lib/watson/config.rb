@@ -609,7 +609,7 @@ module Watson
       # Now that we have skipped all the things that need to be updated, write them in
       params.each do | _name |
         _update.write("[#{ _name }]\n")
-
+        
         _param = self.instance_variable_get("@#{ _name }")
         if _param.is_a?(Hash)
           _param.each do |val|
@@ -628,6 +628,15 @@ module Watson
 
       _update.close
     end
+
+
+    
+    ###########################################################
+    # Get first key from API list (hash)
+    def github_token
+      self.github_api[github_api.keys[0]]
+    end
+
 
   end
 end

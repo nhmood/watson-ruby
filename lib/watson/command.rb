@@ -463,9 +463,9 @@ module Watson
       end
 
       unless _home_conf.github_api.empty?
-        print BOLD + "== GitHub APIs ==\n" + RESET
-        _home_conf.github_api.each do |api|
-          print BOLD + "#{api[0]}" + RESET + " : #{api[1]}\n"
+        print BOLD + "- GitHub APIs -\n" + RESET
+        _home_conf.github_api.each_with_index do |_api, _i|
+          print BOLD + "#{_i+1}. #{_api[0]}" + RESET + " : #{_api[1]}\n"
         end
         print "\n\n"
       end
