@@ -28,8 +28,11 @@ module Watson
       formatter.print_status "+", GREEN
       print BOLD + "Obtaining OAuth Token for GitHub...\n" + RESET
 
+      # Create new RC for $HOME/.watsonrc and check for existing remotes there
+      _home_conf = Watson::Config.home_conf
+
       # Check config to make sure no previous API exists
-      unless config.github_api.empty? && config.github_repo.empty? && config.github_endpoint.empty?
+      unless _home_conf.github_api.empty? && config.github_repo.empty? && config.github_endpoint.empty?
         formatter.print_status "!", RED
         print BOLD + "Previous GitHub API + Repo is in RC, are you sure you want to overwrite?\n" + RESET
         print "      (Y)es/(N)o: "
@@ -144,9 +147,13 @@ module Watson
         return false
       end
 
+      # Add to $HOME/.watsonrc and current .watsonrc
+      _home_conf.github_api[_username] = _json["token"]
+      _home_conf.update_conf("github_api")
+
       # Store endpoint and API key obtained from POST to @config.github_api
       config.github_endpoint = _endpoint
-      config.github_api = _json["token"]
+      config.github_api = {_username => _json["token"]}
       debug_print "Config GitHub API Endpoint updated to: #{ config.github_endpoint }\n"
       debug_print "Config GitHub API Key updated to:      #{ config.github_api }\n"
 

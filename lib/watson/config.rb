@@ -4,11 +4,25 @@ module Watson
   # that are accessed throughout watson
   class Config
 
+    class << self
+      def home_conf
+      # Return Conf object for $HOME/.watsonrc
+        _home_conf = Watson::Config.new()
+        _home_conf.rc_file = File.expand_path('~') + '/.watsonrc'
+        _home_conf.read_conf
+        return _home_conf
+      end
+    end
+
+
     # Include for debug_print
     include Watson
 
     # [review] - Combine into single statement (for performance or something?)
     # [todo] - Add config options (rc file) for default max depth and context lines
+
+    # Location of .watsonrc, modified when working with remote API tokens
+    attr_accessor :rc_file
 
     # List of all files/folders to ignore when parsing
     attr_accessor :ignore_list
@@ -136,7 +150,7 @@ module Watson
       @remote_valid   = false
 
       @github_valid    = false
-      @github_api      = ""
+      @github_api      = Hash.new
       @github_endpoint = ""
       @github_repo     = ""
       @github_issues   = Hash.new()
@@ -428,9 +442,10 @@ module Watson
 
 
         when "github_api"
-          # No need for regex on API key, GitHub setup should do this properly
-          # Chomp to get rid of any nonsense
-          @github_api = _line.chomp!
+          _mtch = _line.match(/(\S+)=(\S+)/)
+          if !_mtch.nil?
+            @github_api[_mtch[1]] = _mtch[2]
+          end
           debug_print "GitHub API: #{ @github_api }\n"
 
 
@@ -511,7 +526,7 @@ module Watson
 
       # Check if RC exists, if not create one
       if !Watson::FS.check_file(@rc_file)
-        print "Unable to open #{ @rc_file }, exiting\n"
+        print "Unable to open #{ @rc_file }, attempting to create\n"
         create_conf
       else
         debug_print "Opened #{ @rc_file } for reading\n"
@@ -592,9 +607,22 @@ module Watson
       end
 
       # Now that we have skipped all the things that need to be updated, write them in
-      params.each do | _param |
-        _update.write("[#{ _param }]\n")
-        _update.write("#{ self.instance_variable_get("@#{ _param }") }")
+      params.each do | _name |
+        _update.write("[#{ _name }]\n")
+
+        _param = self.instance_variable_get("@#{ _name }")
+        if _param.is_a?(Hash)
+          _param.each do |val|
+            _update.write("#{val[0]}=#{val[1]}\n")
+          end
+        elsif _param.is_a?(Array)
+          _param.each do |val|
+            _update.write("#{val}\n")
+          end
+        else
+          _update.write("#{_param}\n")
+        end
+
         _update.write("\n\n\n")
       end
 
