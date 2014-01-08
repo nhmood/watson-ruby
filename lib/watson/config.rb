@@ -441,11 +441,24 @@ module Watson
           debug_print "@ignore_list --> #{ @ignore_list }\n"
 
 
+        # Project directories reference $HOME/.watsonrc for GitHub API token
+        # If we don't find a username=token format string, use username
+        # as Hash reference to $HOME/.watsonrc --> github_api
         when "github_api"
-          _mtch = _line.match(/(\S+)=(\S+)/)
-          if !_mtch.nil?
+          # Regex for username=token
+          _mtch = _line.chomp.match(/(\S+)=(\S+)/)
+
+          # If no = match, then it is a hash reference
+          if _mtch.nil?
+            _home = Watson::Config.home_conf
+            @github_api[_line.chomp] = _home.github_api[_line.chomp]
+
+          # If we do find match, this is a $HOME/.watsonrc
+          # Populate home conf with all API tokens
+          else
             @github_api[_mtch[1]] = _mtch[2]
           end
+
           debug_print "GitHub API: #{ @github_api }\n"
 
 
@@ -609,16 +622,27 @@ module Watson
       # Now that we have skipped all the things that need to be updated, write them in
       params.each do | _name |
         _update.write("[#{ _name }]\n")
-        
         _param = self.instance_variable_get("@#{ _name }")
+
         if _param.is_a?(Hash)
-          _param.each do |val|
-            _update.write("#{val[0]}=#{val[1]}\n")
+          # If the config file we are dealing with is in $HOME/.watsonrc
+          # then write as username=token, else write just username
+          pp(_param)
+          if @rc_file == File.expand_path('~') + '/.watsonrc'
+            _param.each do |val|
+              _update.write("#{val[0]}=#{val[1]}\n")
+            end
+          else
+            _param.each do |val|
+              _update.write("#{val[0]}\n")
+            end
           end
+
         elsif _param.is_a?(Array)
           _param.each do |val|
             _update.write("#{val}\n")
           end
+
         else
           _update.write("#{_param}\n")
         end
