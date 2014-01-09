@@ -219,6 +219,12 @@ The format of filetype entries should be
 ".cc"     => ["//"]
 ```
 
+**[show_type]** - This field allows for setting the default show type, similar to the -s/--show command line arg
+If set to `clean`, only files that watson did *NOT* find issues in will be displayed.
+If set to `dirty`, only files that watson *DID* find issues in will be displayed.
+If set to `all`, watson will display all files, regardless of their issue status.
+The default behavior of watson is the `all` option.
+
 **[tag_format]** - Customize the tag format for your project. Defaults to `[TAG] - COMMENT`. "TAG" and "COMMENT" are required keywords.
 
 **[(github/bitbucket/gitlab/asana)_api]** - If a remote is established, the API key for the corresponding remote is stored here.
