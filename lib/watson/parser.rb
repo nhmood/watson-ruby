@@ -401,6 +401,7 @@ module Watson
                '.hs'      => ['--'],              # Haskell
                '.sh'      => ['#'],               # Bash
                '.rb'      => ['#'],               # Ruby
+               '.haml'    => ['-#'],              # Haml
                '.pl'      => ['#'],               # Perl
                '.pm'      => ['#'],
                '.t'       => ['#'],
@@ -422,7 +423,7 @@ module Watson
 
       # Merge config file type list with defaults
       _ext.merge!(@config.type_list)
-      
+
 
        loop do
         _mtch = filename.match(/(\.(\S+))$/)
