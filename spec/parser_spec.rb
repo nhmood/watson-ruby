@@ -93,6 +93,14 @@ describe Parser do
       it 'return correct extension (;; for clojure)' do
         @parser.get_comment_type('lib/watson.clj').should eql [';;']
       end
+
+      it 'return correct extension handlebars' do
+        @parser.get_comment_type('lib/watson.hbs').should eql ['{{!--']
+      end
+
+      it 'return correct extension jst handlebars' do
+        @parser.get_comment_type('lib/watson.jst.hbs').should eql ['{{!--']
+      end
     end
 
     context 'unknown extension' do

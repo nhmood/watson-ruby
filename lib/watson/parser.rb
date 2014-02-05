@@ -316,9 +316,9 @@ module Watson
         _issue_list[:has_issues] = true
 
         # [review] - This could probably be done better, elsewhere!
-        # If it's a HTML comment, remove trailing -->
-        if _mtch[0].match(/<!--/)
-          _title = _mtch[2].gsub(/-->/, "")
+        # If it's a HTML or Handlebars comment, remove trailing -->, --}}
+        if _mtch[0].match(/[<{]+!--/)
+          _title = _mtch[2].gsub(/--[>}]+/, "")
         else
           _title = _mtch[2]
         end
