@@ -49,6 +49,8 @@ module Watson
     attr_accessor :cl_tag_set
     # Flag for command line setting of showtype
     attr_accessor :cl_show_set
+    # Flag for command line setting of output format
+    attr_accessor :cl_output_set
     # Flag for command line setting of context depth
     attr_accessor :cl_context_set
     # Flag for command line setting of parse depth
@@ -140,6 +142,7 @@ module Watson
       @cl_tag_set    = false
       @cl_ignore_set = false
       @cl_show_set   = false
+      @cl_output_set = false
 
       @show_type = 'all'
 
@@ -414,6 +417,36 @@ module Watson
           end
           debug_print "@dir_list --> #{ @dir_list }\n"
 
+
+        when "output_format"
+          if @cl_output_set
+            debug_print "Output type set from command line, ignoring rc [output_format]\n"
+            next
+          end
+
+          # Set default output format for printing
+          _output = _line.chomp!
+
+          @output_format = case _output.downcase
+            when 'json'
+              debug_print "Output format set to JSON\n"
+              Watson::Formatters::JsonFormatter
+            when 'unite'
+              debug_print "Output format set to Unite\n"
+              Watson::Formatters::UniteFormatter
+            when 'silent'
+              debug_print "Output format set to Silent\n"
+              Watson::Formatters::SilentFormatter
+            when 'nocolor'
+              debug_print "Output format set to NoColor\n"
+              Watson::Formatters::NoColorFormatter
+            else
+             debug_print "Output format set to default (color or nocolor depending on tty)\n"
+             STDOUT.tty? ? Watson::Formatters::DefaultFormatter :
+                           Watson::Formatters::NoColorFormatter
+          end
+
+          debug_print "@output_format --> #{ @output_format }\n"
 
         when "tags"
           # Same as previous for tags

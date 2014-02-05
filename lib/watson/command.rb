@@ -548,6 +548,10 @@ module Watson
         return false
       end
 
+      # Set config flag for CL tag set in config
+      @config.cl_output_set = true
+      debug_print "Updated cl_output_set flag: #{ @config.cl_output_set }\n"
+
       @config.output_format = case args.pop.to_s
         when 'j', 'json'
           Watson::Formatters::JsonFormatter
