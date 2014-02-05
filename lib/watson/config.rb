@@ -183,7 +183,8 @@ module Watson
       @asana_issues    = Hash.new()
 
 
-      @output_format = Watson::Formatters::DefaultFormatter
+      @output_format = STDOUT.tty? ? Watson::Formatters::DefaultFormatter :
+                                     Watson::Formatters::NoColorFormatter
 
 
     end
