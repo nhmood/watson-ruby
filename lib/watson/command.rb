@@ -172,6 +172,8 @@ module Watson
       @config.run
       structure = @parser.run
       @printer.run(structure)
+
+      print RESET;
     end
 
 
