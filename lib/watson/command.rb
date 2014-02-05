@@ -548,6 +548,8 @@ module Watson
           Watson::Formatters::UniteFormatter
         when 'silent'
           Watson::Formatters::SilentFormatter
+        when 'nocolor'
+          Watson::Formatters::NoColorFormatter
         else
           Watson::Formatters::DefaultFormatter
       end
