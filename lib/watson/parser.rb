@@ -12,6 +12,53 @@ module Watson
     require 'digest'
     require 'pp'
 
+    COMMENT_DEFINITIONS = {
+        '.cpp'     => ['//', '/*'],        # C++
+        '.cxx'     => ['//', '/*'],
+        '.cc'      => ['//', '/*'],
+        '.hpp'     => ['//', '/*'],
+        '.hxx'     => ['//', '/*'],
+        '.c'       => ['//', '/*'],        # C
+        '.h'       => ['//', '/*'],
+        '.java'    => ['//', '/*', '/**'], # Java
+        '.class'   => ['//', '/*', '/**'],
+        '.cs'      => ['//', '/*'],        # C#
+        '.scss'    => ['//', '/*'],        # SASS SCSS
+        '.sass'    => ['//', '/*'],        # SASS SCSS
+        '.js'      => ['//', '/*'],        # JavaScript
+        '.php'     => ['//', '/*', '#'],   # PHP
+        '.m'       => ['//', '/*'],        # ObjectiveC
+        '.mm'      => ['//', '/*'],
+        '.go'      => ['//', '/*'],        # Go(lang)
+        '.scala'   => ['//', '/*'],        # Scala
+        '.erl'     => ['%%', '%'],         # Erlang
+        '.f'       => ['!'],               # Fortran
+        '.f90'     => ['!'],               # Fortran
+        '.F'       => ['!'],               # Fortran
+        '.F90'     => ['!'],               # Fortran
+        '.hs'      => ['--'],              # Haskell
+        '.sh'      => ['#'],               # Bash
+        '.rb'      => ['#'],               # Ruby
+        '.pl'      => ['#'],               # Perl
+        '.pm'      => ['#'],
+        '.t'       => ['#'],
+        '.py'      => ['#'],               # Python
+        '.coffee'  => ['#'],               # CoffeeScript
+        '.zsh'     => ['#'],               # Zsh
+        '.clj'     => [';;'],              # Clojure
+        '.sql'     => ['---', '//', '#' ], # SQL and PL types
+        '.lua'     => ['--', '--[['],      # Lua
+        '.vim'     => ['"'],               # VimL
+        '.md'      => ['<!--'],            # Markdown
+        '.html'    => ['<!--'],            # HTML
+        '.el'      => [';'],               # Emacslisp
+        '.sqf'     => ['//','/*'],         # SQF
+        '.sqs'     => [';'],               # SQS
+        '.d'       => ['//','/*'],         # D
+        '.tex'     => ['%'],               # LaTex
+    }.freeze
+
+
     ###########################################################
     # Initialize the parser with the current watson config
     def initialize(config)
@@ -365,88 +412,16 @@ module Watson
       # Identify method entry
       debug_print "#{ self } : #{ __method__ }\n"
 
-      # Grab the file extension (.something)
-      # Check to see whether it is recognized and set comment type
-      # If unrecognized, try to grab the next .something extension
-      # This is to account for file.cpp.1 or file.cpp.bak, ect
-
-      # [review] - Matz style while loop a la http://stackoverflow.com/a/10713963/1604424
-      # Create _mtch var so we can access it outside of the do loop
-
-
-
-      _ext = { '.cpp'     => ['//', '/*'],        # C++
-               '.cxx'     => ['//', '/*'],
-               '.cc'      => ['//', '/*'],
-               '.hpp'     => ['//', '/*'],
-               '.hxx'     => ['//', '/*'],
-               '.c'       => ['//', '/*'],        # C
-               '.h'       => ['//', '/*'],
-               '.java'    => ['//', '/*', '/**'], # Java
-               '.class'   => ['//', '/*', '/**'],
-               '.cs'      => ['//', '/*'],        # C#
-               '.scss'    => ['//', '/*'],        # SASS SCSS
-               '.sass'    => ['//', '/*'],        # SASS SCSS
-               '.js'      => ['//', '/*'],        # JavaScript
-               '.php'     => ['//', '/*', '#'],   # PHP
-               '.m'       => ['//', '/*'],        # ObjectiveC
-               '.mm'      => ['//', '/*'],
-               '.go'      => ['//', '/*'],        # Go(lang)
-               '.scala'   => ['//', '/*'],        # Scala
-               '.erl'     => ['%%', '%'],         # Erlang
-               '.f'       => ['!'],               # Fortran
-               '.f90'     => ['!'],               # Fortran
-               '.F'       => ['!'],               # Fortran
-               '.F90'     => ['!'],               # Fortran
-               '.hs'      => ['--'],              # Haskell
-               '.sh'      => ['#'],               # Bash
-               '.rb'      => ['#'],               # Ruby
-               '.pl'      => ['#'],               # Perl
-               '.pm'      => ['#'],
-               '.t'       => ['#'],
-               '.py'      => ['#'],               # Python
-               '.coffee'  => ['#'],               # CoffeeScript
-               '.zsh'     => ['#'],               # Zsh
-               '.clj'     => [';;'],              # Clojure
-               '.sql'     => ['---', '//', '#' ], # SQL and PL types
-               '.lua'     => ['--', '--[['],      # Lua
-               '.vim'     => ['"'],               # VimL
-               '.md'      => ['<!--'],            # Markdown
-               '.html'    => ['<!--'],            # HTML
-               '.el'      => [';'],               # Emacslisp
-               '.sqf'     => ['//','/*'],         # SQF
-               '.sqs'     => [';'],               # SQS
-               '.d'       => ['//','/*'],         # D
-               '.tex'     => ['%']                # LaTex
-             }
-
       # Merge config file type list with defaults
-      _ext.merge!(@config.type_list)
-      
+      _comments = COMMENT_DEFINITIONS.merge(@config.type_list)
 
-       loop do
-        _mtch = filename.match(/(\.(\S+))$/)
-        debug_print "Extension: #{ _mtch }\n"
+      # Grab all possible extensions, check for comment match in reverse order
+      # Return comment type if found in comment definitions, else false
+      filename.split('.')[1..-1].each { |_ext| return _comments['.' << _ext] if _comments.has_key?('.' << _ext) }
 
-        # Break if we don't find a match
-        break if _mtch.nil?
-
-        return _ext[_mtch[0]] if _ext.has_key?(_mtch[0])
-
-        # Can't recognize extension, keep looping in case of .bk, .#, ect
-        filename = filename.gsub(/(\.(\S+))$/, '')
-        debug_print "Didn't recognize, searching #{ filename }\n"
-
-      end
-
-      # We didn't find any matches from the filename, return error (0)
-      # Deal with what default to use in calling method
-      # [review] - Is Ruby convention to return 1 or 0 (or -1) on failure/error?
       debug_print "Couldn't find any recognized extension type\n"
       false
 
     end
-
-
   end
 end
