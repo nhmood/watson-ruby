@@ -47,6 +47,12 @@ module Watson
     attr_accessor :cl_ignore_set
     # Flag for command line setting of tag to parse for
     attr_accessor :cl_tag_set
+    # Flag for command line setting of showtype
+    attr_accessor :cl_show_set
+    # Flag for command line setting of context depth
+    attr_accessor :cl_context_set
+    # Flag for command line setting of parse depth
+    attr_accessor :cl_parse_set
 
     # Entries that watson should show
     attr_accessor :show_type
@@ -130,9 +136,10 @@ module Watson
       @context_depth  = 15
 
       # State flags
-      @cl_entry_set   = false
-      @cl_tag_set   = false
-      @cl_ignore_set  = false
+      @cl_entry_set  = false
+      @cl_tag_set    = false
+      @cl_ignore_set = false
+      @cl_show_set   = false
 
       @show_type = 'all'
 
@@ -363,15 +370,29 @@ module Watson
 
         case _section
         when "context_depth"
+          # If set from command line, ignore config file
+          if @cl_context_set
+            debug_print "Directories or files set from command line ignoring rc [context_depth]\n"
+            next
+          end
+
           # No need for regex on context value, command should read this in only as a #
           # Chomp to get rid of any nonsense
           @context_depth = _line.chomp!.to_i
+          debug_print "@context_depth --> #{ @context_depth }\n"
 
 
         when "parse_depth"
+          # If set from command line, ignore config file
+          if @cl_parse_set
+            debug_print "Directories or files set from command line ignoring rc [parse_depth]\n"
+            next
+          end
+
           # No need for regex on parse value, command should read this in only as a #
           # Chomp to get rid of any nonsense
           @parse_depth = _line.chomp!
+          debug_print "@parse_depth --> #{ @parse_depth }\n"
 
 
         when "dirs"
@@ -415,7 +436,7 @@ module Watson
 
         when "tag_format"
           @tag_format = _line.chomp!
-          debug_print @tag_format
+          debug_print "@tag_format --> #{ @tag_format }\n"
 
         when "type"
           # Regex to grab ".type" => ["param1", "param2"]
@@ -426,16 +447,17 @@ module Watson
             @type_list[_ext] = _type
           end
 
+          deug_print "@type_list --> #{ @type_list }\n"
+
 
         when "ignore"
-          # Same as previous for ignores
-          # [review] - Populate @tag_list, then check size instead
-
           if @cl_ignore_set
             debug_print "Ignores set from command line, ignoring rc [ignores]\n"
             next
           end
 
+          # Same as previous for ignores
+          # [review] - Populate @tag_list, then check size instead
           # Convert each ignore into a regex
           # Grab ignore and remove leading ./ and trailing /
           _mtch = _line.match(/^(\.\/)?(\S+)/)[0].gsub(/\/$/, '')
@@ -450,8 +472,12 @@ module Watson
 
 
         when "show_type"
-          # No need for parsing, just check case
+          if @cl_show_set
+            debug_print "Show type set from command line, ignoring rc [show_type]\n"
+            next
+          end
 
+          # No need for parsing, just check case
           case _line.chomp.downcase
           when "clean"
             @show_type = "clean"
@@ -464,8 +490,9 @@ module Watson
           else
             @show_type = "all"
             debug_print "@show_type set to \"all\" from config\n"
-
           end
+
+          debug_print "@show_type --> #{ @show_type }\n"
 
 
         # Project directories reference $HOME/.watsonrc for GitHub API token

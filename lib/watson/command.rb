@@ -253,6 +253,9 @@ module Watson
         return false
       end
 
+      # Set config flag for CL context_set in config
+      @config.cl_context_set = true
+      debug_print "Updated cl_context_set flag: #{ @config.cl_context_set }\n"
 
       # For context_depth we do NOT append to RC, ALWAYS overwrite
       # For each argument passed, make sure valid, then set @config.parse_depth
@@ -394,6 +397,10 @@ module Watson
         debug_print "No args passed, exiting\n"
         return false
       end
+
+      # Set config flag for CL parse_set  in config
+      @config.cl_parse_set = true
+      debug_print "Updated cl_parse_set flag: #{ @config.cl_parse_set }\n"
 
       # For max_dpeth we do NOT append to RC, ALWAYS overwrite
       # For each argument passed, make sure valid, then set @config.parse_depth
@@ -571,6 +578,10 @@ module Watson
         debug_print "No args passed, exiting\n"
         return false
       end
+
+      # Set config flag for CL tag set in config
+      @config.cl_show_set = true
+      debug_print "Updated cl_show_set flag: #{ @config.cl_show_set }\n"
 
       args.each do | _show |
         case _show.downcase
