@@ -39,6 +39,7 @@ module Watson
         '.hs'      => ['--'],              # Haskell
         '.sh'      => ['#'],               # Bash
         '.rb'      => ['#'],               # Ruby
+        '.haml'    => ['-#'],              # Haml
         '.pl'      => ['#'],               # Perl
         '.pm'      => ['#'],
         '.t'       => ['#'],
