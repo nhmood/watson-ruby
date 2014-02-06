@@ -57,7 +57,8 @@ module Watson
         '.sqs'     => [';'],               # SQS
         '.d'       => ['//','/*'],         # D
         '.tex'     => ['%'],               # LaTex
-        '.hbs'     => ['{{!--']            # Handlebars
+        '.hbs'     => ['{{!--'],           # Handlebars
+        '.twig'    => ['{#']               # Twig
     }.freeze
 
 
@@ -319,8 +320,8 @@ module Watson
 
         # [review] - This could probably be done better, elsewhere!
         # If it's a HTML or Handlebars comment, remove trailing -->, --}}
-        if _mtch[0].match(/[<{]+!--/)
-          _title = _mtch[2].gsub(/--[>}]+/, "")
+        if _mtch[0].match(/[<{]+(!--)?(#)?/)
+          _title = _mtch[2].gsub(/(--)?(#)?[>}]+/, "")
         else
           _title = _mtch[2]
         end
