@@ -57,6 +57,7 @@ module Watson
         '.sqs'     => [';'],               # SQS
         '.d'       => ['//','/*'],         # D
         '.tex'     => ['%'],               # LaTex
+        '.hbs'     => ['{{!--']            # Handlebars
     }.freeze
 
 
