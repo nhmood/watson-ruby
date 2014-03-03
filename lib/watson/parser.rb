@@ -51,7 +51,7 @@ module Watson
         '.lua'     => ['--', '--[['],      # Lua
         '.vim'     => ['"'],               # VimL
         '.md'      => ['<!--'],            # Markdown
-        '.html'    => ['<!--'],            # HTML
+        '.html'    => ['<!--', '{*'],      # HTML / RainTPL
         '.el'      => [';'],               # Emacslisp
         '.sqf'     => ['//','/*'],         # SQF
         '.sqs'     => [';'],               # SQS
