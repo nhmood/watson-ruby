@@ -57,6 +57,8 @@ submit a pull request (comment parsing happens in **lib/watson/paser.rb**)
 - **SQL / PL**
 - **Lua**
 - **HTML**
+- **Twig**
+- **RainTPL**
 - **SASS SCSS**
 - **Haskell**
 - **Bash / Zsh**
@@ -67,7 +69,6 @@ submit a pull request (comment parsing happens in **lib/watson/paser.rb**)
 - **Clojure**
 - **VimL**
 - **Markdown**
-- **HTML**
 - **Emacslisp**
 - **LaTex**
 - **Handlebars**
