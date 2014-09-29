@@ -29,6 +29,8 @@ module Watson
         '.php'     => ['//', '/*', '#'],   # PHP
         '.m'       => ['//', '/*'],        # ObjectiveC
         '.mm'      => ['//', '/*'],
+        '.ml'      => ['(*', '(**'],       # OCaml
+        '.mli'     => ['(*', '(**'],       # OCaml
         '.go'      => ['//', '/*'],        # Go(lang)
         '.scala'   => ['//', '/*'],        # Scala
         '.erl'     => ['%%', '%'],         # Erlang
