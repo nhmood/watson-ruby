@@ -59,6 +59,7 @@ submit a pull request (comment parsing happens in **lib/watson/paser.rb**)
 - **HTML**
 - **SASS SCSS**
 - **Haskell**
+- **OCaml**
 - **Bash / Zsh**
 - **Ruby**
 - **Perl**
