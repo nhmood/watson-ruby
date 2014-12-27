@@ -32,6 +32,8 @@ module Watson
         '.go'      => ['//', '/*'],        # Go(lang)
         '.scala'   => ['//', '/*'],        # Scala
         '.erl'     => ['%%', '%'],         # Erlang
+        '.ex'      => ['#'],               # Elixir
+        '.exs'     => ['#'],               # Elixir
         '.f'       => ['!'],               # Fortran
         '.f90'     => ['!'],               # Fortran
         '.F'       => ['!'],               # Fortran
