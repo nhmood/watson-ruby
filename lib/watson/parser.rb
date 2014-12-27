@@ -58,7 +58,9 @@ module Watson
         '.d'       => ['//','/*'],         # D
         '.tex'     => ['%'],               # LaTex
         '.hbs'     => ['{{!--'],           # Handlebars
-        '.twig'    => ['{#']               # Twig
+        '.twig'    => ['{#'],              # Twig
+        '.ex'     => ['#'],                # Elixir
+        '.exs'    => ['#']                 # Elixir
     }.freeze
 
 
