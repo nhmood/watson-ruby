@@ -58,7 +58,8 @@ module Watson
         '.d'       => ['//','/*'],         # D
         '.tex'     => ['%'],               # LaTex
         '.hbs'     => ['{{!--'],           # Handlebars
-        '.twig'    => ['{#']               # Twig
+        '.twig'    => ['{#'],              # Twig
+        '.bmx'     => ['\'']               # BlitzMax
     }.freeze
 
 

@@ -71,6 +71,7 @@ submit a pull request (comment parsing happens in **lib/watson/paser.rb**)
 - **Emacslisp**
 - **LaTex**
 - **Handlebars**
+- **BlitzMax**
 
 
 ## Command line arguments
