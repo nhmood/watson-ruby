@@ -480,7 +480,7 @@ module Watson
             @type_list[_ext] = _type
           end
 
-          deug_print "@type_list --> #{ @type_list }\n"
+          debug_print "@type_list --> #{ @type_list }\n"
 
 
         when "ignore"
